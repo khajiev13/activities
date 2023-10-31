@@ -1,8 +1,8 @@
 from neomodel import (StructuredNode, StringProperty, IntegerProperty,
     UniqueIdProperty, RelationshipTo, DateTimeProperty, BooleanProperty)
+from django_neomodel import DjangoNode
 
-
-class Activity(StructuredNode):
+class Activity(DjangoNode):
     uid = UniqueIdProperty()
     title = StringProperty(required=True)
     description = StringProperty(required=True)
@@ -11,4 +11,5 @@ class Activity(StructuredNode):
     duration = IntegerProperty(required=True) 
     public = BooleanProperty(default=True)
     date_time = DateTimeProperty(required=True,format="%Y-%m-%d %H:%M:%S")
-    
+    class Meta:
+        app_label = 'activities'

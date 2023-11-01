@@ -1,12 +1,14 @@
 from neomodel import ( StringProperty, IntegerProperty,
-    UniqueIdProperty, Relationship, DateTimeProperty, EmailProperty)
+    UniqueIdProperty, Relationship, DateTimeProperty, EmailProperty, RelationshipTo)
 from django_neomodel import DjangoNode
+from activities.models import JoinedActRel
+from teams.models import JoinedTeamRel
 
 class User(DjangoNode):
-    uid = UniqueIdProperty()
+    uid = IntegerProperty(index=True, unique=True)
     friends = Relationship('User', 'FRIEND')
-    activities = Relationship('activities.models.Activity', 'JOINED')
-
+    activities = Relationship('activities.models.Activity', 'JOINED', model=JoinedActRel)
+    teams = RelationshipTo('teams.models.Team', 'IS_A_MEMBER_OF', model=JoinedTeamRel)
     #Person.nodes.get(uid='a12df...')
     first_name = StringProperty(required=True)
     last_name = StringProperty(required=True)
@@ -35,6 +37,16 @@ class User(DjangoNode):
     # tim.sex # M
     # tim.get_sex_display() # 'Male'
     #medals
+    def __str__(self):
+        return self.first_name
 
     class Meta:
         app_label = 'users'
+
+
+
+
+# user1 = User(first_name='Roma', last_name='Khajiev', age=23, email='roma@example.com', gender='Male', points=100, role='Player')
+# user2 = User(first_name='Mohamed', last_name='Amour', age=23, email='roma@example.com', gender='Male', points=100, role='Player')
+#activity = Activity.nodes.filter(title='Football').first()
+# rel = user1.activities.connect(activity,{'role': 'Player'})

@@ -37,9 +37,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
+    'achievements',
     'activities',
+    'categories',
+    'cities',
+    'colors',
+    'competitions',
+    'countries',
+    'leagues',
+    'locations',
+    'organizations',
+    'requests',
+    'roles',
+    'score_infos',
+    'substitutions',
     'teams',
+    'users'
     
 ]
 

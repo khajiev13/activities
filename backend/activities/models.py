@@ -1,21 +1,26 @@
 from neomodel import (StructuredNode, StringProperty, IntegerProperty,
-    UniqueIdProperty, RelationshipTo, DateTimeProperty, BooleanProperty,StructuredRel)
+    UniqueIdProperty, RelationshipTo, DateTimeProperty, BooleanProperty,StructuredRel, ZeroOrOne, RelationshipFrom)
 from django_neomodel import DjangoNode
 
-class JoinedActRel(StructuredRel):
-    joined_at = DateTimeProperty(default_now=True)
-    role = StringProperty(default='Participant')
+# class JoinedActRel(StructuredRel):
+#     joined_at = DateTimeProperty(default_now=True)
+#     role = StringProperty(default='Participant')
 
-class Activity(DjangoNode):
-    uid = UniqueIdProperty()
-    title = StringProperty(required=True)
+class ACTIVITY(DjangoNode):
+    pk = UniqueIdProperty()
+    title = StringProperty(required=True, unique=True)
     description = StringProperty(required=True)
-    created_at = DateTimeProperty(default_now=True)
-    #organizer = Link it to the User model
-    duration = IntegerProperty(required=True) 
+    duration_in_minutes = IntegerProperty(required=True) 
     public = BooleanProperty(default=True)
     date_time = DateTimeProperty(required=True,format="%Y-%m-%d %H:%M:%S")
-    
+    location = RelationshipTo('locations.models.LOCATION', 'HAPPENS_AT')
+    people_joined = RelationshipFrom('users.models.USER', 'JOINS')
+    creator = RelationshipFrom('users.models.USER', 'CREATES')
+    category = RelationshipTo('categories.models.CATEGORY', 'IS_TYPE_OF')
+    is_competition = RelationshipTo('competitions.models.COMPETITION', 'IS')
+    achievements_earned = RelationshipFrom('achievements.models.ACHIEVEMENT', 'DURING')
+    requests_to_join = RelationshipFrom('requests.models.REQUEST', 'TO_JOIN')
+    roles = RelationshipFrom('roles.models.ROLE', 'FOR')
     def __str__(self):
         return self.title
     

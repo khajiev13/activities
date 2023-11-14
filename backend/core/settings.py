@@ -4,6 +4,11 @@ from neomodel import config
 config.DATABASE_URL = os.environ['NEO4J_BOLT_URL']
 config.NEO4J_PASSWORD = os.environ['NEO4J_PASSWORD']
 config.NEO4J_USERNAME = os.environ['NEO4J_USERNAME']
+# you are free to add this configurations
+NEOMODEL_SIGNALS = True
+NEOMODEL_FORCE_TIMEZONE = False
+NEOMODEL_ENCRYPTED_CONNECTION = True
+NEOMODEL_MAX_POOL_SIZE = 50
 
 #neomodel_install_labels core.py activities.models --db neo4j+s://neo4j:JHI6pt17is0ozAbnAY0dfF-UcbP8lt_B_ou9dWAn-DU@bb345263.databases.neo4j.io:7687
 #neomodel_remove_labels --db neo4j+s://neo4j:JHI6pt17is0ozAbnAY0dfF-UcbP8lt_B_ou9dWAn-DU@bb345263.databases.neo4j.io:7687   
@@ -52,7 +57,8 @@ INSTALLED_APPS = [
     'score_infos',
     'substitutions',
     'teams',
-    'users'
+    'users',
+    'rest_framework',
     
 ]
 

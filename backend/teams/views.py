@@ -1,3 +1,20 @@
-from django.shortcuts import render
+from rest_framework import generics
+from neomodel import DoesNotExist
+from django.http import Http404
+from teams.models import TEAM
+from teams.serializers import TeamSerializer
+class TeamListCreateView(generics.ListCreateAPIView):
+    serializer_class = TeamSerializer
+    def get_queryset(self):
+        return TEAM.nodes.all()
 
-# Create your views here.
+class TeamDetailView(generics.RetrieveUpdateDestroyAPIView):
+    lookup_field = 'name'
+    queryset = TEAM.nodes
+    serializer_class = TeamSerializer
+    def get_object(self):
+        try:
+            obj = TEAM.nodes.get(name=self.kwargs[self.lookup_field])
+        except DoesNotExist:
+            raise Http404
+        return obj

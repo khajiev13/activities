@@ -18,8 +18,7 @@ class Since(StructuredRel):
 
 # Create your models here.
 class TEAM(DjangoNode):
-    pk = UniqueIdProperty()
-    name = StringProperty(required=True)
+    name = StringProperty(required=True, unique_index=True)
     men_team = BooleanProperty(default=True)
     founded_at = DateTimeProperty(default_now=True)
     belongs_to_organization = RelationshipFrom('organizations.models.ORGANIZATION', 'HAS')   

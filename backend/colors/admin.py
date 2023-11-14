@@ -3,7 +3,7 @@ from django.contrib import admin as dj_admin
 from colors.models import COLOR
 
 class ColorAdmin(dj_admin.ModelAdmin):
-    list_display = ("name","pk")
+    list_display = ("name",)
 neo_admin.register(COLOR, ColorAdmin)
 
 

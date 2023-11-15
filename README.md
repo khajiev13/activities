@@ -20,7 +20,6 @@ This is the frontend for our application, built with React and Tailwind CSS.
 First, navigate to the `frontend` directory:
 
 ```bash
-git clone https://github.com/khajiev13/activities.git
 cd frontend
 ```
 
@@ -166,7 +165,3 @@ git merge upstream/main
 ```
 
 Remember to replace your-branch-name with the name of your branch.
-
-```
-
-```

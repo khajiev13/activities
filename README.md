@@ -2,7 +2,7 @@
 
 To get a copy of the project, run the following command:
 
-````bash
+```bash
 git clone https://github.com/khajiev13/activities.git
 ```
 
@@ -104,23 +104,29 @@ python manage.py runserver
 This will start the Django application on a local development server, usually at `http://localhost:8000`.
 
 # Contributing
+
 If you want to contribute to the project, please follow these steps:
+
 1. Fork the repository on GitHub.
 2. Clone your fork:
+
 ```bash
 git clone https://github.com/your-username/activities.git
 ```
 
 3. Create a new branch for your changes:
+
 ```bash
 git checkout -b your-branch-name
 ```
 
 4. Make your changes and commit them to your branch.
 5. Push your branch to your fork:
+
 ```bash
 git push origin your-branch-name
 ```
+
 6. Go to the GitHub page for your fork, and click the 'New pull request' button to create a new pull request.
 
 Remember to replace your-username and name-of-your-branch with your GitHub username and your chosen branch name, respectively.
@@ -134,22 +140,33 @@ To keep your fork up to date with the original repository, you can add it as an 
 ```bash
 git remote add upstream https://github.com/khajiev13/activities.git
 ```
+
 2. Verify that the upstream repository has been added:
+
 ```bash
 git remote -v
 ```
-You should see upstream in the output, along with the URL of the original repository.
-3. Fetch the latest changes from the upstream repository:
+
+You should see upstream in the output, along with the URL of the original repository. 3. Fetch the latest changes from the upstream repository:
+
 ```bash
 git fetch upstream
 ```
+
 4. To merge the updates into your local branch, first make sure you are on the correct branch:
+
 ```bash
 git checkout your-branch-name
 ```
+
 5. Then, merge the updates:
+
 ```bash
 git merge upstream/main
 ```
+
 Remember to replace your-branch-name with the name of your branch.
-````
+
+```
+
+```

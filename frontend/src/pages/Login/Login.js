@@ -1,16 +1,7 @@
-import Lottie from 'react-lottie';
-import animationDataHockey from '../illustrations/warp-hockey-player.json';
 import React, { useState } from 'react';
+import AnimationHockeyPlayer from '../../components/AnimationHockeyPlayer';
 
 function Login() {
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationDataHockey,
-    rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice',
-    },
-  };
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="App bg-white flex p-0 m-0 h-screen w-full flex-row">
@@ -395,9 +386,7 @@ function Login() {
           It was a platform for people to make friends and attend different
           kinds of activities. Let’s start our interesting experience!
         </p>
-        <div className=" mt-7 pointer-events-none">
-          <Lottie options={defaultOptions} height={500} width={590} />
-        </div>
+        <AnimationHockeyPlayer height={500} width={590} />
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ class TEAM(DjangoNode):
     founded_at = DateTimeProperty(default_now=True)
     belongs_to_organization = RelationshipFrom('organizations.models.ORGANIZATION', 'HAS')   
     sponsors = RelationshipFrom('organizations.models.ORGANIZATION', 'SPONSORS',model=Since)
-    members = RelationshipFrom('users.models.USER', 'JOINED',model=JoinedTeamRel)
+    members = RelationshipFrom('users.models.USER', 'IS_MEMBER_OF',model=JoinedTeamRel)
     roles = RelationshipFrom('roles.models.ROLE', 'IN')
     category = RelationshipTo('categories.models.CATEGORY', 'IS_TYPE_OF')
     competitions_as_team_1 = RelationshipFrom('competitions.models.COMPETITION', 'TEAM_1')

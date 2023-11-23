@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import axiosInstance from '../../axios';
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+// import axios from 'axios';
+// import { useHistory } from 'react-router-dom';
 
 function Register() {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    first_name: '',
-    last_name: '',
-    age: '',
-    gender: '',
-    email: '',
+    username: 'justin',
+    password: '7191710r',
+    first_name: 'Justin',
+    last_name: 'Kadirov',
+    age: '23',
+    gender: 'Male',
+    email: 'raxmon1710@gmail.com',
   });
 
   const handleChange = (e) => {
@@ -24,13 +24,13 @@ function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios
-      .post('http://127.0.0.1:8000/api/users/', formData)
+    axiosInstance
+      .post('api/users/', formData)
       .then((response) => {
         console.log(response);
         // User registration was successful, get the tokens
-        axios
-          .post('http://127.0.0.1:8000/api/token/', {
+        axiosInstance
+          .post('api/users/token/get/', {
             username: formData.username,
             password: formData.password,
           })
@@ -45,7 +45,7 @@ function Register() {
           });
       })
       .catch((error) => {
-        console.error('Error registering user:', error);
+        alert(error.response.data.detail);
       });
   };
   return (

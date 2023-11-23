@@ -12,7 +12,7 @@ function AnimationHockeyPlayer({ height, width }) {
     },
   };
   return (
-    <div classname="pointer-events-none">
+    <div className="pointer-events-none">
       <Lottie options={defaultOptions} height={height} width={width} />
     </div>
   );

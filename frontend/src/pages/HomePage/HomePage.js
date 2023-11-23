@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import axiosInstance from '../../axios';
+import Logout from '../../components/Logout';
 
 const HomePage = () => {
   useEffect(() => {
@@ -14,7 +15,10 @@ const HomePage = () => {
       });
   }, []);
 
-  return <div>Hi, this is the homepage...</div>;
+  return <>
+  <div className=''>Hi, this is the homepage...</div>
+  <Logout />
+  </> 
 };
 
 export default HomePage;

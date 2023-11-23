@@ -5,12 +5,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 
-
 class CustomJWTAuthentication(JWTAuthentication):
     def get_user(self, validated_token):
-        print("Custom JWT Authentication is being called")
         username = validated_token['username']
-        print(username)
         return USER.nodes.get(username=username)
 
 class CustomRefreshToken(RefreshToken):
@@ -23,12 +20,10 @@ class CustomRefreshToken(RefreshToken):
 
 class UserAuthentication(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
-        print(f"Username: {username}, Password: {password}")
         if (username is None) or (password is None):
             return None
         try:
             user = USER.nodes.get(username=username)
-            print(f"User: {user}" in authentication.py)
             if user.check_password(password):
                 print("Password matched and correct")
                 return user

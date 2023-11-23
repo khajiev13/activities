@@ -1,20 +1,22 @@
-import Lottie from 'react-lottie';
+import { useEffect, useRef } from 'react';
+import lottie from 'lottie-web';
 import animationDataHockey from '../illustrations/warp-hockey-player.json';
-import React from 'react';
 
 function AnimationHockeyPlayer({ height, width }) {
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationDataHockey,
-    rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice',
-    },
-  };
+  const container = useRef();
+
+  useEffect(() => {
+    lottie.loadAnimation({
+      container: container.current,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      animationData: animationDataHockey,
+    });
+  }, []);
+
   return (
-    <div className="pointer-events-none">
-      <Lottie options={defaultOptions} height={height} width={width} />
-    </div>
+    <div ref={container} style={{ width, height }} className="pointer-events-none" />
   );
 }
 

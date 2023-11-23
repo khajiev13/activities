@@ -388,6 +388,7 @@ function Login() {
         </p>
         <AnimationHockeyPlayer height={500} width={590} />
       </div>
+      
     </div>
   );
 }

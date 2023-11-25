@@ -259,7 +259,7 @@ function Login() {
           </svg>
 
           <div className="[font-family:'MuseoModerno-Bold',Helvetica] font-bold text-black text-[20px] tracking-[0] leading-[normal]">
-            ACTIVITIES NAME
+            EVENTOPIA
           </div>
         </div>
 
@@ -380,7 +380,7 @@ function Login() {
       {/* Right side of the window */}
       <div className="w-56-percent  bg-skin-color min-h-full flex justify-center items-center flex-col">
         <h1 className="font-murecho font-bold text-maincolor text-[32px] text-center tracking-[0] leading-[normal] mb-2">
-          Welcome To The Website
+          Eventopia - a place where different events take place!
         </h1>
         <p className="w-[563px] font-murecho font-normal text-[#3b3b3b] text-[18px] text-center tracking-[0] leading-[26px]">
           It was a platform for people to make friends and attend different

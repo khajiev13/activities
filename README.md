@@ -8,7 +8,7 @@ git clone https://github.com/khajiev13/activities.git
 
 # Frontend Application
 
-This is the frontend for our application, built with React and Tailwind CSS.
+This is the frontend for our application, built with React Typescript and Tailwind CSS.
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ cd frontend
 Then, install the dependencies: (Note: You may need to use `--legacy-peer-deps`. We are using Lottie, which is not yet compatible with latest version of react but it should be fine.
 
 ```bash
-npm install --legacy-peer-deps
+npm install
 ```
 
 ## Running the Application
@@ -34,7 +34,7 @@ npm install --legacy-peer-deps
 After installing the dependencies, you can start the application with:
 
 ```bash
-npm start
+npm run dev
 ```
 
 This will start the React application on a local development server, usually at `http://localhost:3000`.

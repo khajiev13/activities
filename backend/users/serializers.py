@@ -21,7 +21,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
     def validate(self, attrs):
-        print("Custom Token Obtain Pair Serializer is being called")
         data = super().validate(attrs)
         username = attrs.get('username')
         password = attrs.get('password')
@@ -43,7 +42,7 @@ class UserSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=128, write_only=True)
     first_name = serializers.CharField(max_length=30)
     last_name = serializers.CharField(max_length=30)
-    age = serializers.IntegerField()
+    date = serializers.DateField()
     gender = serializers.CharField(max_length=10)
     email = serializers.EmailField()
 
@@ -53,7 +52,7 @@ class UserSerializer(serializers.Serializer):
             username=validated_data['username'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
-            age=validated_data['age'],
+            date=validated_data['date'],
             gender=validated_data['gender'],
             email=validated_data['email']
         )

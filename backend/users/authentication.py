@@ -25,7 +25,6 @@ class UserAuthentication(ModelBackend):
         try:
             user = USER.nodes.get(username=username)
             if user.check_password(password):
-                print("Password matched and correct")
                 return user
         except USER.DoesNotExist:
             print("User does not exist")
@@ -33,14 +32,12 @@ class UserAuthentication(ModelBackend):
     
     def get_user(self, username):
         try:
-            print("Get user function is being called in authentication.py")
             user = USER.nodes.get(username=username)
             return user
         except USER.DoesNotExist:
             print("RETURNED NONE IN get_user")
             return None
     def authenticate_header(self, request):
-        print("Authenticate header is being called")
         return 'Bearer'
 
 

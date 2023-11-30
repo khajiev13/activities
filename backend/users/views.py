@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from neomodel.exceptions import UniqueProperty
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 class UserListCreateView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
@@ -52,8 +54,10 @@ class BlacklistTokenView(APIView):
     def post(self, request):
         try:
             refresh_token = request.data["refresh_token"]
+            print(refresh_token)
             token = RefreshToken(refresh_token)
             token.blacklist()
-            return Response({"message": Success},status=status.HTTP_205_RESET_CONTENT)
+            return Response({"message": "Success"},status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
+            print(e)
             return Response({"message": str(e)},status=status.HTTP_400_BAD_REQUEST)

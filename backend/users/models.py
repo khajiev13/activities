@@ -1,5 +1,5 @@
 from neomodel import ( StringProperty, IntegerProperty,
-    UniqueIdProperty, DateTimeProperty, EmailProperty, RelationshipTo, RelationshipFrom, BooleanProperty)
+    UniqueIdProperty, DateTimeProperty, EmailProperty, RelationshipTo, RelationshipFrom, BooleanProperty, DateProperty)
 from django.contrib.auth.hashers import make_password, check_password
 from django.utils.crypto import salted_hmac
 from django_neomodel import DjangoNode
@@ -16,7 +16,7 @@ class USER(DjangoNode):
     is_active = BooleanProperty(default=True)
     first_name = StringProperty(required=True)
     last_name = StringProperty(required=True)
-    age = IntegerProperty(required=True)
+    date = DateProperty(required=True)
     created_at = DateTimeProperty(default_now=True)
     email = EmailProperty()
     gender = StringProperty(required=True)

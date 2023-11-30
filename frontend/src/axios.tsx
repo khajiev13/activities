@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-const baseURL = 'http://127.0.0.1:8000/';
+const baseURL = 'https://eventopia-final-8752960a4ac1.herokuapp.com/';
+// Try https://eventopia-final-8752960a4ac1.herokuapp.com/ for production
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
-  timeout: 5000,
+  timeout: 15000,
   headers: {
     Authorization: localStorage.getItem('access_token')
       ? 'JWT ' + localStorage.getItem('access_token')
@@ -37,6 +38,11 @@ axiosInstance.interceptors.response.use(
       window.location.href = '/login/';
       return Promise.reject(error);
     }
+    if (
+      error.response.status === 401 &&
+      error.response.statusText === 'Unauthorized'
+    ) {
+    }
 
     if (
       error.response.data.code === 'token_not_valid' &&
@@ -44,7 +50,7 @@ axiosInstance.interceptors.response.use(
       error.response.statusText === 'Unauthorized'
     ) {
       const refreshToken = localStorage.getItem('refresh_token');
-
+      console.log('refreshToken', refreshToken);
       if (refreshToken) {
         const tokenParts = JSON.parse(atob(refreshToken.split('.')[1]));
 

@@ -15,11 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState, useContext } from 'react';
 import axiosInstance from '../axios';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AlertDestructive from '@/components/ui/AlertDestructive';
+import { AuthContext } from '@/context/AuthContext';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -50,6 +51,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const { login } = useContext(AuthContext);
   //I couldn't do it with handle change so I would write this function instead
   const handleSelect = (name: string, value: string) => {
     setFormData((prevState) => ({
@@ -96,6 +98,16 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             // Save the tokens in the local storage
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
+            console.log(
+              response.data.first_name,
+              response.data.last_name,
+              response.data.username
+            );
+            login(
+              response.data.first_name,
+              response.data.last_name,
+              response.data.username
+            );
             navigate('/');
           })
           .catch((error) => {

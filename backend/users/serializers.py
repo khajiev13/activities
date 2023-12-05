@@ -3,6 +3,7 @@ from users.models import USER
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, PasswordField
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import exceptions
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     # username_field = USER.username
@@ -18,6 +19,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Override the method to use username instead of id
         token = RefreshToken()
         token['username'] = user.username
+        token['first_name'] = user.first_name
+        token['last_name'] = user.last_name
         return token
 
     def validate(self, attrs):
@@ -28,6 +31,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         try:
             user = USER.nodes.get(username=username)
             if user.check_password(password):
+                data['username'] = self.user.username
+                data['first_name'] = self.user.first_name
+                data['last_name'] = self.user.last_name
                 return data
         except USER.DoesNotExist:
             raise exceptions.AuthenticationFailed('No such user')

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import axiosInstance from '../../axios';
-import Logout from '../../components/Logout';
+
 import { useNavigate } from 'react-router-dom';
 const HomePage = () => {
   const navigate = useNavigate();
@@ -39,7 +39,6 @@ const HomePage = () => {
   return (
     <>
       <div className="">Hi, this is the homepage...</div>
-      <Logout />
     </>
   );
 };

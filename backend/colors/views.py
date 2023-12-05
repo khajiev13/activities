@@ -9,7 +9,7 @@ from users.authentication import CustomJWTAuthentication
 
 class ColorListCreateView(generics.ListCreateAPIView):
     serializer_class = ColorSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def get_queryset(self):
         return COLOR.nodes.all()
 

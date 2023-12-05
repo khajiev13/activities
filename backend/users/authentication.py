@@ -15,6 +15,8 @@ class CustomRefreshToken(RefreshToken):
     def access_token(self):
         token = super().access_token
         token['username'] = self.user.username
+        token['first_name'] = self.user.first_name
+        token['last_name'] = self.user.last_name
         return token
         
 

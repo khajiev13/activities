@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Icons } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,7 +19,9 @@ import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 import Link from 'next/link';
 import AlertDestructive from '@/components/ui/AlertDestructive';
+import { AuthContext } from '@/context/AuthContext';
 import axios from 'axios';
+
 interface FormData {
   username: string;
   password: string;
@@ -32,6 +34,7 @@ export function LoginForm() {
     password: '',
   });
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -52,11 +55,19 @@ export function LoginForm() {
       localStorage.setItem('access_token', credentials.data.access);
       localStorage.setItem('refresh_token', credentials.data.refresh);
 
+      // Call the login function with the user data from the server response
+      login(
+        credentials.data.first_name,
+        credentials.data.last_name,
+        credentials.data.username
+      );
+
       // Set the Authorization header with the new access token
       axiosInstance.defaults.headers['Authorization'] =
         'Bearer ' + credentials.data.access;
 
       navigate('/');
+      console.log();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('Error getting tokens:', error);

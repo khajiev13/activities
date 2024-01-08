@@ -2,13 +2,11 @@ import os
 from neomodel import config
 from datetime import timedelta
 import dj_database_url
-<<<<<<< HEAD
-from google.oauth2 import service_account
-=======
->>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
 config.DATABASE_URL = os.environ['NEO4J_BOLT_URL']
 config.NEO4J_PASSWORD = os.environ['NEO4J_PASSWORD']
 config.NEO4J_USERNAME = os.environ['NEO4J_USERNAME']
+from google.oauth2 import service_account
+
 # you are free to add this configurations
 NEOMODEL_SIGNALS = True
 NEOMODEL_FORCE_TIMEZONE = False
@@ -61,20 +59,13 @@ INSTALLED_APPS = [
     'leagues',
     'locations',
     'organizations',
-<<<<<<< HEAD
-    'requests_model',
-=======
-    'requests',
->>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
+    'join_requests',
     'roles',
     'score_infos',
     'substitutions',
     'teams',
     'users',
-<<<<<<< HEAD
     'storages',
-=======
->>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
     
     
     
@@ -96,19 +87,11 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'TOKEN_BACKEND': 'users.authentication.CustomRefreshToken',
-<<<<<<< HEAD
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
-    "UPDATE_LAST_LOGIN": True,
-=======
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
->>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
 
     "ALGORITHM": "HS256",
     "VERIFYING_KEY": "",
@@ -170,6 +153,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
@@ -183,23 +167,6 @@ DATABASES = {
     }
 }
 
-<<<<<<< HEAD
-STORAGES = {
-    'default': {
-        'BACKEND': 'storages.backends.gcloud.GoogleCloudStorage',
-        'OPTIONS': {
-            'bucket_name': 'eventopia-pictures',
-        },
-    },
-    'staticfiles': {
-        'BACKEND': 'storages.backends.gcloud.GoogleCloudStorage',
-        'OPTIONS': {
-            'bucket_name': 'eventopia-pictures',
-        },
-    },
-}
-=======
->>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
 
@@ -234,31 +201,27 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-<<<<<<< HEAD
-GS_BUCKET_NAME = 'eventopia-pictures'
-
-# Add an unique ID to a file name if same file name exists
-GS_FILE_OVERWRITE = False
-
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, 'gcpCredentials.json'),
-)
-
-STATIC_URL = '/static/'
-=======
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = 'static/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+# Media files
+# MEDIA_URL = '/media/'  # Uncomment this if you have media files
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Uncomment this if you have media files
+# DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'  # Uncomment this if you have media files
+
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR, 'credentials_google.json')
 )
+GS_BUCKET_NAME = 'eventopia-pictures'
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
->>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

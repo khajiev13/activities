@@ -57,6 +57,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
+
 class UserSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150)
     password = serializers.CharField(max_length=128, write_only=True)
@@ -85,7 +86,7 @@ class UserSerializer(serializers.Serializer):
             # Save the image and read its contents, as if whispering sweet nothings to it
             file_name = storage.save(file_name, ContentFile(image.read()))
             # Grab the URL, which should now be as short and sweet as a haiku
-            file_url = file_name #storage.url(file_name)
+            file_url = file_name
         else:
             # If there's no image, let's not make a mountain out of a molehill
             file_url = None

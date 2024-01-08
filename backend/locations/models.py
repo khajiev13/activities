@@ -11,10 +11,6 @@ class LOCATION(DjangoNode):
     users = RelationshipFrom('users.models.USER', 'BASED_IN', cardinality=ZeroOrOne)
     organizations = RelationshipFrom('organizations.models.ORGANIZATION', 'LOCATED_AT')
     facilities = RelationshipTo('categories.models.CATEGORY', 'HAS_FACILITY')
-<<<<<<< HEAD
-    teams = RelationshipFrom('teams.models.TEAM', 'BASED_IN')
-=======
->>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
     
     def __str__(self):
         return self.name

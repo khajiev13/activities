@@ -5,7 +5,13 @@ interface AuthContextProps {
   firstName: string | null;
   lastName: string | null;
   username: string | null;
-  login: (firstName: string, lastName: string, username: string) => void;
+  imageUrl?: string | null;
+  login: (
+    firstName: string,
+    lastName: string,
+    username: string,
+    imageUrl: string | null
+  ) => void;
   logout: () => void;
 }
 
@@ -14,6 +20,7 @@ export const AuthContext = createContext<AuthContextProps>({
   firstName: '',
   lastName: '',
   username: '',
+  imageUrl: '',
   login: () => {},
   logout: () => {},
 });
@@ -33,19 +40,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [username, setUsername] = useState<string | null>(
     localStorage.getItem('username')
   );
+  const [imageUrl, setImageUrl] = useState<string>(
+    localStorage.getItem('imageUrl') || ''
+  );
 
-  const login = (firstName: string, lastName: string, username: string) => {
+  const login = (
+    firstName: string,
+    lastName: string,
+    username: string,
+    imageUrl: string | null
+  ) => {
     setIsLoggedIn(true);
-    localStorage.setItem('isLoggedIn', 'true');
-
     setFirstName(firstName);
-    localStorage.setItem('firstName', firstName);
-
     setLastName(lastName);
-    localStorage.setItem('lastName', lastName);
-
     setUsername(username);
+    setImageUrl(imageUrl || ''); // if imageUrl is null, set it to an empty string
+
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('firstName', firstName);
+    localStorage.setItem('lastName', lastName);
     localStorage.setItem('username', username);
+    localStorage.setItem('imageUrl', imageUrl || ''); // if imageUrl is null, set it to an empty string
   };
 
   const logout = () => {
@@ -53,17 +68,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setFirstName('');
     setLastName('');
     setUsername('');
+    setImageUrl('');
 
     // Also clear the values from localStorage
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('firstName');
     localStorage.removeItem('lastName');
     localStorage.removeItem('username');
+    localStorage.removeItem('imageUrl');
   };
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, firstName, lastName, username, login, logout }}
+      value={{
+        isLoggedIn,
+        firstName,
+        lastName,
+        username,
+        imageUrl,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

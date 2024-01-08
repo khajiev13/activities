@@ -1,16 +1,57 @@
 asgiref==3.7.2
+<<<<<<< HEAD
+cachetools==5.3.2
+certifi==2023.11.17
+charset-normalizer==3.3.2
+=======
+>>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
 dj-database-url==2.1.0
 Django==4.2.7
 django-cors-headers==4.3.1
 django-neomodel==0.1.1
+<<<<<<< HEAD
+django-storages==1.14.2
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.0
+dropbox==11.36.2
+google-api-core==2.15.0
+google-auth==2.26.1
+google-cloud-core==2.4.1
+google-cloud-storage==2.14.0
+google-crc32c==1.5.0
+google-resumable-media==2.7.0
+googleapis-common-protos==1.62.0
+gunicorn==21.2.0
+idna==3.6
+neo4j==5.16.0
+=======
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.0
 gunicorn==21.2.0
 neo4j==5.12.0
+>>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
 neobolt==1.7.17
 neomodel==5.1.2
 numpy==1.26.2
 packaging==23.2
+<<<<<<< HEAD
+Pillow==10.1.0
+ply==3.11
+protobuf==4.25.1
+psycopg2-binary==2.9.9
+pyasn1==0.5.1
+pyasn1-modules==0.3.0
+PyJWT==2.8.0
+pytz==2023.3.post1
+requests==2.31.0
+rsa==4.9
+shapely==2.0.2
+six==1.16.0
+sqlparse==0.4.4
+stone==3.3.1
+typing_extensions==4.8.0
+urllib3==2.1.0
+=======
 psycopg2-binary==2.9.9
 PyJWT==2.8.0
 pytz==2023.3.post1
@@ -18,4 +59,5 @@ shapely==2.0.2
 six==1.16.0
 sqlparse==0.4.4
 typing_extensions==4.8.0
+>>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
 whitenoise==6.6.0

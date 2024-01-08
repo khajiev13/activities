@@ -6,6 +6,7 @@ import Register from '../src/pages/Register/Register';
 import Navbar from './components/Navbar';
 import { Chatbot } from './components/Chatbot';
 import { AuthProvider } from './context/AuthContext';
+import Activities from './pages/Activities/Activities';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/activities" element={<Activities />} />
             <Route path="/" element={<HomePage />} />
           </Routes>
           <Chatbot />

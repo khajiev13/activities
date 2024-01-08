@@ -20,6 +20,10 @@ class USER(DjangoNode):
     created_at = DateTimeProperty(default_now=True)
     email = EmailProperty()
     gender = StringProperty(required=True)
+<<<<<<< HEAD
+    image_url = StringProperty()
+=======
+>>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
     followers = RelationshipFrom('users.models.USER', 'FOLLOWS')
     following = RelationshipTo('users.models.USER', 'FOLLOWS')
     hobbies = RelationshipTo('categories.models.CATEGORY', 'LIKES')
@@ -33,8 +37,13 @@ class USER(DjangoNode):
     mvp_history = RelationshipFrom('competitions.models.COMPETITION', 'MVP')
     created_organization = RelationshipTo('organizations.models.ORGANIZATION', 'CREATES')
     leagues_participated = RelationshipTo('leagues.models.LEAGUE', 'PARTICIPATES_IN')
+<<<<<<< HEAD
+    sent_requests = RelationshipTo('requests_model.models.REQUEST', 'SENT')
+    received_requests = RelationshipFrom('requests_model.models.REQUEST', 'SENT_TO')
+=======
     sent_requests = RelationshipTo('requests.models.REQUEST', 'SENT')
     received_requests = RelationshipFrom('requests.models.REQUEST', 'SENT_TO')
+>>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
     activities_joined = RelationshipTo('activities.models.ACTIVITY', 'JOINS')
     activities_created = RelationshipTo('activities.models.ACTIVITY', 'CREATES')
     subbed_in = RelationshipFrom('substitutions.models.SUBSTITUTION', 'WENT_IN')
@@ -83,6 +92,14 @@ class USER(DjangoNode):
         role_teams = [TEAM.inflate(row[0]) for row in results]
         roles = [ROLE.inflate(row[1]) for row in results]
         return role_teams, roles
+<<<<<<< HEAD
+    def save(self, *args, **kwargs):
+        kwargs.pop('update_fields', None)
+        super(USER, self).save(*args, **kwargs)
+
+
+=======
+>>>>>>> 187324eb0eb9ab7fb5d148fc56a646f83bd65010
     class Meta:
         app_label = 'users'
         verbose_name = 'USER'

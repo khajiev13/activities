@@ -31,7 +31,7 @@ interface FormData {
   first_name: string;
   last_name: string;
   date: string;
-  gender: string;
+  gender: 'Male' | 'Female' | '';
   email: string;
 }
 

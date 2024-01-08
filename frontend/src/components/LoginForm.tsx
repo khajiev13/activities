@@ -59,7 +59,8 @@ export function LoginForm() {
       login(
         credentials.data.first_name,
         credentials.data.last_name,
-        credentials.data.username
+        credentials.data.username,
+        credentials.data.image_url
       );
 
       // Set the Authorization header with the new access token

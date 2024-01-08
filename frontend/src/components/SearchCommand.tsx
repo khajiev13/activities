@@ -43,7 +43,7 @@ export function SearchCommand() {
         className="text-sm text-muted-foreground"
         onClick={() => setOpen(true)}
       >
-        <CommandInput placeholder="Type a command or search..." />
+        <CommandInput placeholder="Search..." />
       </Command>
       {/* <p className="text-sm text-muted-foreground">
         Press{' '}

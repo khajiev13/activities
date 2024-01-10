@@ -1,6 +1,6 @@
 import React from 'react';
-import AnimationHockeyPlayer from '../../components/AnimationHockeyPlayer';
-import { LoginForm } from '@/components/LoginForm';
+import AnimationHockeyPlayer from '../../components/RegisterPage/AnimationHockeyPlayer';
+import { LoginForm } from '@/components/LoginPage/LoginForm';
 
 const Login: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ const Login: React.FC = () => {
         <LoginForm />
       </div>
       {/* Right side of the window */}
-      <div className="w-56-percent min-w-fit px-4 light:bg-skin-color dark:bg-slate-900 min-h-full lg:flex hidden justify-center items-center flex-col pt-20">
+      <div className="w-56-percent min-w-fit px-4 light:bg-skin-color dark:bg-background min-h-full lg:flex hidden justify-center items-center flex-col pt-20">
         <h2 className="font-murecho font-bold text-maincolor text-[32px] text-center tracking-[0] leading-[normal] mb-2">
           Eventopia - a place where different events take place!
         </h2>

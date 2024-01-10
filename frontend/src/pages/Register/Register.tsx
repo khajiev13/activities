@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { UserAuthForm } from '@/components/user-register-form';
+import { UserAuthForm } from '@/components/RegisterPage/user-register-form';
 
 export const metadata: Metadata = {
   title: 'Authentication',

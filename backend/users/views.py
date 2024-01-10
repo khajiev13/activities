@@ -20,7 +20,7 @@ class UserListCreateView(generics.ListCreateAPIView):
         try:
             if not request.data.get('username'):
                 return Response({'message': 'Username is required'}, status=status.HTTP_400_BAD_REQUEST)
-            data = request.data.copy()  # Copy the QueryDict to a mutable dictionary
+            data = dict(request.data.items())
             raw_password = data['password']
             data['username'] = data['username'].lower()  # Convert username to lowercase
             serializer = self.get_serializer(data=data)

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import lottie from 'lottie-web';
-import animationDataHockey from '../illustrations/warp-hockey-player.json';
+import animationDataHockey from '../../illustrations/warp-hockey-player.json';
 
 interface AnimationHockeyPlayerProps {
   height: string | number;

@@ -7,6 +7,10 @@ from rest_framework import exceptions
 from storages.backends.gcloud import GoogleCloudStorage
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from urllib.parse import quote
+
+
+
 
 
 
@@ -71,7 +75,8 @@ class UserSerializer(serializers.Serializer):
     def get_image_url(self, obj):
         if obj.image_url:
             storage = MyGoogleCloudStorage()
-            return storage.url(obj.image_url)
+            print(obj.image_url)
+            return obj.image_url
         return None
 
 
@@ -86,11 +91,13 @@ class UserSerializer(serializers.Serializer):
             # Save the image and read its contents, as if whispering sweet nothings to it
             file_name = storage.save(file_name, ContentFile(image.read()))
             # Grab the URL, which should now be as short and sweet as a haiku
-            file_url = file_name
+            
+            file_url = storage.url(file_name)
+            print(file_url)
         else:
             # If there's no image, let's not make a mountain out of a molehill
             file_url = None
-    
+        
         
         # Create the user instance
         user = USER(
@@ -110,6 +117,7 @@ class UserSerializer(serializers.Serializer):
         # Handle image upload if it's being updated
         image = validated_data.pop('image', None)
         if image:
+            image_name = quote(image.name, safe='/:') #This is to avoid spaces in the url
             file_name = 'media/images/users/' + image.name  # Add 'images/' prefix to the file name
             file_name = default_storage.save(file_name, ContentFile(image.read()))
             file_url = default_storage.url(file_name)

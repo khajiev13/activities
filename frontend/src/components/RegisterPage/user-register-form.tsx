@@ -16,11 +16,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ChangeEvent, FormEvent, useState, useContext } from 'react';
-import axiosInstance from '../axios';
+import axiosInstance from '../../axios';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AlertDestructive from '@/components/ui/AlertDestructive';
 import { AuthContext } from '@/context/AuthContext';
+import { InputFile } from '@/components/RegisterPage/InputFile';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -33,6 +34,8 @@ interface FormData {
   date: string;
   gender: 'Male' | 'Female' | '';
   email: string;
+  image?: File | undefined;
+  [key: string]: string | File | undefined | Blob | null; // It's for sending the form to the api with a picture
 }
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
@@ -46,6 +49,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     date: 'mm/dd/yyyy',
     gender: '',
     email: '',
+    image: undefined,
   });
 
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -67,6 +71,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       [e.target.name]: e.target.value.trim(),
     }));
   };
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files!.length > 0) {
+      setFormData((prevState) => ({
+        ...prevState,
+        image: event.target.files![0],
+      }));
+    }
+  };
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -78,13 +90,29 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           "Couldn't sign up. Please double check your information"
         );
       }
-    }, 6000);
+    }, 15000);
     if (formData.password !== formData.confirmPassword) {
       setAlertMessage('Passwords do not match');
+      setIsLoading(false);
       return;
     }
+    const data = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== undefined && formData[key] !== null) {
+        if (formData[key] instanceof Blob) {
+          data.append(key, formData[key] as Blob);
+        } else {
+          data.append(key, formData[key] as string);
+        }
+      }
+    });
+
     axiosInstance
-      .post('api/users/', formData)
+      .post('api/users/', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       .then((response) => {
         console.log(response, 'Registration response');
         // User registration was successful, get the tokens
@@ -101,12 +129,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             console.log(
               response.data.first_name,
               response.data.last_name,
-              response.data.username
+              response.data.username,
+              response.data.image_url
             );
             login(
               response.data.first_name,
               response.data.last_name,
-              response.data.username
+              response.data.username,
+              response.data.image_url
             );
             navigate('/');
           })
@@ -268,6 +298,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               disabled={isLoading}
             />
           </div>
+          <InputFile onChange={handleFileChange} />
           {alertMessage ? (
             <AlertDestructive
               title="Error while signing up"

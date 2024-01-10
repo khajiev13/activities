@@ -60,12 +60,12 @@ export const ListActivityCard: React.FC<ActivityCardProps> = ({
 
   return (
     <Card>
-      <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0">
+      <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-2 space-y-0">
         <div className="space-y-1">
-          <CardTitle className="flex items-center gap-3 flex-wrap">
+          <CardTitle className="flex items-center gap-3 flex-wrap text-base">
             {title}
-            <Badge variant="secondary" className="flex justify-center">
-              <MapPin className=" h-6 w-6" /> Tashkent
+            <Badge variant="secondary" className="flex justify-center ">
+              <MapPin className=" h-6 w-6 gap-3" /> Tashkent
             </Badge>
           </CardTitle>
           <CardDescription>{shortDescription}</CardDescription>
@@ -116,27 +116,27 @@ export const ListActivityCard: React.FC<ActivityCardProps> = ({
 
           <div className="flex flex-row justify-between items-center !mx-0">
             <div className="flex -space-x-4 rtl:space-x-reverse">
-              <Avatar className="border-2">
+              <Avatar className="border-2 w-8 h-8">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <Avatar className="border-2">
+              <Avatar className="border-2 w-8 h-8">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <Avatar className="border-2">
+              <Avatar className="border-2 w-8 h-8">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <Avatar className="border-2">
+              <Avatar className="border-2 w-8 h-8">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <Avatar className="border-2">
+              <Avatar className="border-2 w-8 h-8">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <Button className="rounded-full w-10 h-10 flex items-center justify-center  font-bold z-50">
+              <Button className="rounded-full w-8 h-8 flex items-center justify-center  font-bold z-50">
                 +10
               </Button>
             </div>

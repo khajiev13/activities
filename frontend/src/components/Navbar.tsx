@@ -171,9 +171,11 @@ export default function Navbar() {
               </NavigationMenuItem>
               {isLoggedIn ? (
                 <NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <UserNav />
-                  </NavigationMenuItem>
+                  <NavigationMenuList>
+                    <NavigationMenuItem>
+                      <UserNav />
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
                 </NavigationMenuItem>
               ) : (
                 <>

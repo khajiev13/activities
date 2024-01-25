@@ -29,8 +29,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { HashIcon, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export interface ActivityCardProps {
+  id: number;
   title: string;
   description: string;
   isPublic: boolean;
@@ -43,6 +45,7 @@ export interface ActivityCardProps {
 }
 
 export const ListActivityCard: React.FC<ActivityCardProps> = ({
+  id,
   title,
   description,
   isPublic,
@@ -59,23 +62,24 @@ export const ListActivityCard: React.FC<ActivityCardProps> = ({
       : description;
 
   return (
-    <Card>
-      <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-2 space-y-0">
+    <Card className="sm:p-0">
+      <CardHeader className="grid grid-cols-[1fr_100px] gap-2 space-y-0 pb-0">
         <div className="space-y-1">
-          <CardTitle className="flex items-center gap-3 flex-wrap text-base">
-            {title}
-            <Badge variant="secondary" className="flex justify-center ">
-              <MapPin className=" h-6 w-6 gap-3" /> Tashkent
-            </Badge>
-          </CardTitle>
-          <CardDescription>{shortDescription}</CardDescription>
+          <Link to={`/activities/${id}`} className="p-0">
+            <CardTitle className="flex items-center gap-3 flex-wrap ">
+              {title}
+              <Badge variant="secondary" className="flex justify-center ">
+                <MapPin className=" h-6 w-6 gap-3" /> Tashkent
+              </Badge>
+            </CardTitle>
+          </Link>
         </div>
-        <div className="flex items-center space-x-1 rounded-md bg-secondary text-secondary-foreground">
-          <Button variant="secondary" className="px-3 shadow-none">
-            <PlusIcon className="mr-2 h-4 w-4" />
+        <div className="flex items-start p-0">
+          <Button variant="secondary" className="px-3 shadow-none ">
+            <PlusIcon className="mr-2 h-6 w-6" />
             Join
           </Button>
-          <Separator orientation="vertical" className="h-[20px]" />
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" className="px-2 shadow-none">
@@ -104,14 +108,16 @@ export const ListActivityCard: React.FC<ActivityCardProps> = ({
         </div>
       </CardHeader>
       <CardContent>
+        <CardDescription>{shortDescription}</CardDescription>
         <div className="flex space-x-4 text-sm text-muted-foreground flex-col gap-3">
           <div className="categories flex flex-row gap-1 flex-wrap">
-            {categories.map((category) => (
-              <Badge className="flex items-center ">
-                <HashIcon className="h-5 w-5" />
-                Football
-              </Badge>
-            ))}
+            {categories &&
+              categories.map((category) => (
+                <Badge className="flex items-center ">
+                  <HashIcon className="h-5 w-5" />
+                  {category}
+                </Badge>
+              ))}
           </div>
 
           <div className="flex flex-row justify-between items-center !mx-0">
@@ -137,7 +143,7 @@ export const ListActivityCard: React.FC<ActivityCardProps> = ({
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <Button className="rounded-full w-8 h-8 flex items-center justify-center  font-bold z-50">
-                +10
+                +10 {/*  Participants count */}
               </Button>
             </div>
 
@@ -146,31 +152,6 @@ export const ListActivityCard: React.FC<ActivityCardProps> = ({
         </div>
       </CardContent>
     </Card>
-    // <Card className="w-full sm:w-[300px] grid grid-cols-1 gap-4">
-    //   <CardHeader>
-    //     <CardTitle>{title}</CardTitle>
-    //     <CardDescription>{shortDescription}</CardDescription>
-    //   </CardHeader>
-    //   <CardContent>
-    //     <div className="grid grid-cols-1 gap-2">
-    //       <div className="grid grid-cols-3 gap-2">
-    //         {categories.map((category) => (
-    //           <Badge className="justify-center">{category}</Badge>
-    //         ))}
-    //       </div>
-    //       <Label>Hosted by: {creatorName}</Label>
-    //       <Label>When: {dateTime}</Label>
-    //       <Label>Where: {city}</Label>
-    //       <Label>Duration: {duration}</Label>
-    //       <Label>Participants: {participantsCount}</Label>
-    //       <Label>{isPublic ? 'Public' : 'Private'}</Label>
-    //     </div>
-    //   </CardContent>
-    //   <CardFooter className="grid grid-cols-2 gap-4">
-    //     <Button variant="outline">More Info</Button>
-    //     <Button>{isPublic ? 'Join' : 'Request to Join'}</Button>
-    //   </CardFooter>
-    // </Card>
   );
 };
 

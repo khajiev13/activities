@@ -19,7 +19,7 @@ class ACTIVITY(DjangoNode):
     category = RelationshipTo('categories.models.CATEGORY', 'IS_TYPE_OF')
     is_competition = RelationshipTo('competitions.models.COMPETITION', 'IS')
     achievements_earned = RelationshipFrom('achievements.models.ACHIEVEMENT', 'DURING')
-    requests_to_join = RelationshipFrom('requests.models.REQUEST', 'TO_JOIN')
+    requests_to_join = RelationshipFrom('join_requests.models.REQUEST', 'TO_JOIN')
     roles = RelationshipFrom('roles.models.ROLE', 'FOR')
     def __str__(self):
         return self.title

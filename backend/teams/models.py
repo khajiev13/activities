@@ -25,7 +25,7 @@ class TEAM(DjangoNode):
     sponsors = RelationshipFrom('organizations.models.ORGANIZATION', 'SPONSORS',model=Since)
     members = RelationshipFrom('users.models.USER', 'IS_MEMBER_OF',model=JoinedTeamRel)
     roles = RelationshipFrom('roles.models.ROLE', 'IN')
-    category = RelationshipTo('categories.models.CATEGORY', 'IS_TYPE_OF')
+    category = RelationshipTo('categories.models.CATEGORY', 'IS_TYPE_OF',cardinality=One)
     competitions_as_team_1 = RelationshipFrom('competitions.models.COMPETITION', 'TEAM_1')
     competitions_as_team_2 = RelationshipFrom('competitions.models.COMPETITION', 'TEAM_2')
     competitions_as_winner = RelationshipFrom('competitions.models.COMPETITION', 'WON_BY')

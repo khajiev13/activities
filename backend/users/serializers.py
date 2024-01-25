@@ -4,20 +4,17 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, Pass
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import exceptions
-from storages.backends.gcloud import GoogleCloudStorage
+from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from urllib.parse import quote
+import os
+from django.utils.text import slugify
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from dotenv import load_dotenv
 
-
-
-
-
-
-class MyGoogleCloudStorage(GoogleCloudStorage):
-    def url(self, name):
-        return f'https://storage.googleapis.com/{self.bucket_name}/{name}'
-
+load_dotenv()
+AZURE_STORAGE_CONNECTION_STRING = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
 
 
 
@@ -74,31 +71,31 @@ class UserSerializer(serializers.Serializer):
     image_url = serializers.SerializerMethodField()
     def get_image_url(self, obj):
         if obj.image_url:
-            storage = MyGoogleCloudStorage()
-            print(obj.image_url)
             return obj.image_url
         return None
 
 
     def create(self, validated_data):
-        
-        # Handle image upload
         image = validated_data.pop('image', None)
         if image:
-            # No more default_storage, we're using our custom, snazzy storage now
-            storage = MyGoogleCloudStorage()
-            file_name = 'media/images/users/' + image.name
-            # Save the image and read its contents, as if whispering sweet nothings to it
-            file_name = storage.save(file_name, ContentFile(image.read()))
-            # Grab the URL, which should now be as short and sweet as a haiku
-            
-            file_url = storage.url(file_name)
-            print(file_url)
+            # Get the base name of the image file and the extension
+            base_name, extension = os.path.splitext(image.name)
+            # Sanitize the base name using Django's slugify function
+            sanitized_base_name = slugify(base_name)
+            # Form the new image name
+            sanitized_image_name = sanitized_base_name + extension
+            file_name = 'media/images/users/' + sanitized_image_name
+
+            # Create a blob client using the local file name as the name for the blob
+            blob_service_client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
+            blob_client = blob_service_client.get_blob_client(os.getenv('AZURE_CONTAINER'), file_name)
+
+            # Upload the created file
+            blob_client.upload_blob(image.read())
+            file_url = blob_client.url
         else:
-            # If there's no image, let's not make a mountain out of a molehill
             file_url = None
-        
-        
+
         # Create the user instance
         user = USER(
             username=validated_data['username'],
@@ -117,12 +114,13 @@ class UserSerializer(serializers.Serializer):
         # Handle image upload if it's being updated
         image = validated_data.pop('image', None)
         if image:
+            
             image_name = quote(image.name, safe='/:') #This is to avoid spaces in the url
-            file_name = 'media/images/users/' + image.name  # Add 'images/' prefix to the file name
+            file_name = 'media/images/users/' + image_name  # Add 'images/' prefix to the file name
             file_name = default_storage.save(file_name, ContentFile(image.read()))
             file_url = default_storage.url(file_name)
             instance.image_url = file_url  # Update the image_url field
-        
+
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
             validated_data.pop('password')

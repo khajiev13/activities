@@ -11,7 +11,7 @@ class CATEGORY(DjangoNode):
     is_indoor = BooleanProperty(default=True)
     is_outdoor = BooleanProperty(default=True)
     locations = RelationshipFrom('locations.models.LOCATION', 'HAS_FACILITY')
-    teams = RelationshipFrom('teams.models.TEAM', 'IS_TYPE_OF', cardinality=One)
+    teams = RelationshipFrom('teams.models.TEAM', 'IS_TYPE_OF')
     leagues = RelationshipFrom('leagues.models.LEAGUE', 'IS_TYPE_OF', cardinality=One)
     activities = RelationshipFrom('activities.models.ACTIVITY', 'IS_TYPE_OF')
     users = RelationshipFrom('users.models.USER', 'LIKES')

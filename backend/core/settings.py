@@ -2,10 +2,15 @@ import os
 from neomodel import config
 from datetime import timedelta
 import dj_database_url
-config.DATABASE_URL = os.environ['NEO4J_BOLT_URL']
-config.NEO4J_PASSWORD = os.environ['NEO4J_PASSWORD']
-config.NEO4J_USERNAME = os.environ['NEO4J_USERNAME']
-from google.oauth2 import service_account
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+config.NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD')
+config.NEO4J_USERNAME = os.getenv('NEO4J_USERNAME')
+config.DATABASE_URL = os.getenv('NEO4J_BOLT_URL')
+
 
 # you are free to add this configurations
 NEOMODEL_SIGNALS = True
@@ -213,17 +218,18 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'  # Uncomment this if you have media files
 
 
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, 'credentials_google.json')
-)
-GS_BUCKET_NAME = 'eventopia-pictures'
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+# Define DEFAULT_FILE_STORAGE and STATICFILES_STORAGE
+DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+
+# Define the Azure storage configurations
+AZURE_ACCOUNT_NAME = os.getenv("AZURE_ACCOUNT_NAME")
+AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")
+AZURE_CONTAINER = os.getenv("AZURE_CONTAINER")
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

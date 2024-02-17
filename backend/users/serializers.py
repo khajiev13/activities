@@ -10,7 +10,7 @@ from django.core.files.storage import default_storage
 from urllib.parse import quote
 import os
 from django.utils.text import slugify
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from azure.storage.blob import BlobServiceClient
 from dotenv import load_dotenv
 
 load_dotenv()

@@ -1,10 +1,9 @@
-from neomodel import (StringProperty, UniqueIdProperty,RelationshipFrom,One)
+from neomodel import (StringProperty,RelationshipFrom,One)
 from django_neomodel import DjangoNode
 
 class COUNTRY(DjangoNode):
-    pk = UniqueIdProperty()
-    name = StringProperty(required=True)
-    cities = RelationshipFrom('cities.models.CITY', 'IS_IN', cardinality=One)
+    name = StringProperty(required=True, unique_index=True)
+    states = RelationshipFrom('states.models.STATE', 'IS_IN')  # changed from cities to states
     users = RelationshipFrom('users.models.USER', 'IS_FROM')
     def __str__(self):
             return self.name

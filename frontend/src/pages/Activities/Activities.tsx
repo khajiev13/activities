@@ -3,11 +3,10 @@ import { ActivityCardProps } from '@/components/ActivitiesPage/ListActivityCard'
 import { useEffect, useState } from 'react';
 import axiosInstance from '@/axios';
 import { Skeleton } from '@/components/ui/skeleton';
-import { set } from 'date-fns';
 
 const Activities = () => {
   const activityCardProps: ActivityCardProps = {
-    id: 1,
+    pk: 1,
     title: 'Beijing Huojian VS Shanghai Shenhua',
     description:
       'Competitive competition between Beijing Huojian VS Shanghai Shenhua',
@@ -28,7 +27,7 @@ const Activities = () => {
         setLoading(true);
         const response = await axiosInstance.get('/api/activities/');
         setActivities(response.data);
-        console.log(response.datagit push -u origin main);
+        console.log(response.data);
         setLoading(false);
       } catch (error) {
         console.error('Failed to fetch activities', error);
@@ -41,12 +40,12 @@ const Activities = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+      {loading && <Skeleton />}
+      <ListActivityCard key={activityCardProps.pk} {...activityCardProps} />
       {/* Map through the activities and display also pagination should be implemented */}
       {activities.map((activity) => (
-        <ListActivityCard {...activity} key={activity.id} />
+        <ListActivityCard {...activity} key={activity.pk} />
       ))}
-      {loading && <Skeleton />}
-      <ListActivityCard {...activityCardProps} />
     </div>
   );
 };

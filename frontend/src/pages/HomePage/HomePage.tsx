@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import axiosInstance from '../../axios';
 
 import { useNavigate } from 'react-router-dom';
 const HomePage = () => {
@@ -15,22 +14,11 @@ const HomePage = () => {
     }
   };
 
-  const fetchActivities = () => {
-    axiosInstance
-      .get('api/teams/')
-      .then((response) => {
-        console.log('Success getting activities:', response.data);
-        // Handle the activities here...
-      })
-      .catch((error) => {
-        console.error('Error getting activities:', error);
-      });
-  };
   checkIfHasTokens();
   useEffect(() => {
     const tokens = checkIfHasTokens();
     if (tokens) {
-      fetchActivities();
+      //
     } else {
       navigate('/login');
     }

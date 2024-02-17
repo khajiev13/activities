@@ -88,10 +88,3 @@ module.exports = {
   },
   plugins: [require('tailwindcss-animate')],
 };
-
-// extend: {
-
-// },
-// colors: {
-
-// },

@@ -4,9 +4,13 @@ import Login from './pages/Login/Login';
 import HomePage from './pages/HomePage/HomePage';
 import Register from '../src/pages/Register/Register';
 import Navbar from './components/Navbar';
-import { Chatbot } from './components/Chatbot';
 import { AuthProvider } from './context/AuthContext';
 import Activities from './pages/Activities/Activities';
+import Teams from './pages/Teams/Teams';
+import CornerButtons from './components/CornerButtons';
+import { Toaster } from './components/ui/sonner';
+import RenderMap from './components/Map/RenderMap';
+import Organizations from './pages/OrganizationsPage/Organizations';
 
 function App() {
   return (
@@ -18,9 +22,14 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/activities" element={<Activities />} />
+            <Route path="/teams" element={<Teams />} />
+            <Route path="/organizations" element={<Organizations />} />
+            <Route path="/map" element={<RenderMap />} />
             <Route path="/" element={<HomePage />} />
           </Routes>
-          <Chatbot />
+          <CornerButtons />
+          {/* We need this to show the toast notifications */}
+          <Toaster />
         </Router>
       </AuthProvider>
     </ThemeProvider>

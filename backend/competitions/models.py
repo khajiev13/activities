@@ -17,7 +17,7 @@ class COMPETITION(DjangoNode):
     substituitons = RelationshipTo('users.models.USER', 'HAS')
     score_info = RelationshipTo('score_infos.models.SCORE_INFO', 'HAS')
     roles = RelationshipFrom('roles.models.ROLE', 'FOR')
-    people_took_part = RelationshipFrom('users.models.USER', 'ç')
+    people_took_part = RelationshipFrom('users.models.USER', 'PART_OF_COMPETITION')
     def __str__(self):
         return self.pk
     class Meta:

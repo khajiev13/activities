@@ -14,6 +14,7 @@ class ActivitySerializer(serializers.Serializer):
     public = serializers.BooleanField(default=True)
     date_time = serializers.DateTimeField(required=True, format="%Y-%m-%d %H:%M:%S")
     location = serializers
+    
     def create(self, validated_data):
         return ACTIVITY.nodes.create(**validated_data)
 

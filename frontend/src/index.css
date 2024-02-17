@@ -62,3 +62,35 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Styling for the map */
+body.light .maplibregl-ctrl-top-right > div > button,
+body.light .maplibregl-ctrl-top-right > div {
+  background-color: rgba(255, 255, 255, 0.603) !important;
+}
+
+body.dark .maplibregl-ctrl-top-right > div > button,
+body.dark .maplibregl-ctrl-top-right > div {
+  background-color: #000000 !important;
+}
+
+.map-control-panel {
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin-right: 0 !important;
+}
+
+body.light .maplibregl-popup-content {
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 25px !important;
+}
+
+body.dark .maplibregl-popup-content {
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 15px !important;
+}
+.maplibregl-popup-close-button {
+  display: none !important;
+}

@@ -13,6 +13,7 @@ class ACTIVITY(DjangoNode):
     duration_in_minutes = IntegerProperty(required=True) 
     public = BooleanProperty(default=True)
     date_time = DateTimeProperty(required=True,format="%Y-%m-%d %H:%M:%S")
+    time_zone = StringProperty()
     location = RelationshipTo('locations.models.LOCATION', 'HAPPENS_AT')
     people_joined = RelationshipFrom('users.models.USER', 'JOINS')
     creator = RelationshipFrom('users.models.USER', 'CREATES')
@@ -21,6 +22,7 @@ class ACTIVITY(DjangoNode):
     achievements_earned = RelationshipFrom('achievements.models.ACHIEVEMENT', 'DURING')
     requests_to_join = RelationshipFrom('join_requests.models.REQUEST', 'TO_JOIN')
     roles = RelationshipFrom('roles.models.ROLE', 'FOR')
+    organizer_organization = RelationshipFrom('organizations.models.ORGANIZATION', 'HOSTS')
     def __str__(self):
         return self.title
     

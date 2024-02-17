@@ -16,8 +16,8 @@ export function Chatbot() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="fixed right-4 bottom-4" variant="outline">
-          Chatbot
+        <Button className="" variant="outline">
+          Eventobot
         </Button>
       </SheetTrigger>
       <SheetContent className="">

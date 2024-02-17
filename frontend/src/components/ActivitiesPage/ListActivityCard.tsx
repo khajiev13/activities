@@ -3,17 +3,16 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
+  // CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+// import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   ChevronDownIcon,
-  CircleIcon,
-  PlusIcon,
+  // CircleIcon,
+  // PlusIcon,
   BookmarkFilledIcon,
 } from '@radix-ui/react-icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -27,12 +26,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
-import { HashIcon, MapPin } from 'lucide-react';
+import { HashIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import BadgeCityName from '../BadgeCityName';
+import { Badge } from '../ui/badge';
 
 export interface ActivityCardProps {
-  id: number;
+  pk: number;
   title: string;
   description: string;
   isPublic: boolean;
@@ -45,16 +45,16 @@ export interface ActivityCardProps {
 }
 
 export const ListActivityCard: React.FC<ActivityCardProps> = ({
-  id,
+  pk,
   title,
   description,
-  isPublic,
-  participantsCount,
-  creatorName,
+  // isPublic,
+  // participantsCount,
+  // creatorName,
   categories,
-  dateTime,
-  city,
-  duration,
+  // dateTime,
+  // city,
+  // duration,
 }) => {
   const shortDescription =
     description.length > 100
@@ -65,19 +65,16 @@ export const ListActivityCard: React.FC<ActivityCardProps> = ({
     <Card className="sm:p-0">
       <CardHeader className="grid grid-cols-[1fr_100px] gap-2 space-y-0 pb-0">
         <div className="space-y-1">
-          <Link to={`/activities/${id}`} className="p-0">
+          <Link to={`/activities/${pk}`} className="p-0">
             <CardTitle className="flex items-center gap-3 flex-wrap ">
               {title}
-              <Badge variant="secondary" className="flex justify-center ">
-                <MapPin className=" h-6 w-6 gap-3" /> Tashkent
-              </Badge>
+              <BadgeCityName cityName="Tashkent" />
             </CardTitle>
           </Link>
         </div>
         <div className="flex items-start p-0">
-          <Button variant="secondary" className="px-3 shadow-none ">
-            <PlusIcon className="mr-2 h-6 w-6" />
-            Join
+          <Button variant="secondary" className="px-3 shadow-none mr-1">
+            Join Now
           </Button>
 
           <DropdownMenu>

@@ -23,6 +23,7 @@ class ACTIVITY(DjangoNode):
     requests_to_join = RelationshipFrom('join_requests.models.REQUEST', 'TO_JOIN')
     roles = RelationshipFrom('roles.models.ROLE', 'FOR')
     organizer_organization = RelationshipFrom('organizations.models.ORGANIZATION', 'HOSTS')
+    teams = RelationshipFrom('teams.models.TEAM', 'PARTICIPATES_IN')
     def __str__(self):
         return self.title
     

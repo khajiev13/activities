@@ -1,5 +1,7 @@
 from rest_framework import generics
 from rest_framework.exceptions import NotFound
+
+from core.blob_functions import delete_picture
 from .serializers import UserSerializer
 from users.models import USER
 from rest_framework import status
@@ -47,6 +49,15 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
             return USER.nodes.get(username=self.kwargs[self.lookup_field])
         except USER.DoesNotExist:
             raise NotFound('A user with this username does not exist.')
+    def destroy(self, request, *args, **kwargs):
+        organization = self.get_object()
+        image_url = organization.image_url
+        success = delete_picture(image_url)
+        if success:
+            return super().destroy(request, *args, **kwargs)
+        else:
+            return Response({"message": "An error occurred while deleting the image from storage."}, status=500)
+ 
 
 class BlacklistTokenView(APIView):
     permission_classes = [AllowAny]

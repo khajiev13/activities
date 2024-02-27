@@ -1,6 +1,8 @@
+from requests import Response
 from rest_framework import generics
 from neomodel import DoesNotExist
 from django.http import Http404
+from core.blob_functions import delete_picture
 from teams.models import TEAM
 from teams.serializers import TeamSerializer
 from rest_framework.permissions import BasePermission, SAFE_METHODS
@@ -29,3 +31,13 @@ class TeamDetailView(generics.RetrieveUpdateDestroyAPIView, TeamUserWritePermiss
         except DoesNotExist:
             raise Http404
         return obj
+    
+    def destroy(self, request, *args, **kwargs):
+        team = self.get_object()
+        image_url = team.image_url
+        success = delete_picture(image_url)
+        if success:
+            return super().destroy(request, *args, **kwargs)
+        else:
+            return Response({"message": "An error occurred while deleting the image from storage."}, status=500)
+ 

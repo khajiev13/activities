@@ -1,4 +1,6 @@
+from requests import Response
 from rest_framework import generics
+from core.blob_functions import delete_picture
 from .serializers import OrganizationSerializer
 from .models import ORGANIZATION
 from locations.models import LOCATION
@@ -37,3 +39,12 @@ class OrganizationDetail(generics.RetrieveUpdateDestroyAPIView):
         except DoesNotExist:
             raise Http404
         return obj
+    def destroy(self, request, *args, **kwargs):
+        organization = self.get_object()
+        image_url = organization.image_url
+        success = delete_picture(image_url)
+        if success:
+            return super().destroy(request, *args, **kwargs)
+        else:
+            return Response({"message": "An error occurred while deleting the image from storage."}, status=500)
+ 

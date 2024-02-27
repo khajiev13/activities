@@ -3,6 +3,7 @@ from rest_framework import serializers
 from locations.serializers import LocationSerializer
 from django.utils.text import slugify
 from azure.storage.blob import BlobServiceClient
+
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from urllib.parse import quote
@@ -64,9 +65,6 @@ class OrganizationSerializer(serializers.Serializer):
         else:
             file_url = None
 
-
-        print(validated_data)
-
         # Create the organization instance
         organization = ORGANIZATION(
             name=validated_data['name'],
@@ -90,3 +88,4 @@ class OrganizationSerializer(serializers.Serializer):
             setattr(instance, field, value)
         instance.save()
         return instance
+    

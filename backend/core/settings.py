@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'achievements',
     'activities',
+    'chatbot',
     'categories',
     'cities',
     'colors',

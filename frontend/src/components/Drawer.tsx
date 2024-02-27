@@ -55,7 +55,10 @@ export function Create() {
             {['/activities', '/activities/'].includes(location.pathname) ? (
               <NewActivityDrawer setProgressBar={setProgressBar} />
             ) : ['/teams', '/teams/'].includes(location.pathname) ? (
-              <NewTeamDrawer setProgressBar={setProgressBar} />
+              <>
+                <Progress value={progressBar} />
+                <NewTeamDrawer setProgressBar={setProgressBar} />
+              </>
             ) : ['/organizations', '/organizations/'].includes(
                 location.pathname
               ) ? (

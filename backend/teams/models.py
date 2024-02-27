@@ -37,7 +37,9 @@ class TEAM(DjangoNode):
     tshirt_color = RelationshipTo('colors.models.COLOR', 'TSHIRT_COLOR')
     shorts_color = RelationshipTo('colors.models.COLOR', 'SHORTS_COLOR')
     socks_color = RelationshipTo('colors.models.COLOR', 'SOCKS_COLOR')
-    participated_leagues = RelationshipTo('activities.models.ACTIVITY', 'PARTICIPATES_IN')
+    participated_leagues = RelationshipTo('leagues.models.LEAGUE', 'PARTICIPATES_IN')
+    participated_activities = RelationshipTo('activities.models.ACTIVITY', 'PARTICIPATES_IN')
+    image_url = StringProperty()
     def __str__(self):
         return self.name
     class Meta:

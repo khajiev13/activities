@@ -7,9 +7,18 @@ from locations.models import LOCATION
 from users.models import USER
 from neomodel import DoesNotExist
 from django.http import Http404
+from django.views import View
+from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-    
+
+
+
+class ListOrganizations(View):
+    def get(self, request):
+        queryset = ORGANIZATION.nodes.all()
+        data = [{"pk": org.pk, "name": org.name} for org in queryset]
+        return JsonResponse(data, safe=False)
 
 class OrganizationListCreate(generics.ListCreateAPIView):
     serializer_class = OrganizationSerializer

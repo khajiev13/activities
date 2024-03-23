@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from users.serializers import UserSerializer
 from activities.serializers import ActivitySerializer
-from teams.serializers import TeamSerializer
+from teams.serializers import TeamListSerializer
 # Create your views here.
 
 from rest_framework import viewsets
@@ -71,5 +71,5 @@ class CategoryList(viewsets.ViewSet):
     @action(detail=True, methods=['get'])
     def teams(self, request, pk=None):
         category = get_object_or_404(CATEGORY.nodes, pk=pk)
-        serializer = TeamSerializer(category.teams.all(), many=True)
+        serializer = TeamListSerializer(category.teams.all(), many=True)
         return Response(serializer.data)

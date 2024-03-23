@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import SelectLocation from '../Map/SelectLocation';
+import SelectLocation from '../SelectLocation';
 import { LocationDetails } from '../Map/MapFunctions/AddLocation';
 import { useEffect, useState } from 'react';
 import SelectedLocation from '../ActivitiesPage/NewActivityDrawer/SelectedLocation';
@@ -93,7 +93,8 @@ const NewOrganizationDrawer: React.FC<NewOrganizationDrawerProps> = ({
       .catch((error) => {
         console.error(error);
         toast('Error', {
-          description: 'Something went wrong while creating an organization',
+          description:
+            'Something went wrong while creating an organization. You cannot have 2 organizations with the same name.',
           style: { borderColor: 'red' },
         });
       });

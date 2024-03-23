@@ -5,9 +5,9 @@ from .models import CATEGORY
 class CategorySerializer(serializers.Serializer):
     pk = serializers.CharField(required=False)
     name = serializers.CharField()
-    is_indoor = serializers.BooleanField()
-    is_outdoor = serializers.BooleanField()
-    is_online = serializers.BooleanField()
+    is_indoor = serializers.BooleanField(required=False)
+    is_outdoor = serializers.BooleanField(required=False)
+    is_online = serializers.BooleanField(required=False)
 
     def create(self, validated_data):
         category = CATEGORY(**validated_data)

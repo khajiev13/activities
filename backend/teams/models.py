@@ -1,5 +1,5 @@
 from django.db import models
-from neomodel import (StringProperty, IntegerProperty, DateTimeProperty, StructuredRel,RelationshipFrom, BooleanProperty,UniqueIdProperty, RelationshipTo, One)
+from neomodel import (StringProperty, IntegerProperty, DateTimeProperty, StructuredRel,RelationshipFrom, BooleanProperty,UniqueIdProperty, RelationshipTo, One, ZeroOrOne)
 from django_neomodel import DjangoNode
 from competitions.models import Team_Score
 
@@ -21,11 +21,15 @@ class TEAM(DjangoNode):
     name = StringProperty(required=True, unique_index=True)
     men_team = BooleanProperty(default=True)
     founded_at = DateTimeProperty(default_now=True)
+    location = RelationshipTo('locations.models.LOCATION', 'BASED_IN)',cardinality=ZeroOrOne)
+    city = RelationshipTo('cities.models.CITY', 'CITY_BASED_IN',cardinality=ZeroOrOne)
+    state = RelationshipTo('states.models.STATE', 'STATE_BASED_IN',cardinality=ZeroOrOne)
+    country = RelationshipTo('countries.models.COUNTRY', 'COUNTRY_BASED_IN',cardinality=ZeroOrOne)
     belongs_to_organization = RelationshipFrom('organizations.models.ORGANIZATION', 'HAS')   
     sponsors = RelationshipFrom('organizations.models.ORGANIZATION', 'SPONSORS',model=Since)
     members = RelationshipFrom('users.models.USER', 'IS_MEMBER_OF',model=JoinedTeamRel)
     roles = RelationshipFrom('roles.models.ROLE', 'IN')
-    category = RelationshipTo('categories.models.CATEGORY', 'IS_TYPE_OF',cardinality=One)
+    categories = RelationshipTo('categories.models.CATEGORY', 'IS_TYPE_OF',cardinality=One)
     competitions_as_team_1 = RelationshipFrom('competitions.models.COMPETITION', 'TEAM_1')
     competitions_as_team_2 = RelationshipFrom('competitions.models.COMPETITION', 'TEAM_2')
     competitions_as_winner = RelationshipFrom('competitions.models.COMPETITION', 'WON_BY')
@@ -37,9 +41,14 @@ class TEAM(DjangoNode):
     tshirt_color = RelationshipTo('colors.models.COLOR', 'TSHIRT_COLOR')
     shorts_color = RelationshipTo('colors.models.COLOR', 'SHORTS_COLOR')
     socks_color = RelationshipTo('colors.models.COLOR', 'SOCKS_COLOR')
+    away_tshirt_color = RelationshipTo('colors.models.COLOR', 'AWAY_TSHIRT_COLOR')
     participated_leagues = RelationshipTo('leagues.models.LEAGUE', 'PARTICIPATES_IN')
     participated_activities = RelationshipTo('activities.models.ACTIVITY', 'PARTICIPATES_IN')
     image_url = StringProperty()
+    public_team = BooleanProperty(default=False)
+    #We need this function because django neomodel does not support unique properties
+    def element_id_property(self):
+        return self.name
     def __str__(self):
         return self.name
     class Meta:

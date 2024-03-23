@@ -1,27 +1,28 @@
 from rest_framework import serializers
 from neomodel.contrib.spatial_properties import NeomodelPoint
 from .models import LOCATION
+import collections
+from rest_framework import serializers
 
-class LocationSerializer(serializers.Serializer):
-    pk = serializers.CharField(read_only=True)
-    name = serializers.CharField()
-    latitude = serializers.FloatField(write_only=True, required=False)
-    longitude = serializers.FloatField(write_only=True, required=False)
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if instance.points:
-            representation['points'] = {
-                'latitude': instance.points.latitude,
-                'longitude': instance.points.longitude
-                # Include 'height' if you are using 3D points
-            }
-        return representation
+class NeomodelPointField(serializers.Field):
+    def to_representation(self, value):
+        return {'latitude': value.latitude, 'longitude': value.longitude}
+    def to_internal_value(self, data):
+        # Validate and transform the incoming data into the Python representation
+        try:
+            latitude = data.longitude
+            longitude = data.latitude
+        except KeyError:
+            raise serializers.ValidationError("latitude and longitude fields are required.")
+        if latitude is not None and longitude is not None:
+            return NeomodelPoint(latitude=latitude, longitude=longitude)
+        else:
+            raise serializers.ValidationError("Invalid data for NeomodelPointField")
     
-    def validate(self, data):
-        if data['latitude'] is None or data['longitude'] is None or data['latitude'] == '' or data['longitude'] == '' or data['name'] is None or data['name'] == '':
-            raise serializers.ValidationError("Name, latitude and longitude are required")
-        return data
+class LocationSerializer(serializers.Serializer):
+    pk = serializers.CharField()
+    name = serializers.CharField(required=False)
+    points = NeomodelPointField(required=False)
 
     def create(self, validated_data):
         latitude = validated_data.pop('latitude', None)
@@ -29,7 +30,7 @@ class LocationSerializer(serializers.Serializer):
         location = LOCATION(**validated_data)
         if latitude is not None and longitude is not None:
             location.points = NeomodelPoint((latitude, longitude), crs='wgs-84')
-            # Add 'height' if using 3D points
+         
         location.save()
         return location
     
@@ -39,7 +40,7 @@ class LocationSerializer(serializers.Serializer):
         instance.name = validated_data.get('name', instance.name)
         if latitude is not None and longitude is not None:
             instance.points = NeomodelPoint((latitude, longitude), crs='wgs-84')
-            # Add 'height' if using 3D points
+          
         instance.save()
         return instance
     

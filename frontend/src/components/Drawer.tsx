@@ -51,12 +51,12 @@ export function Create() {
                 : null}
             </DrawerDescription>
           </DrawerHeader>
-          <div>
+          <div className="max-h-[700px]">
             {['/activities', '/activities/'].includes(location.pathname) ? (
               <NewActivityDrawer setProgressBar={setProgressBar} />
             ) : ['/teams', '/teams/'].includes(location.pathname) ? (
               <>
-                <Progress value={progressBar} />
+                <Progress className="mb-4" value={progressBar} />
                 <NewTeamDrawer setProgressBar={setProgressBar} />
               </>
             ) : ['/organizations', '/organizations/'].includes(
@@ -68,7 +68,7 @@ export function Create() {
               </>
             ) : null}
           </div>
-
+          {/* If it's activiites page then we would like to display the progress bar at the bottom */}
           {['/activities', '/activities/'].includes(location.pathname) ? (
             <DrawerFooter>
               <Progress

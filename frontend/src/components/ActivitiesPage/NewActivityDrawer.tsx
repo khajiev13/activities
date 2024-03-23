@@ -25,7 +25,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import SelectCategories from './NewActivityDrawer/SelectCategories';
 import { CategoryItem } from './NewActivityDrawer/SelectCategories';
-import SelectLocation from '../Map/SelectLocation';
+import SelectLocation from '../SelectLocation';
 import { LocationDetails } from '../Map/MapFunctions/AddLocation';
 import { toast } from 'sonner';
 import SelectedLocation from './NewActivityDrawer/SelectedLocation';

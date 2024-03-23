@@ -5,7 +5,7 @@ from datetime import date
 
 class ORGANIZATION(DjangoNode):
     pk = UniqueIdProperty()
-    name = StringProperty(required=True,max_length=100)
+    name = StringProperty(required=True,max_length=100, unique_index=True)
     created_at = DateProperty(default=date.today)
     join_requests = RelationshipFrom('join_requests.models.REQUEST', 'TO_JOIN')
     location = RelationshipTo('locations.models.LOCATION', 'LOCATED_AT')

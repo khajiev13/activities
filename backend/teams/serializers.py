@@ -1,67 +1,76 @@
 from rest_framework import serializers
-from teams.models import TEAM
 import os
-from django.utils.text import slugify
-from azure.storage.blob import BlobServiceClient
 from dotenv import load_dotenv
+from core.blob_functions import create_image
+from teams.models import TEAM
+from core.cypher_queries import get_team_detail_information
+from locations.serializers import LocationSerializer
+from colors.serializers import ColorSerializer
+from categories.serializers import CategorySerializer
+from core.cypher_queries import create_and_connect_nodes_for_team
+from core.blob_functions import delete_picture
 
 load_dotenv()
 AZURE_STORAGE_CONNECTION_STRING = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
 
+from rest_framework import serializers
 
-class TeamSerializer(serializers.Serializer):
+from rest_framework import serializers
+
+
+
+class TeamListSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=200)
     men_team = serializers.BooleanField()
     founded_at = serializers.DateTimeField()
     image_url = serializers.SerializerMethodField()
-    image = serializers.ImageField(use_url=True, required=False)  # Optional image fieldA
-
-
+    
     def get_image_url(self, obj):
         if obj.image_url:
             return obj.image_url
         return None
-    def get_tshirt_color(self, obj):
-        return [color.name for color in obj.tshirt_color.all()]
+    
 
-    def get_shorts_color(self, obj):
-        return [color.name for color in obj.shorts_color.all()]
-
-    def get_socks_color(self, obj):
-        return [color.name for color in obj.socks_color.all()]
-    tshirt_color = serializers.SerializerMethodField('get_tshirt_color')
-    shorts_color = serializers.SerializerMethodField('get_shorts_color')
-    socks_color = serializers.SerializerMethodField('get_socks_color')
-    # Add other fields as needed
+class TeamDetailSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    men_team = serializers.BooleanField()
+    founded_at = serializers.DateTimeField()
+    image_url = serializers.CharField(allow_null=True, required=False)
+    city_name = serializers.CharField()
+    state_name = serializers.CharField()
+    country_name = serializers.CharField()
+    image = serializers.ImageField(use_url=True, required=False)
+    public_team = serializers.BooleanField()
+    categories = CategorySerializer(many=True)
+    tshirt_color = ColorSerializer(many=True)
+    shorts_color = ColorSerializer(many=True)
+    socks_color = ColorSerializer(many=True)
+    away_tshirt_color = ColorSerializer(many=True)
+    sponsors = serializers.ListField(child=serializers.DictField(child=serializers.CharField()))
+    belongs_to_organization = serializers.ListField(child=serializers.DictField(child=serializers.CharField()))
+    location = LocationSerializer(many=True)
 
     def create(self, validated_data):
-        print(validated_data)
         image = validated_data.pop('image', None)
-        print(image)
         if image:
-            # Get the base name of the image file and the extension
-            base_name, extension = os.path.splitext(image.name)
-            # Sanitize the base name using Django's slugify function
-            sanitized_base_name = slugify(base_name)
-            # Form the new image name
-            sanitized_image_name = sanitized_base_name + extension
-            file_name = 'media/images/teams/' + sanitized_image_name
-
-            # Create a blob client using the local file name as the name for the blob
-            blob_service_client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
-            blob_client = blob_service_client.get_blob_client(os.getenv('AZURE_CONTAINER'), file_name)
-
-            # Upload the created file
-            blob_client.upload_blob(image.read())
-            file_url = blob_client.url
-            validated_data['image_url'] = file_url
+            validated_data['image_url'] = create_image(image, 'teams')
+        team = TEAM(**validated_data)
+        success = create_and_connect_nodes_for_team(team)
+        if success:
+            print('Team created successfully')
         else:
-            file_url = None
+            #delete the picture if the team was not created
+            if 'image_url' in validated_data:
+                delete_picture(validated_data['image_url'])
+            print('Error creating team')
+        return team
+        
 
-        return TEAM(**validated_data).save()
+
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
         # Update other fields as needed
         instance.save()
         return instance
+    

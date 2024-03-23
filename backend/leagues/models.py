@@ -10,7 +10,8 @@ class LEAGUE(DjangoNode):
     hosting_organization = RelationshipFrom('organizations.models.ORGANIZATION', 'HOSTS')
     participating_users = RelationshipFrom('users.models.USER', 'PARTICIPATES_IN')
     category = RelationshipTo('categories.models.CATEGORY', 'IS_TYPE_OF')
-    city = RelationshipTo('cities.models.CITY', 'HAPPENS_IN')
+    city = RelationshipTo('cities.models.CITY', 'BASED_IN')
+    state = RelationshipTo('states.models.STATE', 'BASED_IN')
     competitions = RelationshipTo('competitions.models.COMPETITION', 'HAS')
     participating_teams = RelationshipFrom('teams.models.TEAM', 'PARTICIPATES_IN')
     def __str__(self):

@@ -6,6 +6,7 @@ class COLOR(DjangoNode):
     teams_tshirt = RelationshipFrom('teams.models.TEAM', 'TSHIRT_COLOR')
     teams_socks = RelationshipFrom('teams.models.TEAM', 'SOCKS_COLOR')
     teams_shorts = RelationshipFrom('teams.models.TEAM', 'SHORTS_COLOR')
+    away_teams_tshirt = RelationshipFrom('teams.models.TEAM', 'AWAY_TSHIRT_COLOR')
     def __str__(self):
             return self.name
     class Meta:

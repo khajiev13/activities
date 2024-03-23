@@ -58,7 +58,7 @@ const SelectCategories: React.FC<Props> = ({ setCategories }) => {
     setValue([]);
   };
   return (
-    <div className="p-1">
+    <div className="p-1 px-0">
       <Card className="lg:text-4xl h-full min-h-[410px]">
         <CardContent className="flex aspect-square  p-6 flex-col gap-5">
           <div className="flex items-center justify-around">

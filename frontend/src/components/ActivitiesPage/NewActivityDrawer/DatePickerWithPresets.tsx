@@ -22,10 +22,12 @@ import { useEffect } from 'react';
 
 type TimePickerComponentProps = {
   updateFormData: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  className?: string;
 };
 
 export const DatePickerWithPresets: React.FC<TimePickerComponentProps> = ({
   updateFormData,
+  className,
 }: TimePickerComponentProps) => {
   const [date, setDate] = React.useState<Date>();
 
@@ -40,10 +42,12 @@ export const DatePickerWithPresets: React.FC<TimePickerComponentProps> = ({
       <PopoverTrigger asChild>
         <Button
           variant={'outline'}
-          className={cn(
-            'w-full justify-start text-left font-normal',
-            !date && 'text-muted-foreground'
-          )}
+          className={
+            cn(
+              'w-full justify-start text-left font-normal',
+              !date && 'text-muted-foreground'
+            ) + ` ${className}`
+          }
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? format(date, 'PPP') : <span>Pick a date</span>}

@@ -3,6 +3,9 @@ all_models.py
 __pycache__/
 *.pyc
 
+#Dockerfile
+Dockerfile
+
 # Django #
 *.log
 *.pot

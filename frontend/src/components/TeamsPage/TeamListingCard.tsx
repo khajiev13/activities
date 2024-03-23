@@ -7,6 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import TeamKit from './TeamKit';
+
 function TeamListingCard() {
   return (
     <Card className="w-[350px]">
@@ -47,8 +49,8 @@ function TeamListingCard() {
               />
             </svg>
           </span>
-          <span>Women's Team</span>
         </div>
+        <TeamKit />
         <p className="text-gray-500 text-sm mb-2">
           Foundation Year: <span className="font-bold">2005</span>
         </p>

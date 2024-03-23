@@ -1,13 +1,13 @@
 // SelectLocation.tsx
 import React, { useRef } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import BaseMap from './BaseMap';
+import BaseMap from './Map/BaseMap';
 import * as maptilersdk from '@maptiler/sdk';
 import lottie from 'lottie-web';
-import animationDataLocationPin from '../../illustrations/location-pin.json';
-import { SubmitLocation } from './SelectLocation/SubmitLocation';
-import { AddLocation } from './MapFunctions/AddLocation';
-import { LocationDetails } from './MapFunctions/AddLocation';
+import animationDataLocationPin from '../illustrations/location-pin.json';
+import { SubmitLocation } from './Map/SelectLocation/SubmitLocation';
+import { AddLocation } from './Map/MapFunctions/AddLocation';
+import { LocationDetails } from './Map/MapFunctions/AddLocation';
 
 type SelectLocationProps = {
   setLocation: (location: LocationDetails) => void;

@@ -14,9 +14,7 @@ load_dotenv()
 AZURE_STORAGE_CONNECTION_STRING = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
 
 
-class OrganizationSerializer(serializers.ModelSerializer):
-    name = serializers.CharField()
-    created_at = serializers.DateField()
+
 
 from rest_framework import serializers
 from .models import ORGANIZATION
@@ -25,23 +23,14 @@ class OrganizationSerializer(serializers.Serializer):
     
     pk = serializers.CharField(required=False)
     name = serializers.CharField()
-    location_details = serializers.SerializerMethodField()
-    created_at = serializers.SerializerMethodField()
-    image_url = serializers.SerializerMethodField()
+    # location_details = serializers.SerializerMethodField()
+    created_at = serializers.DateField(required=False)
+    image_url = serializers.StringRelatedField()
     image = serializers.ImageField(use_url=True, required=False)  # Optional image fieldA
-
-
-    def get_image_url(self, obj):
-        if obj.image_url:
-            return obj.image_url
-        return None
-
-    def get_created_at(self, obj):
-        return obj.created_at
-
-    def get_location_details(self, obj):
-        location = obj.location.single()
-        return LocationSerializer(location).data
+    
+    # def get_location_details(self, obj):
+    #     location = obj.location.single()
+    #     return LocationSerializer(location).data
     
     def create(self, validated_data):
         image = validated_data.pop('image', None)

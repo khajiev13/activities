@@ -17,18 +17,40 @@ import {
 
 type Props = {
   colorPickerNeeded?: boolean;
+  tshirt_color?: string;
+  shorts_color?: string;
+  socks_color?: string;
+  away_tshirt_color?: string;
   setUniformColors?: (name: string, color: string) => void;
 };
 
-const TeamKit = ({ colorPickerNeeded, setUniformColors }: Props) => {
+const TeamKit = ({
+  colorPickerNeeded,
+  setUniformColors,
+  tshirt_color,
+  socks_color,
+  away_tshirt_color,
+  shorts_color,
+}: Props) => {
   const [clothes, setClothes] = useState([
-    { name: 'tshirt', selected: false, color: '' },
-    { name: 'shorts', selected: false, color: '' },
-    { name: 'socks', selected: false, color: '' },
-    { name: 'awaytshirt', selected: false, color: '' },
+    {
+      name: 'tshirt',
+      selected: false,
+      color: tshirt_color ? tshirt_color : '',
+    },
+    {
+      name: 'shorts',
+      selected: false,
+      color: shorts_color ? shorts_color : '',
+    },
+    { name: 'socks', selected: false, color: socks_color ? socks_color : '' },
+    {
+      name: 'awaytshirt',
+      selected: false,
+      color: away_tshirt_color ? away_tshirt_color : '',
+    },
   ]);
   const selectClothing = (selectedName: string) => {
-    console.log(selectedName);
     setClothes(
       clothes.map((clothing) =>
         clothing.name === selectedName
@@ -38,7 +60,6 @@ const TeamKit = ({ colorPickerNeeded, setUniformColors }: Props) => {
     );
   };
   const selectColor = (selectedColor: any) => {
-    console.log(selectedColor);
     setClothes(
       clothes.map((clothing) =>
         clothing.selected ? { ...clothing, color: selectedColor.hex } : clothing
@@ -58,7 +79,6 @@ const TeamKit = ({ colorPickerNeeded, setUniformColors }: Props) => {
         }
       });
     }
-    console.log(filteredData);
   }, [clothes]);
 
   return (

@@ -5,6 +5,7 @@ import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
   plugins: [react(), svgr()],
+  base: '/',
   build: {
     //add this property for react devtools
     sourcemap: true,

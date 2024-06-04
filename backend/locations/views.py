@@ -1,12 +1,15 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from .models import LOCATION  # Make sure to import your LOCATION model
+from countries.models import COUNTRY
 from .serializers import LocationSerializer  # Assuming you have a LocationSerializer
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from neomodel import db
 from neomodel.exceptions import UniqueProperty
 import uuid
+from rest_framework.decorators import action
+from countries.serializers import CountrySerializer
 
 
 
@@ -92,6 +95,12 @@ class LocationViewSet(viewsets.ViewSet):
             return Response({'message': 'Location not found'}, status=404)
         location.delete()
         return Response({'message': 'Location deleted'}, status=204)
+    
+    @action(detail=False, methods=['get'], url_path='countries-states-cities')
+    def countries_states_cities(self, request):
+        countries = COUNTRY.nodes.all()
+        serializer = CountrySerializer(countries, many=True)
+        return Response(serializer.data)
     # def get_permissions(self):
     #     """
     #     Instantiates and returns the list of permissions that this view requires.

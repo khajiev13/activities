@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
 import { AuthContext } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 import {
@@ -21,50 +20,33 @@ import { useNavigate } from 'react-router-dom';
 import { SearchCommand } from './SearchCommand';
 import MobileNavbar from './MobileNavbar';
 
-// const components: { title: string; href: string; description: string }[] = [
-//   {
-//     title: 'Alert Dialog',
-//     href: '/docs/primitives/alert-dialog',
-//     description:
-//       'A modal dialog that interrupts the user with important content and expects a response.',
-//   },
-//   {
-//     title: 'Hover Card',
-//     href: '/docs/primitives/hover-card',
-//     description:
-//       'For sighted users to preview content available behind a link.',
-//   },
-//   {
-//     title: 'Progress',
-//     href: '/docs/primitives/progress',
-//     description:
-//       'Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.',
-//   },
-//   {
-//     title: 'Scroll-area',
-//     href: '/docs/primitives/scroll-area',
-//     description: 'Visually or semantically separates content.',
-//   },
-//   {
-//     title: 'Tabs',
-//     href: '/docs/primitives/tabs',
-//     description:
-//       'A set of layered sections of content—known as tab panels—that are displayed one at a time.',
-//   },
-//   {
-//     title: 'Tooltip',
-//     href: '/docs/primitives/tooltip',
-//     description:
-//       'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.',
-//   },
-// ];
+const components: { title: string; href: string; description: string }[] = [
+  {
+    title: 'EventoMap',
+    href: '/map',
+    description:
+      'Discover more on EventoMap. Find events near you or anywhere in the world.',
+  },
+  {
+    title: 'Teams',
+    href: '/teams',
+    description:
+      'Find teams to join or create your own team and invite others to join.',
+  },
+  {
+    title: 'Organizations',
+    href: '/organizations',
+    description:
+      'Find organizations to join or create your own organization and invite others to join.',
+  },
+];
 
 export default function Navbar() {
   const { isLoggedIn, firstName } = React.useContext(AuthContext);
   const navigate = useNavigate();
   return (
     <>
-      <div className="flex h-16 items-center px-4">
+      <div className="flex h-16 items-center px-4 z-1000">
         <NavigationMenu className="max-w-full min-w-full w-full block ">
           <NavigationMenuList className="flex justify-between w-full min-w-full max-w-full ">
             <MobileNavbar />
@@ -93,74 +75,69 @@ export default function Navbar() {
               >
                 Activities
               </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                  <li className="row-span-3">
+              <NavigationMenuContent className="z-1000">
+                <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr] z-1000">
+                  <li className="row-span-3 z-1000">
                     <NavigationMenuLink asChild>
                       <a
-                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md z-1000"
                         href="/"
+                        onClick={() => navigate('/')}
                       >
                         <img src={BoyWithSkateboard} alt="BoyWithSkateboard" />
-                        <div className="mb-2 mt-4 text-lg font-medium">
+                        <div className="mb-2 mt-4 text-lg font-medium z-1000">
                           Hi {isLoggedIn ? firstName : 'Eventopist'}!
                         </div>
-                        <p className="text-sm leading-tight text-muted-foreground">
+                        <p className="text-sm leading-tight text-muted-foreground z-1000">
                           Choose the type of activities you like on the right!
                         </p>
                       </a>
                     </NavigationMenuLink>
                   </li>
                   <ListItem
-                    href="/activities/outdoors"
                     title="Outdoor Activities"
+                    onClick={() => navigate('/activities/outdoors')}
                   >
                     Outdoor activities can be football, basketball, tennis, etc.
                   </ListItem>
                   <ListItem
-                    href="/activities/indoors"
                     title="Indoor Activities"
+                    onClick={() => navigate('/activities/indoors')}
                   >
                     Indoor activities can be chess, board games, billiards, etc.
                   </ListItem>
                   <ListItem
-                    href="/activities/language-activities"
                     title="Language Activities"
+                    onClick={() => navigate('/activities/language-activities')}
                   >
                     Learning any language can be easy with us!
                   </ListItem>
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
-            {/* <NavigationMenuItem>
-          <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {components.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem> */}
+            <NavigationMenuItem className="hidden md:grid">
+              <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                  {components.map((component) => (
+                    <ListItem
+                      key={component.title}
+                      title={component.title}
+                      onClick={() => navigate(component.href)}
+                    >
+                      {component.description}
+                    </ListItem>
+                  ))}
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link
-                href="/"
-                legacyBehavior
-                passHref
-                className="sm:hidden lg:flex"
+              <NavigationMenuLink
+                className={`${navigationMenuTriggerStyle()}  hidden lg:flex`}
+                onClick={() => navigate('/')}
               >
-                <NavigationMenuLink
-                  className={`${navigationMenuTriggerStyle()}  hidden lg:flex`}
-                >
-                  Home
-                </NavigationMenuLink>
-              </Link>
+                Home
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem className=" hidden lg:flex">
               <SearchCommand />
@@ -180,22 +157,20 @@ export default function Navbar() {
               ) : (
                 <>
                   <NavigationMenuItem>
-                    <Link href="/register" legacyBehavior passHref>
-                      <NavigationMenuLink
-                        className={`${navigationMenuTriggerStyle()} hidden lg:flex`}
-                      >
-                        Signup
-                      </NavigationMenuLink>
-                    </Link>
+                    <NavigationMenuLink
+                      className={`${navigationMenuTriggerStyle()} hidden lg:flex`}
+                      onClick={() => navigate('/register')}
+                    >
+                      Signup
+                    </NavigationMenuLink>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <Link href="/login" legacyBehavior passHref>
-                      <NavigationMenuLink
-                        className={`${navigationMenuTriggerStyle()} hidden lg:flex`}
-                      >
-                        Login
-                      </NavigationMenuLink>
-                    </Link>
+                    <NavigationMenuLink
+                      onClick={() => navigate('/login')}
+                      className={`${navigationMenuTriggerStyle()} hidden lg:flex`}
+                    >
+                      Login
+                    </NavigationMenuLink>
                   </NavigationMenuItem>
                 </>
               )}

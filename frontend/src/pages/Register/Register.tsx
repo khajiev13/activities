@@ -15,8 +15,8 @@ export default function Register() {
   return (
     <>
       <div className="container relative h-screen flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-        <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex justify-center">
-          <div className="absolute inset-0 bg-background" />
+        <div className="relative hidden h-full flex-col  p-10 text-white dark:border-r lg:flex justify-center">
+          <div className="absolute inset-0 " />
           <div className="flex justify-center items-center w-full h-full">
             <AspectRatio
               ratio={16 / 9}
@@ -32,14 +32,16 @@ export default function Register() {
             </AspectRatio>
           </div>
           <div className="relative z-20 mt-auto text-foreground">
-            <blockquote className="space-y-2">
+            <blockquote className="space-y-10">
               <p className="text-lg">
                 &ldquo;At Eventopia, we believe that in the myriad of events
                 lies the heart of connection. Join our vibrant community where
                 diversity thrives, passions unite, and every adventure is a
                 chance to explore, learn, and grow. &rdquo;
+                <br />
+                Roma Khajiev
               </p>
-              <footer className="text-sm">Roma Khajiev</footer>
+              <footer className="text-sm"></footer>
             </blockquote>
           </div>
         </div>

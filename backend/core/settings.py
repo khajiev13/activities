@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 from neomodel import config
 from datetime import timedelta
@@ -18,11 +19,10 @@ NEOMODEL_FORCE_TIMEZONE = False
 NEOMODEL_ENCRYPTED_CONNECTION = True
 NEOMODEL_MAX_POOL_SIZE = 50
 
-#neomodel_install_labels core.py activities.models --db neo4j+s://neo4j:JHI6pt17is0ozAbnAY0dfF-UcbP8lt_B_ou9dWAn-DU@bb345263.databases.neo4j.io:7687
-#neomodel_remove_labels --db neo4j+s://neo4j:JHI6pt17is0ozAbnAY0dfF-UcbP8lt_B_ou9dWAn-DU@bb345263.databases.neo4j.io:7687   
+# neomodel_install_labels core.py activities.models --db neo4j+s://neo4j:JHI6pt17is0ozAbnAY0dfF-UcbP8lt_B_ou9dWAn-DU@bb345263.databases.neo4j.io:7687
+# neomodel_remove_labels --db neo4j+s://neo4j:JHI6pt17is0ozAbnAY0dfF-UcbP8lt_B_ou9dWAn-DU@bb345263.databases.neo4j.io:7687
 print(config.DATABASE_URL)
 
-from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +37,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['eventopia-final-8752960a4ac1.herokuapp.com', '127.0.0.1', 'localhost:3001','http://10.63.155.250:5173/']
+ALLOWED_HOSTS = ['eventopia-final-8752960a4ac1.herokuapp.com', '127.0.0.1',
+                 'localhost:3001', 'http://10.63.155.250:5173/', 'localhost:5173',]
 
 
 # Application definition
@@ -72,10 +73,6 @@ INSTALLED_APPS = [
     'teams',
     'users',
     'storages',
-    
-    
-    
-    
 ]
 
 REST_FRAMEWORK = {
@@ -88,7 +85,6 @@ REST_FRAMEWORK = {
 
     )
 }
-    
 
 
 SIMPLE_JWT = {
@@ -107,7 +103,7 @@ SIMPLE_JWT = {
     "JWK_URL": None,
     "LEEWAY": 0,
 
-    "AUTH_HEADER_TYPES": ("Bearer","JWT"),
+    "AUTH_HEADER_TYPES": ("Bearer", "JWT"),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
 
@@ -165,16 +161,16 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+ON_HEROKU = os.environ.get('ON_HEROKU')
+HEROKU_SERVER = os.environ.get('HEROKU_SERVER')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+if ON_HEROKU:
+    DATABASE_URL = 'postgresql://<postgresql>'
+else:
+    DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
+# heroku addons:create heroku-postgresql:hobby-dev
 
 
 # Password validation

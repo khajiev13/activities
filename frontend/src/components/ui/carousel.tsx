@@ -82,7 +82,7 @@ const Carousel = React.forwardRef<
       // Set the progress bar value
       // setProgressBarValue(progress);
       if (setProgressBar) setProgressBar(progress);
-      console.log(progress, setProgressBar);
+      // console.log(progress, setProgressBar);
 
       setCanScrollPrev(api.canScrollPrev());
       setCanScrollNext(api.canScrollNext());
@@ -216,6 +216,7 @@ const CarouselPrevious = React.forwardRef<
       ref={ref}
       variant={variant}
       size={size}
+      type="button"
       className={cn(
         'absolute  h-8 w-8 rounded-full',
         orientation === 'horizontal'
@@ -245,6 +246,7 @@ const CarouselNext = React.forwardRef<
       ref={ref}
       variant={variant}
       size={size}
+      type="button"
       className={cn(
         'absolute h-8 w-8 rounded-full',
         orientation === 'horizontal'

@@ -6,15 +6,17 @@ from .serializers import UserSerializer
 from users.models import USER
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from neomodel.exceptions import UniqueProperty
 from rest_framework_simplejwt.tokens import RefreshToken
+import logging
 
 
 class UserListCreateView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
     def get_queryset(self):
         return USER.nodes.all()
 
@@ -24,7 +26,8 @@ class UserListCreateView(generics.ListCreateAPIView):
                 return Response({'message': 'Username is required'}, status=status.HTTP_400_BAD_REQUEST)
             data = dict(request.data.items())
             raw_password = data['password']
-            data['username'] = data['username'].lower()  # Convert username to lowercase
+            # Convert username to lowercase
+            data['username'] = data['username'].lower()
             serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
@@ -32,10 +35,10 @@ class UserListCreateView(generics.ListCreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except UniqueProperty as e:
             return Response({"message": str(e)}, status=status.HTTP_409_CONFLICT)
-        
-        
+
     def perform_create(self, serializer):
         user = serializer.save()
+
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'username'
@@ -49,6 +52,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
             return USER.nodes.get(username=self.kwargs[self.lookup_field])
         except USER.DoesNotExist:
             raise NotFound('A user with this username does not exist.')
+
     def destroy(self, request, *args, **kwargs):
         organization = self.get_object()
         image_url = organization.image_url
@@ -57,18 +61,20 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
             return super().destroy(request, *args, **kwargs)
         else:
             return Response({"message": "An error occurred while deleting the image from storage."}, status=500)
- 
+
 
 class BlacklistTokenView(APIView):
-    permission_classes = [AllowAny]
-    
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         try:
-            refresh_token = request.data["refresh_token"]
-            print(refresh_token)
+            refresh_token = request.data.get("refresh_token")
+            if not refresh_token:
+                return Response({"message": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
             token = RefreshToken(refresh_token)
             token.blacklist()
-            return Response({"message": "Success"},status=status.HTTP_205_RESET_CONTENT)
+            return Response({"message": "Success"}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
-            print(e)
-            return Response({"message": str(e)},status=status.HTTP_400_BAD_REQUEST)
+            logging.error(f"Error blacklisting token: {e}")
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)

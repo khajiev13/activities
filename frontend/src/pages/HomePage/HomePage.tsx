@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-
 import { useNavigate } from 'react-router-dom';
+
+import Header from '@/components/HomePage/Header';
 const HomePage = () => {
   const navigate = useNavigate();
   // Firstly check if the user is logged in.
@@ -26,7 +27,7 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="">Hi, this is the homepage...</div>
+      <Header />
     </>
   );
 };

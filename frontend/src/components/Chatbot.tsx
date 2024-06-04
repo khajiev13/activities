@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
-// import { Input } from '@/components/ui/input';
-// import { Label } from '@/components/ui/label';
+import { useState } from 'react';
+import axiosInstance from '../axios';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Sheet,
@@ -11,8 +11,27 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { Card } from './ui/card';
 
 export function Chatbot() {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [reply, setReply] = useState('');
+
+  const sendMessage = () => {
+    setLoading(true);
+
+    axiosInstance
+      .post('/api/chatbot/', { message })
+      .then((response) => {
+        setReply(response.data.reply);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  };
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -24,15 +43,22 @@ export function Chatbot() {
         <SheetHeader>
           <SheetTitle>Chatbot Section</SheetTitle>
           <SheetDescription>
-            Create Chatbot UI on this component and let the user talk to the
-            chatbot. Chatbot can also control the pages
+            You can talk to Eventobot here and questions
           </SheetDescription>
         </SheetHeader>
-        Display text messages here in a window
+        {reply && <Card className="p-4 mb-4">{reply}</Card>}
+
         <SheetFooter>
           <div className="grid w-full gap-2">
-            <Textarea placeholder="Type your message here." />
-            <Button>Send message</Button>
+            <Textarea
+              placeholder="Type your message here."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              disabled={loading}
+            />{' '}
+            <Button onClick={sendMessage} disabled={loading}>
+              Send message
+            </Button>
           </div>
         </SheetFooter>
       </SheetContent>

@@ -70,10 +70,12 @@ const NewOrganizationDrawer: React.FC<NewOrganizationDrawerProps> = ({
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setLoading(true);
-
     const formData = new FormData();
     formData.append('name', data.name);
     formData.append('pk_for_location', data.pk_for_location || '');
+    formData.append('country', LocationDetails?.country || '');
+    formData.append('state', LocationDetails?.state || '');
+    formData.append('city', LocationDetails?.city || '');
     if (data.image.length > 0) {
       formData.append('image', data.image[0]);
     }

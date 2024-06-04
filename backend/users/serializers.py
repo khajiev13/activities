@@ -17,7 +17,6 @@ load_dotenv()
 AZURE_STORAGE_CONNECTION_STRING = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
 
 
-
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     # username_field = USER.username
 
@@ -55,6 +54,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         raise exceptions.AuthenticationFailed('Incorrect password')
 
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
@@ -67,13 +67,14 @@ class UserSerializer(serializers.Serializer):
     date = serializers.DateField()
     gender = serializers.CharField(max_length=10)
     email = serializers.EmailField()
-    image = serializers.ImageField(use_url=True, required=False)  # Optional image fieldA
+    image = serializers.ImageField(
+        use_url=True, required=False)  # Optional image fieldA
     image_url = serializers.SerializerMethodField()
+
     def get_image_url(self, obj):
         if obj.image_url:
             return obj.image_url
         return None
-
 
     def create(self, validated_data):
         image = validated_data.pop('image', None)
@@ -87,8 +88,10 @@ class UserSerializer(serializers.Serializer):
             file_name = 'media/images/users/' + sanitized_image_name
 
             # Create a blob client using the local file name as the name for the blob
-            blob_service_client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
-            blob_client = blob_service_client.get_blob_client(os.getenv('AZURE_CONTAINER'), file_name)
+            blob_service_client = BlobServiceClient.from_connection_string(
+                AZURE_STORAGE_CONNECTION_STRING)
+            blob_client = blob_service_client.get_blob_client(
+                os.getenv('AZURE_CONTAINER'), file_name)
 
             # Upload the created file
             blob_client.upload_blob(image.read())
@@ -114,10 +117,13 @@ class UserSerializer(serializers.Serializer):
         # Handle image upload if it's being updated
         image = validated_data.pop('image', None)
         if image:
-            
-            image_name = quote(image.name, safe='/:') #This is to avoid spaces in the url
-            file_name = 'media/images/users/' + image_name  # Add 'images/' prefix to the file name
-            file_name = default_storage.save(file_name, ContentFile(image.read()))
+
+            # This is to avoid spaces in the url
+            image_name = quote(image.name, safe='/:')
+            # Add 'images/' prefix to the file name
+            file_name = 'media/images/users/' + image_name
+            file_name = default_storage.save(
+                file_name, ContentFile(image.read()))
             file_url = default_storage.url(file_name)
             instance.image_url = file_url  # Update the image_url field
 
@@ -129,3 +135,10 @@ class UserSerializer(serializers.Serializer):
             setattr(instance, attr, value)
         instance.save()
         return instance
+
+
+class UserCustomSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150, required=False)
+    first_name = serializers.CharField(max_length=30, required=False)
+    last_name = serializers.CharField(max_length=30, required=False)
+    image_url = serializers.CharField(max_length=255, required=False)

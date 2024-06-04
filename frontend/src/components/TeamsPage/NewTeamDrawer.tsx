@@ -266,6 +266,7 @@ const NewTeamDrawer: React.FC<NewTeamDrawerProps> = ({ setProgressBar }) => {
         name={form.getValues('name')}
         image={form.getValues('image') && form.getValues('image')?.[0]}
         location_name={form.getValues('state') + ' ' + form.getValues('city')}
+        color_picker_needed={true}
       />
       <ScrollArea className="pt-4 h-[260px]  md:h-[368px] flex-grow ">
         <Form {...form}>

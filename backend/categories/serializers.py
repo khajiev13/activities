@@ -4,7 +4,7 @@ from .models import CATEGORY
 
 class CategorySerializer(serializers.Serializer):
     pk = serializers.CharField(required=False)
-    name = serializers.CharField()
+    name = serializers.CharField(required=False)
     is_indoor = serializers.BooleanField(required=False)
     is_outdoor = serializers.BooleanField(required=False)
     is_online = serializers.BooleanField(required=False)

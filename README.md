@@ -1,5 +1,11 @@
 # How the project works
-![How Eventopia works](https://drive.google.com/file/d/1e_AGq8uQBK0uTlO9FRknKyok2Tq9TAfI/view?usp=sharing)
+![Eventopia Architecture](https://github.com/khajiev13/activities/assets/57835288/204d5a52-e7f6-4f25-94d4-17290876a848)
+
+![neo4j_schema ](https://github.com/khajiev13/activities/assets/57835288/80da7af6-be52-4a7e-acb5-6efe5483fd64)
+
+![frontend_diagram](https://github.com/khajiev13/activities/assets/57835288/50fa585a-3fcb-4c8c-8218-ce5ba3bc8314)
+
+![high_level_structure](https://github.com/khajiev13/activities/assets/57835288/dbf6d788-e2ca-4221-ae87-240938776516)
 
 # Getting the Project
 

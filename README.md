@@ -1,5 +1,5 @@
-#How the project works
-![How Eventopia works](https://www.overleaf.com/project/6629b9c686c014db86644276/file/66387aa2da26bc4906a66c80)
+# How the project works
+![How Eventopia works](https://drive.google.com/file/d/1e_AGq8uQBK0uTlO9FRknKyok2Tq9TAfI/view?usp=sharing)
 
 # Getting the Project
 

@@ -1,3 +1,6 @@
+#How the project works
+![How Eventopia works](https://www.overleaf.com/project/6629b9c686c014db86644276/file/66387aa2da26bc4906a66c80)
+
 # Getting the Project
 
 To get a copy of the project, run the following command:

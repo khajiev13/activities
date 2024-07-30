@@ -7,6 +7,52 @@
 
 ![high_level_structure](https://github.com/khajiev13/activities/assets/57835288/dbf6d788-e2ca-4221-ae87-240938776516)
 
+#Design of Frontend:
+##Technologies that are used:
+
+        • React: A popular JavaScript library chosen for its widespread adoption and component-based architecture. This approach facilitates modular development and eases maintenance, making it ideal for large-scale applications.
+        • Vite: Employed to streamline the development process and handle the complexities of module bundling, traditionally managed by tools like Webpack and Rollup. Vite enhances the development experience with fast, hot module replacement and acts as a front-end build tool that significantly outperforms older techniques.
+        • TypeScript: An open-source language that builds on JavaScript by adding static type definitions. TypeScript’s type-checking feature aids in developing reliable code by ensuring type correctness throughout the application.
+        • UI Components:
+– Shadcn: An open-source library that provides pre-designed, visually appealing components built with Tailwind CSS for styling and ease of customization.
+– Aceternity: Built on top of Shadcn, this library leverages the same styling approach provided by Tailwind CSS to offer additional customized components.
+        • MapTiler JavaScript SDK: Manages mapping functionalities, facilitating the rendering of maps and management of geographic data. This SDK allows users to interact with the map, select locations, and retrieve corresponding latitude and longitude coordinates.
+        • Zod: Utilized for form and component schema validation, enhancing the robustness of user input handling within the application.
+        • Axios: Used for making HTTP requests (GET, POST, etc.) to communicate with the server, ensuring efficient data fetching and submission.
+
+#Design of Backend (Server API)
+##Technologies that are used:
+
+        • Azure Storage
+– Utilized for managing and storing large files or data objects that do not fit well
+into a traditional relational or graph database.
+– Provides scalable cloud storage solutions, ensuring data availability and durability.
+        • SQLite
+– Serves as a lightweight, disk-based database.
+– Employed to store JSON Web Tokens (JWTs) used in the application’s authentication processes.
+– Facilitates efficient local storage without the need for a separate server process.
+– Manages both access and refresh tokens for secure token-based authentication.
+        • Neo4j
+– A graph database management system that excels in storing and querying data
+with complex relationships and high levels of interconnectedness.
+– Manages the application’s core data, allowing for efficient relationship queries and enhanced data insights.
+        • Django Rest Framework
+– Serializers: Handle data serialization and validation.
+– Views: Manage request handling and business logic.
+– URLs: Map endpoints to the corresponding views for routing purposes.
+– JWT Middleware: Facilitates token-based authentication by handling access and refresh tokens, ensuring secure user authentication.
+        • Neomodel
+– An Object Graph Mapper (OGM) for the Neo4j graph database.
+– Built on the powerful py2neo, it simplifies working with Neo4j by providing a high-level abstraction for nodes and relationships.
+– AllowsyoutointeractwithyourNeo4jdatabaselikeyouwouldwithatraditional database in Django.
+– ProvidesasimpleandintuitiveAPIforcreating, retrieving, updating, and deleting nodes and relationships.
+– Supports Neo4j’s powerful graph querying language, Cypher, allowing you to perform complex queries and operations on your graph data.
+
+
+
+
+
+
 # Getting the Project
 
 To get a copy of the project, run the following command:

@@ -1,6 +1,5 @@
 from rest_framework.response import Response
 from rest_framework import generics
-from neomodel import DoesNotExist
 from django.http import Http404
 from core.blob_functions import delete_picture
 from teams.models import TEAM
@@ -10,9 +9,12 @@ import json
 from core.blob_functions import delete_picture
 from django.http import QueryDict
 from teams.cypher_queries import get_team_detail_information, list_teams_by_country, list_teams_by_state, list_teams_by_city, list_teams_by_name
-from neomodel import UniqueProperty
+from neomodel import UniqueProperty, DoesNotExist
 from rest_framework import status
 from teams.serializers import TeamListSerializer
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotFound
 
 
 # Preprocessing the data so that we will not have categories[o], categories[1], categories[2]... in the response
@@ -166,3 +168,20 @@ class TeamDetailView(generics.RetrieveUpdateDestroyAPIView, TeamUserWritePermiss
             return super().destroy(request, *args, **kwargs)
         else:
             return Response({"message": "An error occurred while deleting the image from storage."}, status=500)
+
+
+class JoinLeaveTeamView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, team_name, format=None):
+        try:
+            team = TEAM.nodes.get(name=team_name)
+        except DoesNotExist:
+            raise NotFound(
+                'Activity with id {} does not exist'.format(team_name))
+
+        joined = team.join_leave_team_toggle(request.user)
+        if (joined):
+            return Response({'message': 'You have successfully joined the team.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'You have successfully left the team.'}, status=status.HTTP_200_OK)

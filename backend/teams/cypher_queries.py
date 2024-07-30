@@ -103,6 +103,8 @@ def get_team_detail_information(team_name: str) -> dict:
         // Sponsors and Organization
         OPTIONAL MATCH (team)<-[:SPONSORS]-(sponsor)
         OPTIONAL MATCH (team)-[:BELONGS_TO]->(organization)
+        //Get the members
+        OPTIONAL MATCH (team)-[:MEMBERS]->(members:USER)
         // Location Details
         OPTIONAL MATCH (team)-[:BASED_IN]->(location)-[:IS_IN]->(city)-[:IS_IN]->(state)-[:IS_IN]->(country)
         RETURN team.name AS name, 
@@ -120,7 +122,8 @@ def get_team_detail_information(team_name: str) -> dict:
             city.name AS city_name, 
             state.name AS state_name, 
             country.name AS country_name,
-            team.public_team AS public_team
+            team.public_team AS public_team,
+            collect(properties(members)) AS members
     """
     params = {
         'team_name': team_name
@@ -143,7 +146,8 @@ def get_team_detail_information(team_name: str) -> dict:
         'city_name': results[0][12],
         'state_name': results[0][13],
         'country_name': results[0][14],
-        'public_team': results[0][15]
+        'public_team': results[0][15],
+        'members': results[0][16],
     }
     results_dict['location'][0]['points'] = NeomodelPoint(
         (results_dict['location'][0]['points'].latitude, results_dict['location'][0]['points'].longitude), crs='wgs-84')

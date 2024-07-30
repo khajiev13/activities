@@ -49,7 +49,9 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         try:
-            return USER.nodes.get(username=self.kwargs[self.lookup_field])
+            user = USER.nodes.get(username=self.kwargs[self.lookup_field])
+
+            return user
         except USER.DoesNotExist:
             raise NotFound('A user with this username does not exist.')
 

@@ -13,6 +13,7 @@ import RenderMap from './components/Map/RenderMap';
 import Organizations from './pages/OrganizationsPage/Organizations';
 import { HeroHighlight } from './components/ui/hero-highlight';
 import { ActivitiesDetail } from './pages/Activities/ActivitiesDetail';
+import TeamDetails from './pages/Teams/TeamDetails';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
                 element={<ActivitiesDetail />}
               />
               <Route path="/teams" element={<Teams />} />
+              <Route path="/teams/:team_name" element={<TeamDetails />} />
               <Route path="/organizations" element={<Organizations />} />
               <Route path="/map" element={<RenderMap />} />
               <Route path="/" element={<HomePage />} />

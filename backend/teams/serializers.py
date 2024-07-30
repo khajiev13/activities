@@ -11,6 +11,7 @@ from core.blob_functions import delete_picture
 from locations.serializers import LocationSerializer
 from colors.serializers import ColorSerializer
 from categories.serializers import CategorySerializer
+from users.serializers import UserCustomSerializer
 
 load_dotenv()
 AZURE_STORAGE_CONNECTION_STRING = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
@@ -53,6 +54,7 @@ class TeamDetailSerializer(serializers.Serializer):
     belongs_to_organization = serializers.ListField(child=serializers.DictField(
         child=serializers.CharField(allow_blank=True, required=False)), required=False)
     location = LocationSerializer(many=True)
+    members = UserCustomSerializer(many=True)
 
     def create(self, validated_data):
         image = validated_data.pop('image', None)

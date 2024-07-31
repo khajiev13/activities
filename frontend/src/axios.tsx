@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://127.0.0.1:8000/';
+const baseURL = 'https://eventopia-final-8752960a4ac1.herokuapp.com/';
 // Try https://eventopia-final-8752960a4ac1.herokuapp.com/ for production
 // Try 'http://127.0.0.1:8000/' for development
 

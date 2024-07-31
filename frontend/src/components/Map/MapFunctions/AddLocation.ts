@@ -18,8 +18,8 @@ async function fetchLocationDetails(
   longitude: number,
   username: string
 ) {
-  const url = `https://api.geonames.org/findNearbyPlaceNameJSON?lat=${latitude}&lng=${longitude}&username=${username}`;
-  const time_zone_url = `https://api.geonames.org/timezoneJSON?lat=${latitude}&lng=${longitude}&username=${username}`;
+  const url = `http://api.geonames.org/findNearbyPlaceNameJSON?lat=${latitude}&lng=${longitude}&username=${username}`;
+  const time_zone_url = `http://api.geonames.org/timezoneJSON?lat=${latitude}&lng=${longitude}&username=${username}`;
   try {
     const response = await axios.get(url); // Use axios.get instead of fetch
     const data = response.data; // Axios stores the response data in a .data property

@@ -1,4 +1,5 @@
 # How the project works
+
 ![Eventopia Architecture](https://github.com/khajiev13/activities/assets/57835288/204d5a52-e7f6-4f25-94d4-17290876a848)
 
 ![neo4j_schema ](https://github.com/khajiev13/activities/assets/57835288/80da7af6-be52-4a7e-acb5-6efe5483fd64)
@@ -6,6 +7,31 @@
 ![frontend_diagram](https://github.com/khajiev13/activities/assets/57835288/50fa585a-3fcb-4c8c-8218-ce5ba3bc8314)
 
 ![high_level_structure](https://github.com/khajiev13/activities/assets/57835288/dbf6d788-e2ca-4221-ae87-240938776516)
+
+# Distinctiveness and Complexity
+
+It is significanly distincy by the following features:
+
+- **Graph Database**: The application uses a graph database (Neo4j) to store and manage data, allowing for complex relationship queries and enhanced data insights. This approach is distinct from traditional relational databases and offers unique advantages for applications with highly interconnected data.
+- **Map Integration**: The application integrates a mapping library (MapTiler JavaScript SDK) to render maps and manage geographic data. Users can interact with the map, select locations, and retrieve corresponding latitude and longitude coordinates. This feature enhances the user experience and provides valuable functionality for location-based applications.
+- **Form Validation**: The application uses the Zod library for form and component schema validation, ensuring the robustness of user input handling. This feature enhances data integrity and user experience by validating user input against predefined schemas and constraints.
+- **Azure Storage**: The application leverages Azure Storage for managing and storing large files or data objects that do not fit well into traditional databases. This cloud storage solution ensures data availability and durability, providing scalable storage solutions for the application's data needs.
+- **SQLite Database**: The application uses SQLite as a lightweight, disk-based database to store JSON Web Tokens (JWTs) for authentication. This database facilitates efficient local storage without the need for a separate server process, ensuring secure token-based authentication for the application.
+- **Neomodel OGM**: The application employs Neomodel as an Object Graph Mapper (OGM) for the Neo4j graph database, simplifying interactions with the graph data. Neomodel provides a high-level abstraction for nodes and relationships, allowing users to interact with the Neo4j database like a traditional database in Django. This feature enhances data management and query capabilities for the application.
+- **TypeScript**: The application uses TypeScript, an open-source language that builds on JavaScript by adding static type definitions. TypeScript's type-checking feature ensures type correctness throughout the application, enhancing code reliability and maintainability. This approach improves the development experience by providing type safety and error prevention during development.
+- **Scalable Architecture**: The application's architecture is designed to be scalable and maintainable, with separate frontend and backend components that communicate through RESTful APIs. This modular architecture allows for independent development and deployment of frontend and backend components, ensuring flexibility and scalability as the application grows.
+- **Responsive Design**: The application is designed with a responsive layout that adapts to different screen sizes and devices. This feature enhances the user experience by providing a consistent and optimized interface across various devices, including desktops, tablets, and mobile phones. The responsive design ensures accessibility and usability for a wide range of users.
+
+Complexity:
+
+- **Graph Database Queries**: The application uses complex graph database queries to retrieve and manipulate data stored in Neo4j. These queries involve traversing relationships between nodes and performing operations on graph data, requiring a deep understanding of Cypher, Neo4j's query language. This complexity arises from managing highly interconnected data and optimizing query performance for efficient data retrieval. A lot of documentation of neomodel and neo4j was read to understand how to use it.
+
+- **Schema**: I had to draw the schema from scratch and think about the relationships and started with the endgoal. Coding the schema and connecting frontned and backend was a bit challenging and the reason why I chose database is for activity recommendation later on and the chatbot feature.
+
+- **UI/UX**: I have designed few pages of the application with Figma and coded it and used shadcn ui components too. I have also used the maptiler sdk for the map and it was a bit challenging to integrate it with the application.
+
+- **JWT/SQL/Neo4J**: Connecting the sqlite with neo4j (graph database) was a bit challenging and I had to overwrite so many functions to match the integration with neo4j and SQL.
+
 # Design of Frontend
 
 ## Technologies that are used:
@@ -46,10 +72,6 @@
   - Allows you to interact with your Neo4j database like you would with a traditional database in Django.
   - Provides a simple and intuitive API for creating, retrieving, updating, and deleting nodes and relationships.
   - Supports Neo4j’s powerful graph querying language, Cypher, allowing you to perform complex queries and operations on your graph data.
-
-
-
-
 
 # Getting the Project
 

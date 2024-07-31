@@ -73,13 +73,103 @@ Complexity:
   - Provides a simple and intuitive API for creating, retrieving, updating, and deleting nodes and relationships.
   - Supports Neo4j’s powerful graph querying language, Cypher, allowing you to perform complex queries and operations on your graph data.
 
-# Getting the Project
+# What’s contained in each file you created.
 
-To get a copy of the project, run the following command:
+## Components
 
-```bash
-git clone https://github.com/khajiev13/activities.git
-```
+- **Navbar**: Renders the main navigation bar of the application.
+- **App**: Root component that sets up the theme provider, authentication context, and routing. Includes Navbar, CornerButtons, and Toaster.
+- **CornerButtons**: Renders buttons in the corners of the application UI, specific functions depend on context.
+- **Toaster**: Manages and displays toast notifications for the application.
+- **RenderMap**: Responsible for rendering the map and handling interactions with it. It integrates multiple sub-components for mapping functionalities.
+- **BaseMap**: A search bar used to search for teams, activities, and organizations. Includes multiple interactive components.
+- **Button**: Generic button component for various interactions within the SearchNavbar.
+- **Select**: Dropdown selection component used within the SearchNavbar for various selections.
+- **DataTableFacetedFilter**: Provides filtering capabilities within the SearchNavbar for sorting data.
+- **Card**: Used to display information in a card layout within the SearchNavbar.
+- **Drawer**: A sliding panel used to display more detailed information about selected items on the map.
+- **Globe2Icon**: Icon used within the SearchNavbar, often representing global search capabilities.
+- **SearchForButtons**: Renders buttons for selecting different search options on the map.
+- **ListActivityCard**: Displays a list of activities as cards on the map interface.
+- **TeamCard**: Displays information about a specific team in a card format.
+- **Teams**: Renders a list of teams, including details for each team displayed in a list format.
+- **TeamListingCard**: Displays detailed information about a team within the list of teams.
+
+## Frontend Directory Structure
+
+frontend/src/components:
+I have created all the components in each folder, and all of those components refer to the pages page where you can see the pages, and each page consists of different components.
+
+Backend:
+
+## API Endpoints and their corresponding HTTP methods and views
+
+### Organizations (organizations/urls.py)
+
+- **Endpoint:** `''`
+  - **HTTP Method:** GET, POST
+  - **View:** `OrganizationListCreate`
+- **Endpoint:** `'list/'`
+  - **HTTP Method:** GET
+  - **View:** `ListOrganizations`
+- **Endpoint:** `'<str:pk>/'`
+  - **HTTP Method:** GET, PUT, DELETE
+  - **View:** `OrganizationDetail`
+- **Endpoint:** `'country/<str:countries>/'`
+  - **HTTP Method:** GET
+  - **View:** `OrganizationListCreate`
+- **Endpoint:** `'state/<str:states>/'`
+  - **HTTP Method:** GET
+  - **View:** `OrganizationListCreate`
+- **Endpoint:** `'city/<str:cities>/'`
+  - **HTTP Method:** GET
+  - **View:** `OrganizationListCreate`
+
+### Users (users/urls.py)
+
+- **Endpoint:** `''`
+  - **HTTP Method:** GET, POST
+  - **View:** `UserListCreateView`
+- **Endpoint:** `'<str:username>/'`
+  - **HTTP Method:** GET, PUT, DELETE
+  - **View:** `UserDetailView`
+- **Endpoint:** `'token/get/'`
+  - **HTTP Method:** POST
+  - **View:** `CustomTokenObtainPairView`
+- **Endpoint:** `'token/refresh/'`
+  - **HTTP Method:** POST
+  - **View:** `TokenRefreshView`
+- **Endpoint:** `'token/logout-blacklist/'`
+  - **HTTP Method:** POST
+  - **View:** `BlacklistTokenView`
+
+### Teams (teams/views.py)
+
+- **Endpoint:** `TeamListCreateView`
+  - **HTTP Method:** GET, POST
+  - **View:** `TeamListCreateView`
+- **Endpoint:** `TeamDetailView`
+  - **HTTP Method:** GET, PUT, DELETE
+  - **View:** `TeamDetailView`
+
+### Locations (locations/views.py)
+
+- **Endpoint:** `LocationViewSet`
+  - **HTTP Method:** GET, POST, PUT, DELETE
+  - **View:** `LocationViewSet`
+- **Endpoint:** `/countries_states_cities`
+  - **HTTP Method:** GET
+  - **View:** `countries_states_cities`
+
+### Core (core/urls.py)
+
+- **Includes URLs of all other apps**
+
+### Cities (cities/views.py)
+
+- **Endpoint:** `ChooseCityView`
+  - **HTTP Method:** GET
+  - **View:** `ChooseCityView`
 
 # Frontend Application
 

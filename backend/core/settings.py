@@ -4,6 +4,7 @@ from neomodel import config
 from datetime import timedelta
 import dj_database_url
 from dotenv import load_dotenv
+from subprocess import call
 
 load_dotenv()
 
@@ -24,6 +25,9 @@ NEOMODEL_MAX_POOL_SIZE = 50
 print(config.DATABASE_URL)
 
 
+DEBUG = os.getenv('DEBUG', '0').lower() in ['true', 't', '1']
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -35,11 +39,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']
+                 ] if 'WEBSITE_HOSTNAME' in os.environ else ['127.0.0.1', 'localhost:3001',
+                                                             'http://10.63.155.250:5173/', 'localhost:5173', 'eventopia-backend-due3e9c5bkd3heaf.italynorth-01.azurewebsites.net']
+# CSRF_TRUSTED_ORIGINS = ['https://' + os.environ['WEBSITE_HOSTNAME']
+#                         ] if 'WEBSITE_HOSTNAME' in os.environ else ['127.0.0.1', 'localhost:3001',
+#                                                                     'http://10.63.155.250:5173/', 'localhost:5173', 'eventopia-backend-due3e9c5bkd3heaf.italynorth-01.azurewebsites.net']
 
-ALLOWED_HOSTS = ['eventopia-final-8752960a4ac1.herokuapp.com', '127.0.0.1',
-                 'localhost:3001', 'http://10.63.155.250:5173/', 'localhost:5173',]
 
+if 'CODESPACE_NAME' in os.environ:
+    CSRF_TRUSTED_ORIGINS = [
+        'https://' + os.getenv("CODESPACE_NAME") + '-8000.' +
+        os.getenv("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")
+    ]
 
 # Application definition
 
@@ -137,6 +149,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -161,15 +175,59 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-ON_HEROKU = os.environ.get('ON_HEROKU')
-HEROKU_SERVER = os.environ.get('HEROKU_SERVER')
+ON_DEPLOYMENT = os.environ.get('ON_DEPLOYMENT')
+ON_DEPLOYMENT = False
 
-if ON_HEROKU:
-    DATABASE_URL = 'postgresql://<postgresql>'
+if ON_DEPLOYMENT:
+    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATIC_URL = '/static/'  # Add this line
+    conn_str = os.environ.get('AZURE_POSTGRESQL_CONNECTIONSTRING')
+
+    if conn_str:
+        print("Connection string found")
+        conn_str_params = {pair.split('=')[0]: pair.split(
+            '=')[1] for pair in conn_str.split(' ')}
+        print(conn_str_params)
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': conn_str_params['dbname'],
+                'HOST': conn_str_params['host'],
+                'USER': conn_str_params['user'],
+                'PASSWORD': conn_str_params['password'],
+            }
+        }
+    else:
+        print("No connection string found")
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.environ.get('DBNAME'),
+                'HOST': os.environ.get('DBHOST'),
+                'USER': os.environ.get('DBUSER'),
+                'PASSWORD': os.environ.get('DBPASS'),
+            }
+        }
+
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": os.environ.get('AZURE_REDIS_CONNECTIONSTRING'),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+            },
+        }
+    }
+
 else:
     DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
-
-DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
+    DEBUG = True
 # heroku addons:create heroku-postgresql:hobby-dev
 
 
@@ -191,6 +249,25 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Run neomodel_install_labels command
+if os.getenv('RUN_NEOMODEL_INSTALL_LABELS', 'true').lower() == 'true':
+    call([
+        'neomodel_install_labels',
+        'users.models',
+        'achievements.models',
+        'teams.models',
+        'substitutions.models',
+        'states.models',
+        'roles.models',
+        'score_infos.models',
+        'organizations.models',
+        'colors.models',
+        'competitions.models',
+        'cities.models',
+        'categories.models',
+        'activities.models'
+    ])
+
 AUTHENTICATION_BACKENDS = ['users.authentication.UserAuthentication']
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -206,22 +283,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Media files
-# MEDIA_URL = '/media/'  # Uncomment this if you have media files
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Uncomment this if you have media files
-# DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'  # Uncomment this if you have media files
-
 
 # Define DEFAULT_FILE_STORAGE and STATICFILES_STORAGE
-DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-
 # Define the Azure storage configurations
 AZURE_ACCOUNT_NAME = os.getenv("AZURE_ACCOUNT_NAME")
 AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")
 AZURE_CONTAINER = os.getenv("AZURE_CONTAINER")
+
+
+
+# Azure Storage configuration
+DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 
 
 # Default primary key field type
@@ -231,3 +304,40 @@ AZURE_CONTAINER = os.getenv("AZURE_CONTAINER")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),
+            'formatter': 'verbose',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': True,
+        },
+    },
+}
+
+# Ensure logs directory exists
+os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)

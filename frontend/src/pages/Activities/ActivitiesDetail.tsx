@@ -3,8 +3,15 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 import { WobbleCard } from '@/components/ui/wobble-card';
+import { ActivityDetailsType } from '@/components/ActivitiesPage/ActivitiesListSchema';
+import { useState } from 'react';
+import ActivityDetail from '@/components/ActivitiesPage/ActivityDetail';
 
-export function WobbleCardComponent() {
+export function WobbleCardComponent({
+  activity,
+}: {
+  activity: ActivityDetailsType;
+}) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-7xl mx-auto w-full">
       <WobbleCard
@@ -13,11 +20,10 @@ export function WobbleCardComponent() {
       >
         <div className="max-w-xs">
           <h2 className="text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
-            Gippity AI powers the entire universe
+            Title is {activity.title}
           </h2>
           <p className="mt-4 text-left  text-base/6 text-neutral-200">
-            With over 100,000 mothly active bot users, Gippity AI is the most
-            popular AI platform for developers.
+            {activity.description}
           </p>
         </div>
         <img
@@ -113,6 +119,7 @@ export function AnimatedTooltipPreview() {
 }
 
 export const ActivitiesDetail = () => {
+  const [activity, setActivity] = useState<ActivityDetailsType>();
   const { activity_pk } = useParams<{ activity_pk: string }>();
   useEffect(() => {
     axiosInstance
@@ -120,6 +127,7 @@ export const ActivitiesDetail = () => {
       .then((response) => {
         // handle the response
         console.log(response.data);
+        setActivity(response.data);
       })
       .catch((error) => {
         // handle the error
@@ -129,8 +137,12 @@ export const ActivitiesDetail = () => {
 
   return (
     <>
-      <AnimatedTooltipPreview />
-      <WobbleCardComponent />
+    <div className='w-screen h-screen overflow-scroll'>
+    <AnimatedTooltipPreview />
+      {activity && <WobbleCardComponent activity={activity} />}
+      <ActivityDetail />
+    </div>
+      
     </>
   );
 };

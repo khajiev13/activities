@@ -54,7 +54,7 @@ class TeamDetailSerializer(serializers.Serializer):
     belongs_to_organization = serializers.ListField(child=serializers.DictField(
         child=serializers.CharField(allow_blank=True, required=False)), required=False)
     location = LocationSerializer(many=True)
-    members = UserCustomSerializer(many=True)
+    members = UserCustomSerializer(many=True, required=False)
 
     def create(self, validated_data):
         image = validated_data.pop('image', None)

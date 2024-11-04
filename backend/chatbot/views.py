@@ -11,7 +11,7 @@ import os
 
 def process_message(message):
     graph = Neo4jGraph(
-        url=os.getenv('NEO4J_BOLT_URL'), username=os.getenv('NEO4J_USERNAME'), password=os.getenv('NEO4J_PASSWORD')
+        url=os.getenv('NEO4J_URI'), username=os.getenv('NEO4J_USERNAME'), password=os.getenv('NEO4J_PASSWORD')
     )
 
     CYPHER_GENERATION_TEMPLATE = """You are an expert Neo4j Cypher translator who understands the question in english and convert to Cypher strictly based on the Neo4j Schema provided and following the instructions below:

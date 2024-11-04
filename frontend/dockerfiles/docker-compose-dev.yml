@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+ frontend:
+   build:
+     context: ./ #Where the docker file is located
+     dockerfile: Dockerfile
+   container_name: frontend
+   restart: always
+   ports:
+     - 3000:3000
+   volumes:
+     - ./frontend:/app
+     - /app/node_modules
+   environment:
+     - VITE_APP_BACKEND_ADDRESS=http://localhost/api
+   networks:
+     - network
+networks:
+ network:

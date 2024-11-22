@@ -85,9 +85,12 @@ INSTALLED_APPS = [
     'teams',
     'users',
     'storages',
+    'drf_spectacular',
+    
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
@@ -96,6 +99,26 @@ REST_FRAMEWORK = {
         'users.authentication.CustomJWTAuthentication'
 
     )
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Eventopia',
+    'DESCRIPTION': 'Eventopia API provides the documentation about the whole API endpoints.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+    'AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'SWAGGER_UI_SETTINGS': {
+        'persistAuthorization': True,
+    },
+    'SERVE_INCLUDE_SCHEMA': True,
+    'SCHEMA_PATH_PREFIX': '/api/v1',
+    'SERVE_AUTHENTICATION_CLASSES': [
+        'users.authentication.UserAuthentication',
+        'users.authentication.CustomJWTAuthentication',
+    ],
 }
 
 

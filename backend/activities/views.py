@@ -10,6 +10,8 @@ from .serializers import ActivitySerializer
 from .cypher_queries import list_activities_by_country, list_activities_by_state, list_activities_by_city, list_activities_by_name
 from neomodel import DoesNotExist
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+
 
 
 class ActivityListCreateView(generics.ListCreateAPIView):
@@ -20,6 +22,27 @@ class ActivityListCreateView(generics.ListCreateAPIView):
     serializer_class = ActivitySerializer
     permission_classes = [IsAuthenticated]
 
+
+    @extend_schema(
+        summary="Create new activity",
+        description="Creates a new activity with the provided data",
+        request=ActivitySerializer,
+        responses={
+            201: ActivitySerializer,
+            400: {"description": "Bad Request - Invalid data"}
+        },
+        examples=[
+            OpenApiExample(
+                'Valid Activity',
+                value={
+                    'title': 'Football Match',
+                    'description': 'Friendly match',
+                    'date_time': '2024-03-22T15:00:00Z'
+                }
+            )
+        ],
+        methods=["POST"]
+    )
     def post(self, request, *args, **kwargs):
         activityserializer = ActivitySerializer(data=request.data)
         # Get the current user's username

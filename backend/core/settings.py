@@ -119,6 +119,15 @@ SPECTACULAR_SETTINGS = {
         'users.authentication.UserAuthentication',
         'users.authentication.CustomJWTAuthentication',
     ],
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Format: Bearer <your_token>'
+        }
+    },
+    'SECURITY': [{'Bearer': []}]
 }
 
 

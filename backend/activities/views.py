@@ -11,6 +11,8 @@ from .cypher_queries import list_activities_by_country, list_activities_by_state
 from neomodel import DoesNotExist
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
+
 
 
 
@@ -103,14 +105,50 @@ class ActivityDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ActivitySerializer
     permission_classes = (AllowAny,)
     lookup_field = 'pk'
-
     def get_object(self):
         try:
             return ACTIVITY.nodes.get(pk=self.kwargs[self.lookup_field])
         except ACTIVITY.DoesNotExist:
-            raise NotFound('Activity with id {} does not exist'.format(
-                self.kwargs[self.lookup_field]))
+            raise NotFound('Activity with id {} does not exist'.format(self.kwargs[self.lookup_field]))
+        
+    @extend_schema(
+        summary="Retrieve activity",
+        description="Get details of a specific activity by ID",
+        parameters=[
+            OpenApiParameter(
+                name="pk",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Activity unique identifier"
+            )
+        ],
+        responses={
+            200: ActivitySerializer,
+            404: {"description": "Activity not found"}
+        },
+        methods=["GET"]
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
+
+    @extend_schema(
+        summary="Delete activity",
+        description="Delete an activity by ID",
+        parameters=[
+            OpenApiParameter(
+                name="pk",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Activity unique identifier"
+            )
+        ],
+        responses={
+            204: None,
+            404: {"description": "Activity not found"}
+        },
+        methods=["DELETE"]
+    )
     def delete(self, request, *args, **kwargs):
         activity = self.get_object()
         activity.delete()

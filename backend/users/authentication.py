@@ -2,7 +2,7 @@ from django.contrib.auth.backends import ModelBackend
 from users.models import USER
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from drf_spectacular.contrib.rest_framework_simplejwt import SimpleJWTScheme
 
 
 class CustomJWTAuthentication(JWTAuthentication):
@@ -42,3 +42,6 @@ class UserAuthentication(ModelBackend):
 
 
 
+class SimpleJWTTokenUserScheme(SimpleJWTScheme):
+    name = "CustomJWTAuth"
+    target_class = CustomJWTAuthentication

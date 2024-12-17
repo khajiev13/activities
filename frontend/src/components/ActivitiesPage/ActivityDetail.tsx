@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react"
-
+import People from "../People"
 // This is a mock activity for demonstration purposes
 const activity = {
   title: "Weekend Hike at Mount Rainier",
@@ -32,6 +32,7 @@ const activity = {
     team_2: { name: null, image_url: null }
   }
 }
+
 
 export default function ActivityDetail() {
   const formatDate = (dateString: string) => {
@@ -137,12 +138,7 @@ export default function ActivityDetail() {
             <CardContent className="p-6 space-y-4">
               <h2 className="text-xl font-semibold">Attendees</h2>
               <div className="flex flex-wrap gap-2">
-                {activity.people_joined.map((person, index) => (
-                  <Avatar key={index} title={`${person.first_name} ${person.last_name}`}>
-                    <AvatarImage src={person.image_url || undefined} alt={`${person.first_name} ${person.last_name}`} />
-                    <AvatarFallback>{person.first_name?.[0]}{person.last_name?.[0]}</AvatarFallback>
-                  </Avatar>
-                ))}
+                <People />
               </div>
             </CardContent>
           </Card>

@@ -6,7 +6,7 @@ const baseURL = process.env.backend_api_address || 'http://127.0.0.1:8000/';
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
-  timeout: 30000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
     accept: 'application/json',

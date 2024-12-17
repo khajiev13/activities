@@ -11,7 +11,7 @@ load_dotenv()
 
 config.NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD')
 config.NEO4J_USERNAME = os.getenv('NEO4J_USERNAME')
-config.DATABASE_URL = os.getenv('NEO4J_BOLT_URL')
+config.DATABASE_URL = f"neo4j+s://{config.NEO4J_USERNAME}:{config.NEO4J_PASSWORD}{os.getenv('NEO4J_INSTANCE')}"
 
 
 # you are free to add this configurations
@@ -325,8 +325,8 @@ AZURE_CONTAINER = os.getenv("AZURE_CONTAINER")
 
 
 # Azure Storage configuration
-DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+# STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 
 
 # Default primary key field type

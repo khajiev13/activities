@@ -45,7 +45,7 @@ const useFetchLocationData = () => {
       .get('api/locations/countries-states-cities/')
       .then((response) => {
         const data = response.data;
-
+        console.log(data)
         setCountries(data);
       })
       .catch((error) => {

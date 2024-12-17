@@ -13,6 +13,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import logging
 
 
+from rest_framework.exceptions import ValidationError
+
 class UserListCreateView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
@@ -22,20 +24,23 @@ class UserListCreateView(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         try:
+            logging.info(f"Request data: {request.data}")
             if not request.data.get('username'):
                 return Response({'message': 'Username is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
             data = dict(request.data.items())
-            raw_password = data['password']
-            # Convert username to lowercase
-            data['username'] = data['username'].lower()
             serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        except UniqueProperty as e:
-            return Response({"message": str(e)}, status=status.HTTP_409_CONFLICT)
-
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        except ValidationError as e:
+            logging.error(f"Validation error: {e}")
+            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            logging.error(f"Unexpected error: {e}")
+            return Response({'message': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     def perform_create(self, serializer):
         user = serializer.save()
 

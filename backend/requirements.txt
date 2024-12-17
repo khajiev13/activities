@@ -73,5 +73,3 @@ tzdata==2024.1
 urllib3==2.2.2
 whitenoise==6.7.0
 yarl==1.10.0
-
-

@@ -10,7 +10,7 @@ from .serializers import ActivitySerializer
 from .cypher_queries import list_activities_by_country, list_activities_by_state, list_activities_by_city, list_activities_by_name
 from neomodel import DoesNotExist
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse
 from drf_spectacular.types import OpenApiTypes
 
 
@@ -59,7 +59,60 @@ class ActivityListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return ACTIVITY.nodes.all()
-
+    @extend_schema(
+        summary="List activities with geographic filters",
+        description="Retrieve activities filtered by geographic levels (country, state, city) or by name search",
+        parameters=[
+            OpenApiParameter(
+                name="countries",
+                type=str,
+                description="Comma-separated list of countries",
+                required=False
+            ),
+            OpenApiParameter(
+                name="countries[]",
+                type={"type": "array", "items": {"type": "string"}},
+                description="List of countries for state/city filtering",
+                required=False
+            ),
+            OpenApiParameter(
+                name="states",
+                type=str,
+                description="Comma-separated list of states",
+                required=False
+            ),
+            OpenApiParameter(
+                name="states[]",
+                type={"type": "array", "items": {"type": "string"}},
+                description="List of states for city filtering",
+                required=False
+            ),
+            OpenApiParameter(
+                name="cities",
+                type=str,
+                description="Comma-separated list of cities",
+                required=False
+            ),
+            OpenApiParameter(
+                name="search",
+                type=str,
+                description="Activity name to search for",
+                required=False
+            )
+        ],
+        responses={
+            200: ActivitySerializer(many=True),
+            404: {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "example": "The specified country, state, or city does not exist."
+                    }
+                }
+            }
+        }
+    )
     def list(self, request, *args, **kwargs):
         try:
             # Check if the request is for a specific country, state, or city
@@ -72,8 +125,7 @@ class ActivityListCreateView(generics.ListCreateAPIView):
             search_name = self.kwargs.get('search', None)
             if countries:
                 # Convert the string to a list of countries before pasing it to a function
-                countries = [country.strip()
-                             for country in countries.split(",")]
+                countries = [country.strip() for country in countries.split(",")]
                 teams = list_activities_by_country(countries)
             elif states:
                 # Get the countries from params
@@ -155,6 +207,58 @@ class ActivityDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+
+@extend_schema(
+    summary="Join an activity",
+    description="Allows authenticated users to join a specific activity",
+    parameters=[
+        OpenApiParameter(
+            name="pk",
+            type=str,
+            location=OpenApiParameter.PATH,
+            description="Primary key of the activity to join",
+            required=True
+        )
+    ],
+    responses={
+        200: OpenApiResponse(
+            description="Successfully joined activity",
+            response={
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "You have successfully joined the activity."
+                    }
+                }
+            }
+        ),
+        404: OpenApiResponse(
+            description="Activity not found",
+            response={
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "type": "string",
+                        "example": "Activity with id 123 does not exist"
+                    }
+                }
+            }
+        ),
+        401: OpenApiResponse(
+            description="Authentication required",
+            response={
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "type": "string",
+                        "example": "Authentication credentials were not provided."
+                    }
+                }
+            }
+        )
+    }
+)
 class JoinActivityView(APIView):
     permission_classes = (IsAuthenticated,)
 

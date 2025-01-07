@@ -36,8 +36,7 @@ export default function UserNav() {
         }
       );
       console.log(response);
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      localStorage.clear();
       axiosInstance.defaults.headers['Authorization'] = null;
       // Delete the values inside the Context
       logout();
@@ -45,6 +44,8 @@ export default function UserNav() {
       navigate('/login');
     } catch (err) {
       console.log(err);
+      // Delete the values inside the Context
+      logout();
       navigate('/login');
     }
   };

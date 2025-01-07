@@ -185,7 +185,7 @@ def list_teams_by_country(countries: list):
         'name': result[0],
         'men_team': result[1],
         # Convert it to python datetime because serializer datetime field does not accept neotime
-        'founded_at': result[2].isoformat(),
+        'founded_at': result[2].format(),
         'image_url': result[3],
         'categories': result[4][0],
         'tshirt_color': result[5][0],
@@ -332,7 +332,6 @@ def list_teams_by_name(name: str):
             teams.public_team AS public_team"""
     params = {'name': name}
     results, meta = db.cypher_query(query, params, resolve_objects=True)
-    print(results)
     results_dicts = [{
         'name': result[0],
         'men_team': result[1],

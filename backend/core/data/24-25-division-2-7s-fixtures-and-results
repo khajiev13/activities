@@ -1,0 +1,3706 @@
+[
+  {
+    "number": 1,
+    "competitions": [
+      {
+        "team_1_name": "Huojian",
+        "team_2_name": "Sexy",
+        "team_1_score": 0,
+        "team_2_score": 7,
+        "date": "2024-09-24T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ryan Sewell",
+          "Wesley Smout",
+          "Farhan Alam",
+          "Roma Khajiev"
+        ],
+        "name_list_of_team_2_players": [
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Lucas de Azambuja Cao",
+          "Hal Denny",
+          "Domink Ruben Mehl",
+          "Andi Topi",
+          "Aboubacar Kouma",
+          "Conor Patrick Dunn"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Alfonso Sanchez",
+            ""
+          ],
+          [
+            "Alfonso Sanchez",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Lucas de Azambuja Cao",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ryan Sewell",
+        "team_2_mvp_player_name": "Aitor Mondragon",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5918/"
+      },
+      {
+        "team_1_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_2_name": "FC Post Beijing",
+        "team_1_score": 3,
+        "team_2_score": 4,
+        "date": "2024-09-24T00:00:00",
+        "name_list_of_team_1_players": [
+          "Huo Yu Jia",
+          "Sun Lei",
+          "Zhuang Yun",
+          "Yin Ze Xuan",
+          "Zhou Tong",
+          "Shi Sheng Wei"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Zhao",
+          "Fan Chao",
+          "Ji Baoqiang",
+          "Chen Wei Lu",
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Liu Tao"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Huo Yu Jia",
+            ""
+          ],
+          [
+            "Huo Yu Jia",
+            ""
+          ],
+          [
+            "Huo Yu Jia",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Liu Zhao",
+            ""
+          ],
+          [
+            "Fan Chao",
+            ""
+          ],
+          [
+            "Ji Baoqiang",
+            ""
+          ],
+          [
+            "Chen Wei Lu",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Huo Yu Jia",
+        "team_2_mvp_player_name": "Liu Zhao",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5919/"
+      },
+      {
+        "team_1_name": "FC Post Beijing",
+        "team_2_name": "Sexy",
+        "team_1_score": 1,
+        "team_2_score": 2,
+        "date": "2024-09-24T00:00:00",
+        "name_list_of_team_1_players": [
+          "Chen Wei Lu",
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Liu Tao",
+          "Liu Zhao",
+          "Fan Chao",
+          "Ji Baoqiang"
+        ],
+        "name_list_of_team_2_players": [
+          "Andi Topi",
+          "Aitor Mondragon",
+          "Lucas de Azambuja Cao",
+          "Hal Denny",
+          "Domink Ruben Mehl",
+          "Alfonso Sanchez",
+          "Conor Patrick Dunn"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Chen Wei Lu",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Andi Topi",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Chen Wei Lu",
+        "team_2_mvp_player_name": null,
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5920/"
+      },
+      {
+        "team_1_name": "Huojian",
+        "team_2_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_1_score": 1,
+        "team_2_score": 2,
+        "date": "2024-09-24T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ryan Sewell",
+          "Wesley Smout",
+          "Farhan Alam",
+          "Roma Khajiev"
+        ],
+        "name_list_of_team_2_players": [
+          "Shi Sheng Wei",
+          "Huo Yu Jia",
+          "Sun Lei",
+          "Zhuang Yun",
+          "Yin Ze Xuan",
+          "Zhou Tong"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ryan Sewell",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Shi Sheng Wei",
+            ""
+          ],
+          [
+            "Huo Yu Jia",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ryan Sewell",
+        "team_2_mvp_player_name": "Huo Yu Jia",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5921/"
+      },
+      {
+        "team_1_name": "Gran Reserva",
+        "team_2_name": "Cosmos Hunter",
+        "team_1_score": 0,
+        "team_2_score": 4,
+        "date": "2024-09-24T00:00:00",
+        "name_list_of_team_1_players": [
+          "Terry Trky",
+          "Chen Zhe",
+          "Pablo Reyes",
+          "Carlos Emmanuel Garcia",
+          "Mario Espinal",
+          "Vincent Molina",
+          "Mario Santiago Espinal",
+          "Cristian Paladino",
+          "Bili Airiken"
+        ],
+        "name_list_of_team_2_players": [
+          "Sun Qiang",
+          "Chai Bo Yin",
+          "Xiao Yun",
+          "Ou Yang Mai",
+          "Zhao Hong Bo",
+          "Ke Zhi Chao",
+          "Song Yan Jun"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Chai Bo Yin",
+            ""
+          ],
+          [
+            "Chai Bo Yin",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Chen Zhe",
+        "team_2_mvp_player_name": "Sun Qiang",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5922/"
+      },
+      {
+        "team_1_name": "Celtic",
+        "team_2_name": "Die Mannschaft",
+        "team_1_score": 9,
+        "team_2_score": 1,
+        "date": "2024-09-24T00:00:00",
+        "name_list_of_team_1_players": [
+          "Daryl Harkin",
+          "Ryan Loughran",
+          "Alex Peers",
+          "Samuel Peel",
+          "Finn Todd",
+          "Richard Michael Foley",
+          "Pan Qisen (Eason)",
+          "Liam Clydesdale",
+          "Richard Woodward",
+          "Feng Deding",
+          "Sam Kwakye"
+        ],
+        "name_list_of_team_2_players": [
+          "Ahmed Wenbin",
+          "Desiderius Skiba",
+          "Gao Shixiong",
+          "Sun Dong Dong",
+          "Tobias Stueckler",
+          "Wegscheider Gerald",
+          "Xu Xiaoxiao"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Daryl Harkin",
+            ""
+          ],
+          [
+            "Ryan Loughran",
+            ""
+          ],
+          [
+            "Alex Peers",
+            ""
+          ],
+          [
+            "Alex Peers",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Ahmed Wenbin",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Samuel Peel",
+        "team_2_mvp_player_name": "Desiderius Skiba",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5923/"
+      },
+      {
+        "team_1_name": "Gran Reserva",
+        "team_2_name": "Celtic",
+        "team_1_score": 2,
+        "team_2_score": 4,
+        "date": "2024-09-24T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ernesto Jauregui",
+          "Terry Trky",
+          "Pablo Reyes",
+          "Carlos Emmanuel Garcia",
+          "Mario Espinal",
+          "Vincent Molina",
+          "Mario Santiago Espinal",
+          "Chen Zhe",
+          "Cristian Paladino",
+          "Bili Airiken"
+        ],
+        "name_list_of_team_2_players": [
+          "Daryl Harkin",
+          "Finn Todd",
+          "Samuel Peel",
+          "Ryan Loughran",
+          "Richard Michael Foley",
+          "Alex Peers",
+          "Pan Qisen (Eason)",
+          "Liam Clydesdale",
+          "Richard Woodward",
+          "Feng Deding",
+          "Sam Kwakye"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ernesto Jauregui",
+            ""
+          ],
+          [
+            "Terry Trky",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Daryl Harkin",
+            ""
+          ],
+          [
+            "Finn Todd",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ernesto Jauregui",
+        "team_2_mvp_player_name": "Daryl Harkin",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5924/"
+      },
+      {
+        "team_1_name": "Cosmos Hunter",
+        "team_2_name": "Die Mannschaft",
+        "team_1_score": 2,
+        "team_2_score": 0,
+        "date": "2024-09-24T00:00:00",
+        "name_list_of_team_1_players": [
+          "Chai Bo Yin",
+          "Zhao Hong Bo",
+          "Ke Zhi Chao",
+          "Sun Qiang",
+          "Xiao Yun",
+          "Ou Yang Mai",
+          "Song Yan Jun"
+        ],
+        "name_list_of_team_2_players": [
+          "Desiderius Skiba",
+          "Ahmed Wenbin",
+          "Gao Shixiong",
+          "Sun Dong Dong",
+          "Tobias Stueckler",
+          "Wegscheider Gerald",
+          "Xu Xiaoxiao"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Chai Bo Yin",
+            ""
+          ],
+          [
+            "Zhao Hong Bo",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Chai Bo Yin",
+        "team_2_mvp_player_name": "Desiderius Skiba",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5925/"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "competitions": [
+      {
+        "team_1_name": "Gran Reserva",
+        "team_2_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_1_score": 0,
+        "team_2_score": 6,
+        "date": "2024-10-08T00:00:00",
+        "name_list_of_team_1_players": [
+          "Atlegang Ntsobe",
+          "Eduardo Alameda Rodriguez",
+          "Everin Claussen",
+          "Mazzullah Khan",
+          "Gabriel Gimenez",
+          "Pablo Reyes",
+          "Ivan Tello",
+          "Terry Trky"
+        ],
+        "name_list_of_team_2_players": [
+          "Xu Zheng Yuan",
+          "Huo Yu Jia",
+          "Sun Wei",
+          "Wang Gao",
+          "Zhuang Yun",
+          "Yin Ze Xuan",
+          "Zhou Tong"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Xu Zheng Yuan",
+            ""
+          ],
+          [
+            "Huo Yu Jia",
+            ""
+          ],
+          [
+            "Huo Yu Jia",
+            ""
+          ],
+          [
+            "Huo Yu Jia",
+            ""
+          ],
+          [
+            "Huo Yu Jia",
+            ""
+          ],
+          [
+            "Sun Wei",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Atlegang Ntsobe",
+        "team_2_mvp_player_name": "Huo Yu Jia",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5927/"
+      },
+      {
+        "team_1_name": "Cosmos Hunter",
+        "team_2_name": "FC Post Beijing",
+        "team_1_score": 5,
+        "team_2_score": 3,
+        "date": "2024-10-08T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sun Qiang",
+          "Zhao Hong Bo",
+          "Song Yan Jun",
+          "Lao Bi",
+          "Bai Peng",
+          "Xiao Yun",
+          "Ou Yang Mai",
+          "Tian Xiao Hui",
+          "Ke Zhi Chao"
+        ],
+        "name_list_of_team_2_players": [
+          "Zhao Zhiyuan",
+          "Fan Chao",
+          "Ji Baoqiang",
+          "Gong Jia Xin",
+          "Liu Tao",
+          "Wei Lei",
+          "Zhang Yin",
+          "Li Shuo"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Zhao Hong Bo",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Zhao Zhiyuan",
+            ""
+          ],
+          [
+            "Fan Chao",
+            ""
+          ],
+          [
+            "Ji Baoqiang",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Song Yan Jun",
+        "team_2_mvp_player_name": "Fan Chao",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5928/"
+      },
+      {
+        "team_1_name": "Cosmos Hunter",
+        "team_2_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_1_score": 4,
+        "team_2_score": 5,
+        "date": "2024-10-08T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sun Qiang",
+          "Ou Yang Mai",
+          "Song Yan Jun",
+          "Lao Bi",
+          "Bai Peng",
+          "Xiao Yun",
+          "Tian Xiao Hui",
+          "Zhao Hong Bo",
+          "Ke Zhi Chao"
+        ],
+        "name_list_of_team_2_players": [
+          "Xu Zheng Yuan",
+          "Zhuang Yun",
+          "Wang Gao",
+          "Sun Wei",
+          "Yin Ze Xuan",
+          "Huo Yu Jia",
+          "Zhou Tong",
+          "Shi Sheng Wei"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Ou Yang Mai",
+            ""
+          ],
+          [
+            "Song Yan Jun",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Xu Zheng Yuan",
+            ""
+          ],
+          [
+            "Xu Zheng Yuan",
+            ""
+          ],
+          [
+            "Zhuang Yun",
+            ""
+          ],
+          [
+            "Wang Gao",
+            ""
+          ],
+          [
+            "Sun Wei",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Sun Qiang",
+        "team_2_mvp_player_name": "Xu Zheng Yuan",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5929/"
+      },
+      {
+        "team_1_name": "FC Post Beijing",
+        "team_2_name": "Gran Reserva",
+        "team_1_score": 5,
+        "team_2_score": 4,
+        "date": "2024-10-08T00:00:00",
+        "name_list_of_team_1_players": [
+          "Zhao Zhiyuan",
+          "Fan Chao",
+          "Ji Baoqiang",
+          "Gong Jia Xin",
+          "Liu Tao",
+          "Wei Lei",
+          "Zhang Yin",
+          "Li Shuo"
+        ],
+        "name_list_of_team_2_players": [
+          "Everin Claussen",
+          "Mazzullah Khan",
+          "Eduardo Alameda Rodriguez",
+          "Atlegang Ntsobe",
+          "Gabriel Gimenez",
+          "Pablo Reyes",
+          "Ivan Tello",
+          "Terry Trky",
+          "Daniel Garcia"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Zhao Zhiyuan",
+            ""
+          ],
+          [
+            "Fan Chao",
+            ""
+          ],
+          [
+            "Fan Chao",
+            ""
+          ],
+          [
+            "Ji Baoqiang",
+            ""
+          ],
+          [
+            "Ji Baoqiang",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Everin Claussen",
+            ""
+          ],
+          [
+            "Mazzullah Khan",
+            ""
+          ],
+          [
+            "Mazzullah Khan",
+            ""
+          ],
+          [
+            "Mazzullah Khan",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": "Mazzullah Khan",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5930/"
+      },
+      {
+        "team_1_name": "Celtic",
+        "team_2_name": "Huojian",
+        "team_1_score": 2,
+        "team_2_score": 2,
+        "date": "2024-10-08T00:00:00",
+        "name_list_of_team_1_players": [
+          "Samuel Peel",
+          "Sam Kwakye",
+          "Daryl Harkin",
+          "Ryan Loughran",
+          "Finn Todd",
+          "Alex Peers",
+          "Kieran Nolan",
+          "Pan Qisen (Eason)",
+          "Liam Clydesdale",
+          "Richard Woodward",
+          "Feng Deding"
+        ],
+        "name_list_of_team_2_players": [
+          "Enoch Pius",
+          "Wesley Smout",
+          "Emmanuel Okurut",
+          "Martin Hofmann",
+          "Todd Balazovic",
+          "Farhan Alam",
+          "Yue Shenshen",
+          "Joseph Latham",
+          "Ryan Sewell",
+          "Rukundo Ryan",
+          "Roma Khajiev"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Enoch Pius",
+            ""
+          ],
+          [
+            "Enoch Pius",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Samuel Peel",
+        "team_2_mvp_player_name": "Enoch Pius",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5931/"
+      },
+      {
+        "team_1_name": "Sexy",
+        "team_2_name": "Die Mannschaft",
+        "team_1_score": 5,
+        "team_2_score": 0,
+        "date": "2024-10-08T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hal Denny",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Note Yohji Robert",
+          "Sam Lingwood",
+          "Andi Topi",
+          "Liam Paul Green",
+          "Lucas de Azambuja Cao",
+          "Kovalev Aleksander",
+          "Aboubacar Kouma"
+        ],
+        "name_list_of_team_2_players": [
+          "Cao Jia Lan",
+          "Gao Shixiong",
+          "Sun Dong Dong",
+          "Tobias Stueckler",
+          "Hu Runpu",
+          "Wan Xiang Dong",
+          "Lei Zhi Guang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Hal Denny",
+            ""
+          ],
+          [
+            "Alfonso Sanchez",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Aitor Mondragon",
+        "team_2_mvp_player_name": "Cao Jia Lan",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5932/"
+      },
+      {
+        "team_1_name": "Huojian",
+        "team_2_name": "Die Mannschaft",
+        "team_1_score": 7,
+        "team_2_score": 2,
+        "date": "2024-10-08T00:00:00",
+        "name_list_of_team_1_players": [
+          "Emmanuel Okurut",
+          "Farhan Alam",
+          "Enoch Pius",
+          "Rukundo Ryan",
+          "Roma Khajiev",
+          "Wesley Smout",
+          "Todd Balazovic",
+          "Yue Shenshen",
+          "Joseph Latham",
+          "Ryan Sewell"
+        ],
+        "name_list_of_team_2_players": [
+          "Cao Jia Lan",
+          "Sun Dong Dong",
+          "Gao Shixiong",
+          "Tobias Stueckler",
+          "Hu Runpu",
+          "Wan Xiang Dong",
+          "Lei Zhi Guang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Emmanuel Okurut",
+            ""
+          ],
+          [
+            "Emmanuel Okurut",
+            ""
+          ],
+          [
+            "Farhan Alam",
+            ""
+          ],
+          [
+            "Enoch Pius",
+            ""
+          ],
+          [
+            "Enoch Pius",
+            ""
+          ],
+          [
+            "Rukundo Ryan",
+            ""
+          ],
+          [
+            "Roma Khajiev",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Cao Jia Lan",
+            ""
+          ],
+          [
+            "Sun Dong Dong",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": "Cao Jia Lan",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5933/"
+      },
+      {
+        "team_1_name": "Sexy",
+        "team_2_name": "Celtic",
+        "team_1_score": 4,
+        "team_2_score": 1,
+        "date": "2024-10-08T00:00:00",
+        "name_list_of_team_1_players": [
+          "Andi Topi",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Hal Denny",
+          "Note Yohji Robert",
+          "Sam Lingwood",
+          "Liam Paul Green",
+          "Lucas de Azambuja Cao",
+          "Kovalev Aleksander",
+          "Aboubacar Kouma"
+        ],
+        "name_list_of_team_2_players": [
+          "Samuel Peel",
+          "Liam Clydesdale",
+          "Daryl Harkin",
+          "Ryan Loughran",
+          "Finn Todd",
+          "Alex Peers",
+          "Kieran Nolan",
+          "Pan Qisen (Eason)",
+          "Richard Woodward",
+          "Feng Deding",
+          "Sam Kwakye"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Alfonso Sanchez",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Liam Clydesdale",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Andi Topi",
+        "team_2_mvp_player_name": "Samuel Peel",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5934/"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "competitions": [
+      {
+        "team_1_name": "Gran Reserva",
+        "team_2_name": "Huojian",
+        "team_1_score": 1,
+        "team_2_score": 6,
+        "date": "2024-10-15T00:00:00",
+        "name_list_of_team_1_players": [
+          "Eduardo Alameda Rodriguez",
+          "Jett Matheson",
+          "Mazzullah Khan",
+          "Atlegang Ntsobe",
+          "Pablo Reyes",
+          "Ivan Tello",
+          "Cristian Paladino",
+          "Terry Trky",
+          "Adam Meng"
+        ],
+        "name_list_of_team_2_players": [
+          "Wesley Smout",
+          "Martin Hofmann",
+          "Robin Aschhoff",
+          "Farhan Alam",
+          "Joseph Latham",
+          "Ryan Sewell",
+          "Sean Dalton",
+          "Enoch Pius",
+          "Roma Khajiev",
+          "Kalyesubula Habby"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Atlegang Ntsobe",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Robin Aschhoff",
+            ""
+          ],
+          [
+            "Robin Aschhoff",
+            ""
+          ],
+          [
+            "Robin Aschhoff",
+            ""
+          ],
+          [
+            "Robin Aschhoff",
+            ""
+          ],
+          [
+            "Sean Dalton",
+            ""
+          ],
+          [
+            "Kalyesubula Habby",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Atlegang Ntsobe",
+        "team_2_mvp_player_name": "Joseph Latham",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5936/"
+      },
+      {
+        "team_1_name": "Cosmos Hunter",
+        "team_2_name": "Sexy",
+        "team_1_score": 3,
+        "team_2_score": 5,
+        "date": "2024-10-15T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hu Shao Qing",
+          "Sun Qiang",
+          "Li Yu",
+          "Xiao Yun",
+          "Ou Yang Mai",
+          "Tian Xiao Hui",
+          "Zhao Hong Bo",
+          "Ke Zhi Chao",
+          "Song Yan Jun"
+        ],
+        "name_list_of_team_2_players": [
+          "Hal Denny",
+          "Sam Lingwood",
+          "Andi Topi",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Kovalev Aleksander",
+          "Aboubacar Kouma",
+          "Conor Patrick Dunn"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Sun Qiang",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Hal Denny",
+            ""
+          ],
+          [
+            "Hal Denny",
+            ""
+          ],
+          [
+            "Sam Lingwood",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Kovalev Aleksander",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Sun Qiang",
+        "team_2_mvp_player_name": "Alfonso Sanchez",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5937/"
+      },
+      {
+        "team_1_name": "Sexy",
+        "team_2_name": "Gran Reserva",
+        "team_1_score": 7,
+        "team_2_score": 1,
+        "date": "2024-10-15T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sam Lingwood",
+          "Andi Topi",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Hal Denny",
+          "Kovalev Aleksander",
+          "Aboubacar Kouma",
+          "Conor Patrick Dunn"
+        ],
+        "name_list_of_team_2_players": [
+          "Eduardo Alameda Rodriguez",
+          "Everin Claussen",
+          "Mazzullah Khan",
+          "Atlegang Ntsobe",
+          "Pablo Reyes",
+          "Ivan Tello",
+          "Cristian Paladino",
+          "Terry Trky",
+          "Adam Meng"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Alfonso Sanchez",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Kovalev Aleksander",
+            ""
+          ],
+          [
+            "Kovalev Aleksander",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Atlegang Ntsobe",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Aitor Mondragon",
+        "team_2_mvp_player_name": "Mazzullah Khan",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5938/"
+      },
+      {
+        "team_1_name": "Huojian",
+        "team_2_name": "Cosmos Hunter",
+        "team_1_score": 2,
+        "team_2_score": 3,
+        "date": "2024-10-15T00:00:00",
+        "name_list_of_team_1_players": [
+          "Wesley Smout",
+          "Martin Hofmann",
+          "Robin Aschhoff",
+          "Farhan Alam",
+          "Joseph Latham",
+          "Ryan Sewell",
+          "Sean Dalton",
+          "Enoch Pius",
+          "Roma Khajiev",
+          "Kalyesubula Habby"
+        ],
+        "name_list_of_team_2_players": [
+          "Hu Shao Qing",
+          "Sun Qiang",
+          "Li Yu",
+          "Xiao Yun",
+          "Ou Yang Mai",
+          "Tian Xiao Hui",
+          "Zhao Hong Bo",
+          "Ke Zhi Chao",
+          "Song Yan Jun"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Enoch Pius",
+            ""
+          ],
+          [
+            "Kalyesubula Habby",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Ou Yang Mai",
+            ""
+          ],
+          [
+            "Tian Xiao Hui",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Enoch Pius",
+        "team_2_mvp_player_name": "Tian Xiao Hui",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5939/"
+      },
+      {
+        "team_1_name": "FC Post Beijing",
+        "team_2_name": "Die Mannschaft",
+        "team_1_score": 2,
+        "team_2_score": 2,
+        "date": "2024-10-15T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Wei Lei",
+          "Zhang Yin",
+          "Liu Zhao",
+          "Fan Chao",
+          "Li Shuo"
+        ],
+        "name_list_of_team_2_players": [
+          "Gao Shixiong",
+          "Sun Dong Dong",
+          "Tobias Stueckler",
+          "Hu Runpu",
+          "Cao Jia Lan",
+          "Wan Xiang Dong",
+          "Wu Hong You",
+          "Lei Zhi Guang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Liu Zhao",
+            ""
+          ],
+          [
+            "Fan Chao",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Gao Shixiong",
+            ""
+          ],
+          [
+            "Cao Jia Lan",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Fan Chao",
+        "team_2_mvp_player_name": "Tobias Stueckler",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5940/"
+      },
+      {
+        "team_1_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_2_name": "Celtic",
+        "team_1_score": 2,
+        "team_2_score": 3,
+        "date": "2024-10-15T00:00:00",
+        "name_list_of_team_1_players": [
+          "Yu Jing Bo",
+          "Xu Zheng Yuan",
+          "Huo Yu Jia",
+          "Yin Ze Xuan",
+          "Fan Zhong Yi",
+          "Zhuang Yun",
+          "Wu Meng Xu",
+          "Lu Chang"
+        ],
+        "name_list_of_team_2_players": [
+          "Daryl Harkin",
+          "Finn Todd",
+          "Richard Michael Foley",
+          "Pan Qisen (Eason)",
+          "Samuel Peel",
+          "Liam Clydesdale",
+          "Feng Deding",
+          "Paul Diffley",
+          "Sam Kwakye"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Fan Zhong Yi",
+            ""
+          ],
+          [
+            "Zhuang Yun",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Feng Deding",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Fan Zhong Yi",
+        "team_2_mvp_player_name": "Samuel Peel",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5941/"
+      },
+      {
+        "team_1_name": "Die Mannschaft",
+        "team_2_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_1_score": 4,
+        "team_2_score": 5,
+        "date": "2024-10-15T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gao Shixiong",
+          "Sun Dong Dong",
+          "Tobias Stueckler",
+          "Hu Runpu",
+          "Cao Jia Lan",
+          "Wan Xiang Dong",
+          "Wu Hong You",
+          "Lei Zhi Guang"
+        ],
+        "name_list_of_team_2_players": [
+          "Yu Jing Bo",
+          "Xu Zheng Yuan",
+          "Huo Yu Jia",
+          "Yin Ze Xuan",
+          "Fan Zhong Yi",
+          "Zhuang Yun",
+          "Wu Meng Xu",
+          "Lu Chang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Gao Shixiong",
+            ""
+          ],
+          [
+            "Sun Dong Dong",
+            ""
+          ],
+          [
+            "Cao Jia Lan",
+            ""
+          ],
+          [
+            "Wan Xiang Dong",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Xu Zheng Yuan",
+            ""
+          ],
+          [
+            "Huo Yu Jia",
+            ""
+          ],
+          [
+            "Fan Zhong Yi",
+            ""
+          ],
+          [
+            "Fan Zhong Yi",
+            ""
+          ],
+          [
+            "Fan Zhong Yi",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Wan Xiang Dong",
+        "team_2_mvp_player_name": "Fan Zhong Yi",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5942/"
+      },
+      {
+        "team_1_name": "FC Post Beijing",
+        "team_2_name": "Celtic",
+        "team_1_score": 0,
+        "team_2_score": 12,
+        "date": "2024-10-15T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Wei Lei",
+          "Zhang Yin",
+          "Liu Zhao",
+          "Fan Chao",
+          "Li Shuo"
+        ],
+        "name_list_of_team_2_players": [
+          "Daryl Harkin",
+          "Finn Todd",
+          "Richard Michael Foley",
+          "Pan Qisen (Eason)",
+          "Samuel Peel",
+          "Liam Clydesdale",
+          "Feng Deding",
+          "Paul Diffley",
+          "Sam Kwakye"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Liam Clydesdale",
+            ""
+          ],
+          [
+            "Feng Deding",
+            ""
+          ],
+          [
+            "Paul Diffley",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Zhao Zhiyuan",
+        "team_2_mvp_player_name": "Feng Deding",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5943/"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "competitions": [
+      {
+        "team_1_name": "Cosmos Hunter",
+        "team_2_name": "Celtic",
+        "team_1_score": 1,
+        "team_2_score": 4,
+        "date": "2024-10-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ou Yang Mai",
+          "Li Jia Hui",
+          "Jo She",
+          "Tian Xiao Hui",
+          "Xiao Yun",
+          "Hu Shao Qing"
+        ],
+        "name_list_of_team_2_players": [
+          "Finn Todd",
+          "Richard Michael Foley",
+          "Alex Peers",
+          "Kieran Nolan",
+          "Samuel Peel",
+          "Feng Deding",
+          "Paul Diffley",
+          "Sam Kwakye"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Tian Xiao Hui",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Kieran Nolan",
+            ""
+          ],
+          [
+            "Paul Diffley",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Xiao Yun",
+        "team_2_mvp_player_name": "Samuel Peel",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5947/"
+      },
+      {
+        "team_1_name": "FC Post Beijing",
+        "team_2_name": "Huojian",
+        "team_1_score": 4,
+        "team_2_score": 1,
+        "date": "2024-10-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Liu Tao",
+          "Liu Zhao",
+          "Fan Chao",
+          "Li Shuo",
+          "Ji Baoqiang"
+        ],
+        "name_list_of_team_2_players": [
+          "Abdulkadir Abdulrahman",
+          "Kalyesubula Habby",
+          "Emmanuel Okurut",
+          "Martin Hofmann",
+          "Robin Aschhoff",
+          "Wesley Smout",
+          "Arend Mueller",
+          "Ryan Sewell",
+          "Sean Dalton",
+          "Enoch Pius",
+          "Roma Khajiev"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Li Shuo",
+            ""
+          ],
+          [
+            "Li Shuo",
+            ""
+          ],
+          [
+            "Ji Baoqiang",
+            ""
+          ],
+          [
+            "Ji Baoqiang",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Roma Khajiev",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ji Baoqiang",
+        "team_2_mvp_player_name": "Emmanuel Okurut",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5948/"
+      },
+      {
+        "team_1_name": "Cosmos Hunter",
+        "team_2_name": "FC Post Beijing",
+        "team_1_score": 5,
+        "team_2_score": 3,
+        "date": "2024-10-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ou Yang Mai",
+          "Li Jia Hui",
+          "Jo She",
+          "Hu Sha Qing",
+          "Tian Xiao Hui",
+          "Xiao Yun"
+        ],
+        "name_list_of_team_2_players": [
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Liu Tao",
+          "Liu Zhao",
+          "Fan Chao",
+          "Li Shuo",
+          "Ji Baoqiang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ou Yang Mai",
+            ""
+          ],
+          [
+            "Li Jia Hui",
+            ""
+          ],
+          [
+            "Jo She",
+            ""
+          ],
+          [
+            "Jo She",
+            ""
+          ],
+          [
+            "Jo She",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Fan Chao",
+            ""
+          ],
+          [
+            "Fan Chao",
+            ""
+          ],
+          [
+            "Ji Baoqiang",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Xiao Yun",
+        "team_2_mvp_player_name": "Ji Baoqiang",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5949/"
+      },
+      {
+        "team_1_name": "Huojian",
+        "team_2_name": "Celtic",
+        "team_1_score": 4,
+        "team_2_score": 3,
+        "date": "2024-10-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Abdulkadir Abdulrahman",
+          "Kalyesubula Habby",
+          "Emmanuel Okurut",
+          "Martin Hofmann",
+          "Robin Aschhoff",
+          "Wesley Smout",
+          "Arend Mueller",
+          "Ryan Sewell",
+          "Sean Dalton",
+          "Enoch Pius",
+          "Roma Khajiev"
+        ],
+        "name_list_of_team_2_players": [
+          "Finn Todd",
+          "Richard Michael Foley",
+          "Alex Peers",
+          "Kieran Nolan",
+          "Samuel Peel",
+          "Feng Deding",
+          "Paul Diffley",
+          "Sam Kwakye"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Kalyesubula Habby",
+            ""
+          ],
+          [
+            "Enoch Pius",
+            ""
+          ],
+          [
+            "Enoch Pius",
+            ""
+          ],
+          [
+            "Enoch Pius",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Emmanuel Okurut",
+        "team_2_mvp_player_name": "Samuel Peel",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5950/"
+      },
+      {
+        "team_1_name": "Sexy",
+        "team_2_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_1_score": 8,
+        "team_2_score": 0,
+        "date": "2024-10-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hal Denny",
+          "Note Yohji Robert",
+          "Sam Lingwood",
+          "Milos Sorak",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Aboubacar Kouma"
+        ],
+        "name_list_of_team_2_players": [
+          "Wu Meng Xu",
+          "Guo Chen Xiao",
+          "Zhuang Yun",
+          "Ya Mo Han",
+          "Fu Gao",
+          "Yin Ze Xuan",
+          "Xu Zheng Yuan",
+          "Yu Jing Bo"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Note Yohji Robert",
+            ""
+          ],
+          [
+            "Note Yohji Robert",
+            ""
+          ],
+          [
+            "Note Yohji Robert",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aboubacar Kouma",
+            ""
+          ],
+          [
+            "Aboubacar Kouma",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Note Yohji Robert",
+        "team_2_mvp_player_name": "Ya Mo Han",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5951/"
+      },
+      {
+        "team_1_name": "Gran Reserva",
+        "team_2_name": "Die Mannschaft",
+        "team_1_score": 5,
+        "team_2_score": 0,
+        "date": "2024-10-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Pablo Reyes",
+          "Abubakar Sadiq Abdulkadir",
+          "Max Young",
+          "Liam Crandall",
+          "Gaizka Geijo",
+          "Jett Matheson",
+          "Everin Claussen",
+          "Atlegang Ntsobe",
+          "Gabriel Gimenez",
+          "Adam Meng",
+          "Terry Trky"
+        ],
+        "name_list_of_team_2_players": [
+          "Gao Shixiong",
+          "Tobias Stueckler",
+          "Hu Runpu",
+          "Desiderius Skiba",
+          "Cao Jia Lan",
+          "Wan Xiang Dong",
+          "Wu Hang You",
+          "Fan Yong Guang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Max Young",
+            ""
+          ],
+          [
+            "Liam Crandall",
+            ""
+          ],
+          [
+            "Liam Crandall",
+            ""
+          ],
+          [
+            "Liam Crandall",
+            ""
+          ],
+          [
+            "Atlegang Ntsobe",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Max Young",
+        "team_2_mvp_player_name": "Wu Hang You",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5952/"
+      },
+      {
+        "team_1_name": "Sexy",
+        "team_2_name": "Gran Reserva",
+        "team_1_score": 6,
+        "team_2_score": 5,
+        "date": "2024-10-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hal Denny",
+          "Note Yohji Robert",
+          "Sam Lingwood",
+          "Milos Sorak",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Aboubacar Kouma",
+          "Kovalev Aleksander"
+        ],
+        "name_list_of_team_2_players": [
+          "Jett Matheson",
+          "Everin Claussen",
+          "Atlegang Ntsobe",
+          "Gabriel Gimenez",
+          "Pablo Reyes",
+          "Adam Meng",
+          "Terry Trky",
+          "Abubakar Sadiq Abdulkadir",
+          "Max Young",
+          "Liam Crandall",
+          "Gaizka Geijo"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Note Yohji Robert",
+            ""
+          ],
+          [
+            "Alfonso Sanchez",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Kovalev Aleksander",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Atlegang Ntsobe",
+            ""
+          ],
+          [
+            "Max Young",
+            ""
+          ],
+          [
+            "Liam Crandall",
+            ""
+          ],
+          [
+            "Liam Crandall",
+            ""
+          ],
+          [
+            "Liam Crandall",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Aitor Mondragon",
+        "team_2_mvp_player_name": "Max Young",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5953/"
+      },
+      {
+        "team_1_name": "Die Mannschaft",
+        "team_2_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_1_score": 3,
+        "team_2_score": 6,
+        "date": "2024-10-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gao Shixiong",
+          "Tobias Stueckler",
+          "Hu Runpu",
+          "Desiderius Skiba",
+          "Cao Jia Lan",
+          "Wan Xiang Dong",
+          "Wu Hang You",
+          "Fan Yong Guang"
+        ],
+        "name_list_of_team_2_players": [
+          "Wu Meng Xu",
+          "Guo Chen Xiao",
+          "Zhuang Yun",
+          "Ya Mo Han",
+          "Fu Gao",
+          "Yin Ze Xuan",
+          "Xu Zheng Yuan",
+          "Yu Jing Bo"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Gao Shixiong",
+            ""
+          ],
+          [
+            "Wan Xiang Dong",
+            ""
+          ],
+          [
+            "Wu Hang You",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Ya Mo Han",
+            ""
+          ],
+          [
+            "Ya Mo Han",
+            ""
+          ],
+          [
+            "Ya Mo Han",
+            ""
+          ],
+          [
+            "Fu Gao",
+            ""
+          ],
+          [
+            "Yin Ze Xuan",
+            ""
+          ],
+          [
+            "Yin Ze Xuan",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Desiderius Skiba",
+        "team_2_mvp_player_name": "Ya Mo Han",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5954/"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "competitions": [
+      {
+        "team_1_name": "Gran Reserva",
+        "team_2_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_1_score": 6,
+        "team_2_score": 1,
+        "date": "2024-10-29T00:00:00",
+        "name_list_of_team_1_players": [
+          "Pablo Reyes",
+          "Abubakar Sadiq Abdulkadir",
+          "Liam Crandall",
+          "Mazzullah Khan",
+          "Adam Meng",
+          "Carlos Emmanuel Garcia",
+          "Ivan Tello",
+          "Cristian Paladino",
+          "Terry Trky",
+          "Ryan Crandall"
+        ],
+        "name_list_of_team_2_players": [
+          "Ma Mu Ye",
+          "Wu Meng Xu",
+          "Zhuang Yun",
+          "Fan Zhong Yi",
+          "Fu Gao",
+          "Shi Sheng Wei",
+          "Yu Jing Bo"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Abubakar Sadiq Abdulkadir",
+            ""
+          ],
+          [
+            "Abubakar Sadiq Abdulkadir",
+            ""
+          ],
+          [
+            "Abubakar Sadiq Abdulkadir",
+            ""
+          ],
+          [
+            "Abubakar Sadiq Abdulkadir",
+            ""
+          ],
+          [
+            "Liam Crandall",
+            ""
+          ],
+          [
+            "Mazzullah Khan",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Shi Sheng Wei",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Mazzullah Khan",
+        "team_2_mvp_player_name": "Shi Sheng Wei",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5959/"
+      },
+      {
+        "team_1_name": "FC Post Beijing",
+        "team_2_name": "Huojian",
+        "team_1_score": 5,
+        "team_2_score": 6,
+        "date": "2024-10-29T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Liu Tao",
+          "Zhang Yin",
+          "Liu Zhao",
+          "Fan Chao",
+          "Li Shuo",
+          "Ji Baoqiang"
+        ],
+        "name_list_of_team_2_players": [
+          "Joseph Latham",
+          "Kalyesubula Habby",
+          "Emmanuel Okurut",
+          "Martin Hofmann",
+          "Robin Aschhoff",
+          "Memphis Ward",
+          "Wesley Smout",
+          "Ryan Sewell",
+          "Sean Dalton",
+          "Enoch Pius",
+          "Rukundo Ryan",
+          "Roma Khajiev",
+          "Sendita Jeofrey"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Liu Zhao",
+            ""
+          ],
+          [
+            "Fan Chao",
+            ""
+          ],
+          [
+            "Li Shuo",
+            ""
+          ],
+          [
+            "Ji Baoqiang",
+            ""
+          ],
+          [
+            "Ji Baoqiang",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Kalyesubula Habby",
+            ""
+          ],
+          [
+            "Kalyesubula Habby",
+            ""
+          ],
+          [
+            "Emmanuel Okurut",
+            ""
+          ],
+          [
+            "Rukundo Ryan",
+            ""
+          ],
+          [
+            "Rukundo Ryan",
+            ""
+          ],
+          [
+            "Sendita Jeofrey",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Liu Zhao",
+        "team_2_mvp_player_name": "Emmanuel Okurut",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5960/"
+      },
+      {
+        "team_1_name": "Gran Reserva",
+        "team_2_name": "FC Post Beijing",
+        "team_1_score": 7,
+        "team_2_score": 3,
+        "date": "2024-10-29T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ryan Crandall",
+          "Abubakar Sadiq Abdulkadir",
+          "Liam Crandall",
+          "Mazzullah Khan",
+          "Adam Meng",
+          "Pablo Reyes",
+          "Carlos Emmanuel Garcia",
+          "Ivan Tello",
+          "Cristian Paladino",
+          "Terry Trky"
+        ],
+        "name_list_of_team_2_players": [
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Liu Tao",
+          "Zhang Yin",
+          "Liu Zhao",
+          "Fan Chao",
+          "Li Shuo",
+          "Ji Baoqiang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ryan Crandall",
+            ""
+          ],
+          [
+            "Abubakar Sadiq Abdulkadir",
+            ""
+          ],
+          [
+            "Abubakar Sadiq Abdulkadir",
+            ""
+          ],
+          [
+            "Abubakar Sadiq Abdulkadir",
+            ""
+          ],
+          [
+            "Liam Crandall",
+            ""
+          ],
+          [
+            "Liam Crandall",
+            ""
+          ],
+          [
+            "Mazzullah Khan",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Gong Jia Xin",
+            ""
+          ],
+          [
+            "Gong Jia Xin",
+            ""
+          ],
+          [
+            "Ji Baoqiang",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Abubakar Sadiq Abdulkadir",
+        "team_2_mvp_player_name": "Gong Jia Xin",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5961/"
+      },
+      {
+        "team_1_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_2_name": "Huojian",
+        "team_1_score": 6,
+        "team_2_score": 7,
+        "date": "2024-10-29T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ma Mu Ye",
+          "Wu Meng Xu",
+          "Zhuang Yun",
+          "Fan Zhong Yi",
+          "Fu Gao",
+          "Shi Sheng Wei",
+          "Yu Jing Bo"
+        ],
+        "name_list_of_team_2_players": [
+          "Joseph Latham",
+          "Sendita Jeofrey",
+          "Kalyesubula Habby",
+          "Emmanuel Okurut",
+          "Martin Hofmann",
+          "Robin Aschhoff",
+          "Memphis Ward",
+          "Wesley Smout",
+          "Ryan Sewell",
+          "Sean Dalton",
+          "Enoch Pius",
+          "Rukundo Ryan",
+          "Roma Khajiev"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Fan Zhong Yi",
+            ""
+          ],
+          [
+            "Fan Zhong Yi",
+            ""
+          ],
+          [
+            "Fu Gao",
+            ""
+          ],
+          [
+            "Fu Gao",
+            ""
+          ],
+          [
+            "Shi Sheng Wei",
+            ""
+          ],
+          [
+            "Shi Sheng Wei",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Sendita Jeofrey",
+            ""
+          ],
+          [
+            "Sendita Jeofrey",
+            ""
+          ],
+          [
+            "Kalyesubula Habby",
+            ""
+          ],
+          [
+            "Kalyesubula Habby",
+            ""
+          ],
+          [
+            "Robin Aschhoff",
+            ""
+          ],
+          [
+            "Enoch Pius",
+            ""
+          ],
+          [
+            "Rukundo Ryan",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Zhuang Yun",
+        "team_2_mvp_player_name": "Kalyesubula Habby",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5962/"
+      },
+      {
+        "team_1_name": "Sexy",
+        "team_2_name": "Die Mannschaft",
+        "team_1_score": 13,
+        "team_2_score": 1,
+        "date": "2024-10-29T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hal Denny",
+          "Domink Ruben Mehl",
+          "Sam Lingwood",
+          "Andi Topi",
+          "Liam Paul Green",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Aboubacar Kouma"
+        ],
+        "name_list_of_team_2_players": [
+          "Gao Shixiong",
+          "Tobias Stueckler",
+          "Wegscheider Gerald",
+          "Hu Runpu",
+          "Cao Jia Lan",
+          "Wu Hang You"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sam Lingwood",
+            ""
+          ],
+          [
+            "Sam Lingwood",
+            ""
+          ],
+          [
+            "Liam Paul Green",
+            ""
+          ],
+          [
+            "Alfonso Sanchez",
+            ""
+          ],
+          [
+            "Alfonso Sanchez",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aboubacar Kouma",
+            ""
+          ],
+          [
+            "Aboubacar Kouma",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Cao Jia Lan",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Alfonso Sanchez",
+        "team_2_mvp_player_name": "Wu Hang You",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5963/"
+      },
+      {
+        "team_1_name": "Celtic",
+        "team_2_name": "Cosmos Hunter",
+        "team_1_score": 2,
+        "team_2_score": 3,
+        "date": "2024-10-29T00:00:00",
+        "name_list_of_team_1_players": [
+          "Samuel Peel",
+          "Brendan Anthony Fennell",
+          "Sam Thornber",
+          "Feng Deding",
+          "Daryl Harkin",
+          "Pan Qisen (Eason)",
+          "Alex Peers",
+          "Richard Michael Foley",
+          "Finn Todd"
+        ],
+        "name_list_of_team_2_players": [
+          "Ou Yang Mai",
+          "Song Yan Jun",
+          "Ke Zhi Chao",
+          "Zhao Hong Bo",
+          "Tian Xiao Hui",
+          "Xiao Yun",
+          "Li Yu",
+          "Sun Qiang",
+          "Fu Bo Zun",
+          "Yang Ya Dong"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Ke Zhi Chao",
+            ""
+          ],
+          [
+            "Sun Qiang",
+            ""
+          ],
+          [
+            "Fu Bo Zun",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Samuel Peel",
+        "team_2_mvp_player_name": "Fu Bo Zun",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5964/"
+      },
+      {
+        "team_1_name": "Die Mannschaft",
+        "team_2_name": "Celtic",
+        "team_1_score": 2,
+        "team_2_score": 7,
+        "date": "2024-10-29T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gao Shixiong",
+          "Tobias Stueckler",
+          "Wegscheider Gerald",
+          "Hu Runpu",
+          "Cao Jia Lan",
+          "Wan Xiang Dong",
+          "Wu Hang You"
+        ],
+        "name_list_of_team_2_players": [
+          "Samuel Peel",
+          "Brendan Anthony Fennell",
+          "Sam Thornber",
+          "Feng Deding",
+          "Daryl Harkin",
+          "Pan Qisen (Eason)",
+          "Alex Peers",
+          "Richard Michael Foley",
+          "Finn Todd"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Gao Shixiong",
+            ""
+          ],
+          [
+            "Wegscheider Gerald",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Brendan Anthony Fennell",
+            ""
+          ],
+          [
+            "Daryl Harkin",
+            ""
+          ],
+          [
+            "Alex Peers",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Wu Hang You",
+        "team_2_mvp_player_name": "Samuel Peel",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5965/"
+      },
+      {
+        "team_1_name": "Sexy",
+        "team_2_name": "Cosmos Hunter",
+        "team_1_score": 3,
+        "team_2_score": 2,
+        "date": "2024-10-29T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hal Denny",
+          "Domink Ruben Mehl",
+          "Sam Lingwood",
+          "Andi Topi",
+          "Liam Paul Green",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Aboubacar Kouma"
+        ],
+        "name_list_of_team_2_players": [
+          "Tian Xiao Hui",
+          "Fu Bo Zun",
+          "Yang Ya Dong",
+          "Song Yan Jun",
+          "Ke Zhi Chao",
+          "Zhao Hong Bo",
+          "Ou Yang Mai",
+          "Xiao Yun",
+          "Li Yu",
+          "Sun Qiang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sam Lingwood",
+            ""
+          ],
+          [
+            "Sam Lingwood",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Fu Bo Zun",
+            ""
+          ],
+          [
+            "Sun Qiang",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Sam Lingwood",
+        "team_2_mvp_player_name": "Sun Qiang",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5966/"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "competitions": [
+      {
+        "team_1_name": "Die Mannschaft",
+        "team_2_name": "Cosmos Hunter",
+        "team_1_score": 0,
+        "team_2_score": 7,
+        "date": "2024-11-05T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gao Shixiong",
+          "Zhao Chao",
+          "Tobias Stueckler",
+          "Wegscheider Gerald",
+          "Hu Runpu",
+          "Cao Jia Lan",
+          "Wu Hang You"
+        ],
+        "name_list_of_team_2_players": [
+          "Tian Xiao Hui",
+          "Li Jia Hui",
+          "Jo She",
+          "Zhao Hong Bo",
+          "Ou Yang Mai",
+          "Xiao Yun",
+          "Li Yu",
+          "Hu Shao Qing",
+          "Liu Ze Chuan"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Li Jia Hui",
+            ""
+          ],
+          [
+            "Jo She",
+            ""
+          ],
+          [
+            "Jo She",
+            ""
+          ],
+          [
+            "Li Yu",
+            ""
+          ],
+          [
+            "Hu Shao Qing",
+            ""
+          ],
+          [
+            "Liu Ze Chuan",
+            ""
+          ],
+          [
+            "Liu Ze Chuan",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Wu Hang You",
+        "team_2_mvp_player_name": "Jo She",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/6004/"
+      },
+      {
+        "team_1_name": "FC Post Beijing",
+        "team_2_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_1_score": 6,
+        "team_2_score": 0,
+        "date": "2024-11-05T00:00:00",
+        "name_list_of_team_1_players": [],
+        "name_list_of_team_2_players": [],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": null,
+        "team_2_scored_players": null,
+        "team_1_red_card_player_names": null,
+        "team_2_red_card_player_names": null,
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": null,
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/6005/"
+      },
+      {
+        "team_1_name": "Die Mannschaft",
+        "team_2_name": "FC Post Beijing",
+        "team_1_score": 4,
+        "team_2_score": 3,
+        "date": "2024-11-05T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gao Shixiong",
+          "Zhao Chao",
+          "Tobias Stueckler",
+          "Wegscheider Gerald",
+          "Hu Runpu",
+          "Cao Jia Lan",
+          "Wu Hang You"
+        ],
+        "name_list_of_team_2_players": [
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Liu Tao",
+          "Wei Lei",
+          "Liu Zhao",
+          "Fan Chao",
+          "Li Shuo",
+          "Ji Baoqiang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Gao Shixiong",
+            ""
+          ],
+          [
+            "Wegscheider Gerald",
+            ""
+          ],
+          [
+            "Cao Jia Lan",
+            ""
+          ],
+          [
+            "Wu Hang You",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Wei Lei",
+            ""
+          ],
+          [
+            "Wei Lei",
+            ""
+          ],
+          [
+            "Fan Chao",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Cao Jia Lan",
+        "team_2_mvp_player_name": "Fan Chao",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/6006/"
+      },
+      {
+        "team_1_name": "Cosmos Hunter",
+        "team_2_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_1_score": 6,
+        "team_2_score": 0,
+        "date": "2024-11-05T00:00:00",
+        "name_list_of_team_1_players": [],
+        "name_list_of_team_2_players": [],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": null,
+        "team_2_scored_players": null,
+        "team_1_red_card_player_names": null,
+        "team_2_red_card_player_names": null,
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": null,
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/6007/"
+      },
+      {
+        "team_1_name": "Huojian",
+        "team_2_name": "Gran Reserva",
+        "team_1_score": 2,
+        "team_2_score": 2,
+        "date": "2024-11-05T00:00:00",
+        "name_list_of_team_1_players": [
+          "Wesley Smout",
+          "Kalyesubula Habby",
+          "Sendita Jeofrey",
+          "Abdulkadir Abdulrahman",
+          "Yue Shenshen",
+          "Ryan Sewell",
+          "Enoch Pius",
+          "Rukundo Ryan",
+          "Roma Khajiev"
+        ],
+        "name_list_of_team_2_players": [
+          "Liam Crandall",
+          "Daniel Garcia",
+          "Benjamin Allcock",
+          "Vincent Molina",
+          "Pablo Reyes",
+          "Adam Meng",
+          "Ryan Crandall",
+          "Abubakar Sadiq Abdulkadir",
+          "Daniele Long",
+          "Everin Claussen",
+          "Ivan Tello",
+          "Terry Trky"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Rukundo Ryan",
+            ""
+          ],
+          [
+            "Roma Khajiev",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Daniel Garcia",
+            ""
+          ],
+          [
+            "Abubakar Sadiq Abdulkadir",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Abdulkadir Abdulrahman",
+        "team_2_mvp_player_name": "Abubakar Sadiq Abdulkadir",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/6008/"
+      },
+      {
+        "team_1_name": "Sexy",
+        "team_2_name": "Celtic",
+        "team_1_score": 5,
+        "team_2_score": 3,
+        "date": "2024-11-05T00:00:00",
+        "name_list_of_team_1_players": [
+          "Domink Ruben Mehl",
+          "Sam Lingwood",
+          "Andi Topi",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Aboubacar Kouma",
+          "Hal Denny"
+        ],
+        "name_list_of_team_2_players": [
+          "Sam Kwakye",
+          "Samuel Peel",
+          "Finn Todd",
+          "Ryan Loughran",
+          "Richard Michael Foley",
+          "Feng Deding",
+          "Pan Qisen (Eason)",
+          "Alex Peers"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Domink Ruben Mehl",
+            ""
+          ],
+          [
+            "Alfonso Sanchez",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aboubacar Kouma",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Ryan Loughran",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Domink Ruben Mehl",
+        "team_2_mvp_player_name": "Samuel Peel",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/6009/"
+      },
+      {
+        "team_1_name": "Celtic",
+        "team_2_name": "Gran Reserva",
+        "team_1_score": 5,
+        "team_2_score": 2,
+        "date": "2024-11-05T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sam Kwakye",
+          "Samuel Peel",
+          "Finn Todd",
+          "Ryan Loughran",
+          "Richard Michael Foley",
+          "Feng Deding",
+          "Pan Qisen (Eason)",
+          "Alex Peers"
+        ],
+        "name_list_of_team_2_players": [
+          "Liam Crandall",
+          "Daniel Garcia",
+          "Benjamin Allcock",
+          "Vincent Molina",
+          "Pablo Reyes",
+          "Adam Meng",
+          "Ryan Crandall",
+          "Abubakar Sadiq Abdulkadir",
+          "Daniele Long",
+          "Everin Claussen",
+          "Ivan Tello",
+          "Terry Trky"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Ryan Loughran",
+            ""
+          ],
+          [
+            "Feng Deding",
+            ""
+          ],
+          [
+            "Feng Deding",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Ryan Crandall",
+            ""
+          ],
+          [
+            "Abubakar Sadiq Abdulkadir",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Samuel Peel",
+        "team_2_mvp_player_name": "Ryan Crandall",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/6010/"
+      },
+      {
+        "team_1_name": "Huojian",
+        "team_2_name": "Sexy",
+        "team_1_score": 3,
+        "team_2_score": 3,
+        "date": "2024-11-05T00:00:00",
+        "name_list_of_team_1_players": [
+          "Wesley Smout",
+          "Kalyesubula Habby",
+          "Sendita Jeofrey",
+          "Abdulkadir Abdulrahman",
+          "Yue Shenshen",
+          "Ryan Sewell",
+          "Enoch Pius",
+          "Rukundo Ryan",
+          "Roma Khajiev"
+        ],
+        "name_list_of_team_2_players": [
+          "Domink Ruben Mehl",
+          "Sam Lingwood",
+          "Andi Topi",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Aboubacar Kouma",
+          "Hal Denny"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Abdulkadir Abdulrahman",
+            ""
+          ],
+          [
+            "Enoch Pius",
+            ""
+          ],
+          [
+            "Rukundo Ryan",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Domink Ruben Mehl",
+            ""
+          ],
+          [
+            "Sam Lingwood",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ryan Sewell",
+        "team_2_mvp_player_name": "Sam Lingwood",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/6011/"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "competitions": [
+      {
+        "team_1_name": "Gran Reserva",
+        "team_2_name": "Cosmos Hunter",
+        "team_1_score": 3,
+        "team_2_score": 1,
+        "date": "2024-11-12T00:00:00",
+        "name_list_of_team_1_players": [
+          "Mario Santiago Espinal",
+          "Benjamin Allcock",
+          "Atlegang Ntsobe",
+          "Cristian Paladino",
+          "Mazzullah Khan",
+          "Pablo Reyes",
+          "Adam Meng",
+          "Ryan Crandall",
+          "Jett Matheson",
+          "Ivan Tello"
+        ],
+        "name_list_of_team_2_players": [
+          "Jo She",
+          "Song Yan Jun",
+          "Xiao Yun",
+          "Fu Bo Zun",
+          "Li Yu"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Atlegang Ntsobe",
+            ""
+          ],
+          [
+            "Ryan Crandall",
+            ""
+          ],
+          [
+            "Ryan Crandall",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Fu Bo Zun",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Atlegang Ntsobe",
+        "team_2_mvp_player_name": "Jo She",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5995/"
+      },
+      {
+        "team_1_name": "Die Mannschaft",
+        "team_2_name": "Huojian",
+        "team_1_score": 1,
+        "team_2_score": 4,
+        "date": "2024-11-12T00:00:00",
+        "name_list_of_team_1_players": [
+          "Zhao Chao",
+          "Fan Yong Guang",
+          "Wu Hang You",
+          "Hu Runpu",
+          "Wan Xiang Dong",
+          "Gao Shixiong",
+          "Cao Jia Lan"
+        ],
+        "name_list_of_team_2_players": [
+          "Wesley Smout",
+          "Kalyesubula Habby",
+          "Sendita Jeofrey",
+          "Abdulkadir Abdulrahman",
+          "Emmanuel Okurut",
+          "Farhan Alam",
+          "Arend Mueller",
+          "Ryan Sewell",
+          "Roma Khajiev"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Wu Hang You",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Wesley Smout",
+            ""
+          ],
+          [
+            "Kalyesubula Habby",
+            ""
+          ],
+          [
+            "Kalyesubula Habby",
+            ""
+          ],
+          [
+            "Roma Khajiev",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Fan Yong Guang",
+        "team_2_mvp_player_name": "Kalyesubula Habby",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5996/"
+      },
+      {
+        "team_1_name": "Die Mannschaft",
+        "team_2_name": "Gran Reserva",
+        "team_1_score": 3,
+        "team_2_score": 2,
+        "date": "2024-11-12T00:00:00",
+        "name_list_of_team_1_players": [
+          "Zhao Chao",
+          "Fan Yong Guang",
+          "Wu Hang You",
+          "Hu Runpu",
+          "Wan Xiang Dong",
+          "Gao Shixiong",
+          "Cao Jia Lan"
+        ],
+        "name_list_of_team_2_players": [
+          "Mario Santiago Espinal",
+          "Benjamin Allcock",
+          "Atlegang Ntsobe",
+          "Cristian Paladino",
+          "Mazzullah Khan",
+          "Pablo Reyes",
+          "Adam Meng",
+          "Ryan Crandall",
+          "Jett Matheson",
+          "Ivan Tello"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Wu Hang You",
+            ""
+          ],
+          [
+            "Wu Hang You",
+            ""
+          ],
+          [
+            "Cao Jia Lan",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Adam Meng",
+            ""
+          ],
+          [
+            "Ryan Crandall",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Fan Yong Guang",
+        "team_2_mvp_player_name": "Atlegang Ntsobe",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5997/"
+      },
+      {
+        "team_1_name": "Cosmos Hunter",
+        "team_2_name": "Huojian",
+        "team_1_score": 2,
+        "team_2_score": 1,
+        "date": "2024-11-12T00:00:00",
+        "name_list_of_team_1_players": [
+          "Jo She",
+          "Song Yan Jun",
+          "Xiao Yun",
+          "Fu Bo Zun",
+          "Li Yu"
+        ],
+        "name_list_of_team_2_players": [
+          "Wesley Smout",
+          "Kalyesubula Habby",
+          "Sendita Jeofrey",
+          "Abdulkadir Abdulrahman",
+          "Emmanuel Okurut",
+          "Farhan Alam",
+          "Arend Mueller",
+          "Ryan Sewell",
+          "Roma Khajiev"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Fu Bo Zun",
+            ""
+          ],
+          [
+            "Li Yu",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Arend Mueller",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Fu Bo Zun",
+        "team_2_mvp_player_name": "Kalyesubula Habby",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5998/"
+      },
+      {
+        "team_1_name": "Sexy",
+        "team_2_name": "FC Post Beijing",
+        "team_1_score": 5,
+        "team_2_score": 3,
+        "date": "2024-11-12T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sam Lingwood",
+          "Andi Topi",
+          "Milos Sorak",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Hal Denny"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Tao",
+          "Ji Baoqiang",
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Liu Zhao",
+          "Wei Lei",
+          "Fan Chao"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Andi Topi",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Wei Lei",
+            ""
+          ],
+          [
+            "Fan Chao",
+            ""
+          ],
+          [
+            "Fan Chao",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Aitor Mondragon",
+        "team_2_mvp_player_name": "Gong Jia Xin",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5999/"
+      },
+      {
+        "team_1_name": "Celtic",
+        "team_2_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_1_score": 3,
+        "team_2_score": 1,
+        "date": "2024-11-12T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sam Kwakye",
+          "Samuel Peel",
+          "Finn Todd",
+          "Ryan Loughran",
+          "Daryl Harkin",
+          "Richard Michael Foley",
+          "Feng Deding",
+          "Pan Qisen (Eason)",
+          "Alex Peers"
+        ],
+        "name_list_of_team_2_players": [
+          "Sun Wei",
+          "Xu Zheng Yuan",
+          "Yin Ze Xuan",
+          "Zhuang Yun",
+          "Wang Gao",
+          "Bo Han",
+          "Guo Chen Xiao",
+          "Ma Mu Ye",
+          "Fan Zhong Yi",
+          "Shi Sheng Wei"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Alex Peers",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Sun Wei",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": "Yin Ze Xuan",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/6000/"
+      },
+      {
+        "team_1_name": "Celtic",
+        "team_2_name": "FC Post Beijing",
+        "team_1_score": 9,
+        "team_2_score": 1,
+        "date": "2024-11-12T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sam Kwakye",
+          "Samuel Peel",
+          "Finn Todd",
+          "Ryan Loughran",
+          "Daryl Harkin",
+          "Richard Michael Foley",
+          "Feng Deding",
+          "Pan Qisen (Eason)",
+          "Alex Peers"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Tao",
+          "Ji Baoqiang",
+          "Gong Jia Xin",
+          "Zhao Zhiyuan",
+          "Liu Zhao",
+          "Wei Lei",
+          "Fan Chao"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Sam Kwakye",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Samuel Peel",
+            ""
+          ],
+          [
+            "Feng Deding",
+            ""
+          ],
+          [
+            "Alex Peers",
+            ""
+          ],
+          [
+            "Alex Peers",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Fan Chao",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Samuel Peel",
+        "team_2_mvp_player_name": "Fan Chao",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/6001/"
+      },
+      {
+        "team_1_name": "Vivid\u7cbe\u529b\u65e0\u9650",
+        "team_2_name": "Sexy",
+        "team_1_score": 1,
+        "team_2_score": 8,
+        "date": "2024-11-12T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sun Wei",
+          "Xu Zheng Yuan",
+          "Yin Ze Xuan",
+          "Zhuang Yun",
+          "Wang Gao",
+          "Bo Han",
+          "Guo Chen Xiao",
+          "Ma Mu Ye",
+          "Fan Zhong Yi",
+          "Shi Sheng Wei"
+        ],
+        "name_list_of_team_2_players": [
+          "Sam Lingwood",
+          "Andi Topi",
+          "Milos Sorak",
+          "Alfonso Sanchez",
+          "Aitor Mondragon",
+          "Hal Denny"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Shi Sheng Wei",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Sam Lingwood",
+            ""
+          ],
+          [
+            "Sam Lingwood",
+            ""
+          ],
+          [
+            "Andi Topi",
+            ""
+          ],
+          [
+            "Alfonso Sanchez",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Aitor Mondragon",
+            ""
+          ],
+          [
+            "Hal Denny",
+            ""
+          ],
+          [
+            "Hal Denny",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Shi Sheng Wei",
+        "team_2_mvp_player_name": "Aitor Mondragon",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/6002/"
+      }
+    ]
+  }
+]

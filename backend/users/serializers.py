@@ -10,7 +10,7 @@ from django.core.files.storage import default_storage
 from urllib.parse import quote
 import os
 from django.utils.text import slugify
-from azure.storage.blob import BlobServiceClient
+# from azure.storage.blob import BlobServiceClient
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -65,10 +65,9 @@ class UserSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=30)
     last_name = serializers.CharField(max_length=30)
     date = serializers.DateField()
-    gender = serializers.CharField(max_length=10)
+    gender = serializers.CharField(max_length=30)
     email = serializers.EmailField()
-    image = serializers.ImageField(
-        use_url=True, required=False)  # Optional image fieldA
+    image = serializers.ImageField(use_url=True, required=False)  # Optional image fieldA
     image_url = serializers.SerializerMethodField()
 
     def get_image_url(self, obj):
@@ -77,27 +76,25 @@ class UserSerializer(serializers.Serializer):
         return None
 
     def create(self, validated_data):
-        image = validated_data.pop('image', None)
-        if image:
-            # Get the base name of the image file and the extension
-            base_name, extension = os.path.splitext(image.name)
-            # Sanitize the base name using Django's slugify function
-            sanitized_base_name = slugify(base_name)
-            # Form the new image name
-            sanitized_image_name = sanitized_base_name + extension
-            file_name = 'media/images/users/' + sanitized_image_name
+        # image = validated_data.pop('image', None)
+        # if image:
+        #     # Get the base name of the image file and the extension
+        #     base_name, extension = os.path.splitext(image.name)
+        #     # Sanitize the base name using Django's slugify function
+        #     sanitized_base_name = slugify(base_name)
+        #     # Form the new image name
+        #     sanitized_image_name = sanitized_base_name + extension
+        #     file_name = 'media/images/users/' + sanitized_image_name
 
-            # Create a blob client using the local file name as the name for the blob
-            blob_service_client = BlobServiceClient.from_connection_string(
-                AZURE_STORAGE_CONNECTION_STRING)
-            blob_client = blob_service_client.get_blob_client(
-                os.getenv('AZURE_CONTAINER'), file_name)
+        #     # Create a blob client using the local file name as the name for the blob
+        #     blob_service_client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
+        #     blob_client = blob_service_client.get_blob_client(os.getenv('AZURE_CONTAINER'), file_name)
 
-            # Upload the created file
-            blob_client.upload_blob(image.read())
-            file_url = blob_client.url
-        else:
-            file_url = None
+        #     # Upload the created file
+        #     blob_client.upload_blob(image.read())
+        #     file_url = blob_client.url
+        # else:
+        #     file_url = None
 
         # Create the user instance
         user = USER(
@@ -107,7 +104,7 @@ class UserSerializer(serializers.Serializer):
             date=validated_data['date'],
             gender=validated_data['gender'],
             email=validated_data['email'],
-            image_url=file_url  # Assume USER model has `image_url` field
+            image_url=validated_data.get('image_url', "")# Assume USER model has `image_url` field
         )
         user.set_password(validated_data['password'])
         user.save()

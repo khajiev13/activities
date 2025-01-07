@@ -1,0 +1,2958 @@
+[
+  {
+    "number": 1,
+    "competitions": [
+      {
+        "team_1_name": "Gran Reserva Damas",
+        "team_2_name": "Beijing Bats FC",
+        "team_1_score": 1,
+        "team_2_score": 3,
+        "date": "2024-09-21T00:00:00",
+        "name_list_of_team_1_players": [
+          "Evilena Ribeiro",
+          "Sophia Osbourne",
+          "Silke Geijo Alonso",
+          "Elena Giovi",
+          "Alina Tito",
+          "Xiaofeng Long",
+          "Anqi Yang",
+          "Patricia Caizea",
+          "Hannah Nosurname",
+          "Linda Christina Sofia Ninio-Scherer",
+          "Sanaa Rehane Waahibi",
+          "Laura Mekaite"
+        ],
+        "name_list_of_team_2_players": [
+          "Laura Yazbek-Pilon",
+          "Luo Li Dan (Lorinda)",
+          "Dora Wang",
+          "Romadina Daria",
+          "Louise Townley",
+          "Emily Kingett",
+          "Lihua Wang",
+          "Ma Xiao Ting",
+          "Summer Mao"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sophia Osbourne",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Laura Yazbek-Pilon",
+            ""
+          ],
+          [
+            "Laura Yazbek-Pilon",
+            ""
+          ],
+          [
+            "Luo Li Dan (Lorinda)",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Evilena Ribeiro",
+        "team_2_mvp_player_name": "Laura Yazbek-Pilon",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5105/"
+      },
+      {
+        "team_1_name": "Beijing Celtic Women FC",
+        "team_2_name": "Total Sports FC",
+        "team_1_score": 2,
+        "team_2_score": 11,
+        "date": "2024-09-21T00:00:00",
+        "name_list_of_team_1_players": [
+          "Chelsea Leigh Jones",
+          "Suliana Lutu Utaatu",
+          "Song Yu Chen",
+          "Emily Morgan McDaid",
+          "Liu Shu Ya",
+          "Demi Dale",
+          "Shannon Gallagher",
+          "Anna Rachel Lowthian",
+          "Cara Lee"
+        ],
+        "name_list_of_team_2_players": [
+          "Lei Xin Yu",
+          "Li Xiang",
+          "Huang Zen Wen",
+          "Yin Si Jun",
+          "Sun Yi Ran",
+          "Gao Ya Zhuo",
+          "Zuo Jia Xuan",
+          "OG",
+          "Xu Ming Yu",
+          "Wang Rui"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Chelsea Leigh Jones",
+            ""
+          ],
+          [
+            "Suliana Lutu Utaatu",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Lei Xin Yu",
+            ""
+          ],
+          [
+            "Lei Xin Yu",
+            ""
+          ],
+          [
+            "Li Xiang",
+            ""
+          ],
+          [
+            "Huang Zen Wen",
+            ""
+          ],
+          [
+            "Yin Si Jun",
+            ""
+          ],
+          [
+            "Sun Yi Ran",
+            ""
+          ],
+          [
+            "Sun Yi Ran",
+            ""
+          ],
+          [
+            "Gao Ya Zhuo",
+            ""
+          ],
+          [
+            "Zuo Jia Xuan",
+            ""
+          ],
+          [
+            "Zuo Jia Xuan",
+            ""
+          ],
+          [
+            "OG",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Chelsea Leigh Jones",
+        "team_2_mvp_player_name": "Lei Xin Yu",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5106/"
+      },
+      {
+        "team_1_name": "Sexy FC Women",
+        "team_2_name": "A\u00f1ejo FC Damas",
+        "team_1_score": 2,
+        "team_2_score": 5,
+        "date": "2024-09-21T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ayse Altindag",
+          "Catherine Claire Quaite",
+          "Yang Zhuqin",
+          "Abdulkadir Yasmin",
+          "Kiseleva Kseniia",
+          "Mbatha Buziwe Veronica",
+          "Nan Zhang",
+          "Iris Lonning"
+        ],
+        "name_list_of_team_2_players": [
+          "Hernanza Ruiz",
+          "Isabella de Azambuja Cao",
+          "Dima Abuhumoud",
+          "Nina Triado",
+          "Julia Campagnolo",
+          "Helena Villar",
+          "Melina Neira",
+          "Bonnie Choi"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Catherine Claire Quaite",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Isabella de Azambuja Cao",
+            ""
+          ],
+          [
+            "Dima Abuhumoud",
+            ""
+          ],
+          [
+            "Dima Abuhumoud",
+            ""
+          ],
+          [
+            "Nina Triado",
+            ""
+          ],
+          [
+            "Nina Triado",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ayse Altindag",
+        "team_2_mvp_player_name": "Hernanza Ruiz",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5107/"
+      },
+      {
+        "team_1_name": "Wunited FC",
+        "team_2_name": "Haruwin",
+        "team_1_score": 3,
+        "team_2_score": 1,
+        "date": "2024-09-21T00:00:00",
+        "name_list_of_team_1_players": [
+          "Lan Lan",
+          "Li Xin Xiao",
+          "Liu Zi Han",
+          "OG",
+          "Li Ming Shi",
+          "Guo Huan Lin",
+          "Hu Wan Qiu",
+          "Lin Nancy",
+          "Huo Min Han",
+          "Du Shu Han",
+          "You Ying Yi"
+        ],
+        "name_list_of_team_2_players": [
+          "Yan Yan Ying",
+          "Shi Lei",
+          "Liu Yi Ran",
+          "Deng Yi",
+          "Zhang Jing Mei",
+          "Ji Nian",
+          "Zhang Yan",
+          "Yang Lu",
+          "Yin Li Min",
+          "Wang Yu",
+          "Zhang Meng Yuan",
+          "Liu Shu Hao",
+          "Tang Ying Ying",
+          "Tang Tang",
+          "Yu Ting Yang",
+          "Shi Shu Yang",
+          "Midori",
+          "Zhang Zhuo",
+          "Boxer",
+          "Jiang Zhu Jun",
+          "Ye Ye",
+          "Jin Yan Gong",
+          "Wang Shen"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Li Xin Xiao",
+            ""
+          ],
+          [
+            "Liu Zi Han",
+            ""
+          ],
+          [
+            "OG",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Yan Yan Ying",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Lan Lan",
+        "team_2_mvp_player_name": "Shi Lei",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5108/"
+      },
+      {
+        "team_1_name": "\u6ce2\u6d6aLas Olas",
+        "team_2_name": "Wulimited",
+        "team_1_score": 1,
+        "team_2_score": 7,
+        "date": "2024-09-21T00:00:00",
+        "name_list_of_team_1_players": [
+          "Chen Jia Min",
+          "Xia Tian RU",
+          "Ice",
+          "Liu Xin Ran",
+          "Lian Yina",
+          "Xu Xiao Lu",
+          "Wang Shi Meng",
+          "Zhao Jing Ya",
+          "Jiang Ming",
+          "Li Yu Ye",
+          "Shi Xin Yang",
+          "Wang Man Shi",
+          "Ming Ke",
+          "Meng Ling Wei",
+          "Zhang Guo Bo",
+          "Su Jing",
+          "Liu Ke Xin",
+          "Li Xue Qing",
+          "Gong JI Yu",
+          "Liu Xin Yuan",
+          "Yi Yun Hong",
+          "Li Ruo Yuan",
+          "Xian Xuan Tong",
+          "Lidia Lu Su",
+          "Jiang Yi Min",
+          "Li Fang Yu"
+        ],
+        "name_list_of_team_2_players": [
+          "Wang Jing",
+          "Gong Xu",
+          "Wang Shuang",
+          "Han Liu Pan",
+          "Lu Zhe",
+          "Zhao Jing Xian",
+          "Liu Yu Xiao",
+          "Wang Jia Zi Yi",
+          "Chen Xiao Yu",
+          "Jian Xin Hui",
+          "Su Jing Yi",
+          "Liu Jia He Zi",
+          "Du Yu Jiao",
+          "Peng Xin Ting",
+          "Rong Yao How",
+          "Deng Han Rui",
+          "Yu Nian Xi",
+          "Li Si Ning",
+          "Chen Xi",
+          "Xue Han Wu"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Chen Jia Min",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Gong Xu",
+            ""
+          ],
+          [
+            "Wang Shuang",
+            ""
+          ],
+          [
+            "Han Liu Pan",
+            ""
+          ],
+          [
+            "Han Liu Pan",
+            ""
+          ],
+          [
+            "Lu Zhe",
+            ""
+          ],
+          [
+            "Lu Zhe",
+            ""
+          ],
+          [
+            "Zhao Jing Xian",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Chen Jia Min",
+        "team_2_mvp_player_name": "Wang Jing",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5109/"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "competitions": [
+      {
+        "team_1_name": "A\u00f1ejo FC Damas",
+        "team_2_name": "Gran Reserva Damas",
+        "team_1_score": 6,
+        "team_2_score": 0,
+        "date": "2024-09-28T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hernanza Ruiz",
+          "Ida Marie Marott",
+          "Isabella de Azambuja Cao",
+          "Lv Jia (Nicky)",
+          "Dima Abuhumoud",
+          "Julia Campagnolo",
+          "Helena Villar",
+          "Bonnie Choi"
+        ],
+        "name_list_of_team_2_players": [
+          "Sophia Osbourne",
+          "Silke Geijo Alonso",
+          "Elena Giovi",
+          "Grace Osbourne",
+          "Alina Tito",
+          "Xiaofeng Long",
+          "Rocio Chain",
+          "Linda Christina Sofia Ninio-Scherer",
+          "Laura Mekaite"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Isabella de Azambuja Cao",
+            ""
+          ],
+          [
+            "Dima Abuhumoud",
+            ""
+          ],
+          [
+            "Julia Campagnolo",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ida Marie Marott",
+        "team_2_mvp_player_name": "Linda Christina Sofia Ninio-Scherer",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5123/"
+      },
+      {
+        "team_1_name": "Wulimited",
+        "team_2_name": "Wunited FC",
+        "team_1_score": 0,
+        "team_2_score": 4,
+        "date": "2024-09-28T00:00:00",
+        "name_list_of_team_1_players": [
+          "Liu Jia He Zi",
+          "Wang Jing",
+          "Chen Xiao Yu",
+          "Gong Xu",
+          "Han Liu Pan",
+          "Deng Han Rui",
+          "Lu Zhe",
+          "Yu Nian Xi",
+          "Li Si Ning"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Ning",
+          "Lin Nancy",
+          "Wang Qi",
+          "You Ying Yi",
+          "Li Ming Shi",
+          "Guan Wen Fang",
+          "Zhang Qi Yu"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Liu Ning",
+            ""
+          ],
+          [
+            "Lin Nancy",
+            ""
+          ],
+          [
+            "Wang Qi",
+            ""
+          ],
+          [
+            "You Ying Yi",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Liu Jia He Zi",
+        "team_2_mvp_player_name": "Liu Ning",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5124/"
+      },
+      {
+        "team_1_name": "Haruwin",
+        "team_2_name": "Beijing Bats FC",
+        "team_1_score": 0,
+        "team_2_score": 4,
+        "date": "2024-09-28T00:00:00",
+        "name_list_of_team_1_players": [
+          "Zhang Meng Yuan",
+          "Shi Shu Yang",
+          "Liu Yi Ran",
+          "Zhang Jing Mei",
+          "Ji Nian",
+          "Zhang Yan",
+          "Yan Yan Ying",
+          "Shi Lei",
+          "Yang Lu",
+          "Yin Li Min",
+          "Wang Yu",
+          "Tang Ying Ying",
+          "Yu Ting Yang",
+          "Zhang Zhuo",
+          "Boxer",
+          "Jiang Zhu Jun",
+          "Ye Ye",
+          "Jin Yan Gong",
+          "Wang Shen"
+        ],
+        "name_list_of_team_2_players": [
+          "Rasolondrazanaka Vickene",
+          "Laura Yazbek-Pilon",
+          "Romadina Daria",
+          "Luo Li Dan (Lorinda)",
+          "Chen Mengyao",
+          "Louise Townley",
+          "Emily Kingett",
+          "Ma Xiao Ting",
+          "Summer Mao"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Rasolondrazanaka Vickene",
+            ""
+          ],
+          [
+            "Rasolondrazanaka Vickene",
+            ""
+          ],
+          [
+            "Laura Yazbek-Pilon",
+            ""
+          ],
+          [
+            "Laura Yazbek-Pilon",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Shi Shu Yang",
+        "team_2_mvp_player_name": "Rasolondrazanaka Vickene",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5125/"
+      },
+      {
+        "team_1_name": "Total Sports FC",
+        "team_2_name": "Sexy FC Women",
+        "team_1_score": 6,
+        "team_2_score": 0,
+        "date": "2024-09-28T00:00:00",
+        "name_list_of_team_1_players": [
+          "Zhang Yu Lu",
+          "Li Xiang",
+          "Yin Si Jun",
+          "Li Yun Ge",
+          "Huang Zen Wen",
+          "Zhou Rui Mei",
+          "Gao Ya Zhuo",
+          "Wang Rui"
+        ],
+        "name_list_of_team_2_players": [
+          "Catherine Claire Quaite",
+          "Fangyuan Chen",
+          "Liu Jia Qi",
+          "Adia Peng",
+          "Abdulkadir Yasmin",
+          "Kiseleva Kseniia",
+          "Ke Xu",
+          "Shunag Wang",
+          "Erika Wu",
+          "Iris Lonning"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Zhang Yu Lu",
+            ""
+          ],
+          [
+            "Zhang Yu Lu",
+            ""
+          ],
+          [
+            "Li Xiang",
+            ""
+          ],
+          [
+            "Li Xiang",
+            ""
+          ],
+          [
+            "Yin Si Jun",
+            ""
+          ],
+          [
+            "Li Yun Ge",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Zhang Yu Lu",
+        "team_2_mvp_player_name": "Catherine Claire Quaite",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5126/"
+      },
+      {
+        "team_1_name": "Beijing Celtic Women FC",
+        "team_2_name": "\u6ce2\u6d6aLas Olas",
+        "team_1_score": 0,
+        "team_2_score": 2,
+        "date": "2024-09-28T00:00:00",
+        "name_list_of_team_1_players": [
+          "Chelsea Leigh Jones",
+          "Joey Belcon",
+          "Suliana Lutu Utaatu",
+          "Liu Shu Ya",
+          "Cao Yi Zhi",
+          "Patience Leight Hopkins",
+          "Niamh Rose Dalton",
+          "Shannon Gallagher"
+        ],
+        "name_list_of_team_2_players": [
+          "Xia Tian RU",
+          "Lian Yina",
+          "Zhao Jing Ya",
+          "Jiang Ming",
+          "Li Yu Ye",
+          "Shi Xin Yang",
+          "Wang Man Shi",
+          "Ming Ke",
+          "Meng Ling Wei",
+          "Zhang Guo Bo",
+          "Gong JI Yu",
+          "Liu Xin Yuan",
+          "Yi Yun Hong",
+          "Li Ruo Yuan",
+          "Li Fang Yu"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Xia Tian RU",
+            ""
+          ],
+          [
+            "Xia Tian RU",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Chelsea Leigh Jones",
+        "team_2_mvp_player_name": "Xia Tian RU",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5127/"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "competitions": [
+      {
+        "team_1_name": "Beijing Bats FC",
+        "team_2_name": "Wulimited",
+        "team_1_score": 8,
+        "team_2_score": 5,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "Laura Yazbek-Pilon",
+          "Dora Wang",
+          "Emily Parker",
+          "Romadina Daria",
+          "Luo Li Dan (Lorinda)",
+          "Rasolondrazanaka Vickene",
+          "Louise Townley",
+          "Emily Kingett",
+          "Lihua Wang",
+          "Azucena Ramirez",
+          "Ma Xiao Ting",
+          "Summer Mao",
+          "Courtney Sidsworth",
+          "Chen Mengyao"
+        ],
+        "name_list_of_team_2_players": [
+          "Wang Jing",
+          "Gong Xu",
+          "Han Liu Pan",
+          "Lu Zhe",
+          "Zhao Jing Xian",
+          "Yu Nian Xi",
+          "Li Si Ning"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Laura Yazbek-Pilon",
+            ""
+          ],
+          [
+            "Laura Yazbek-Pilon",
+            ""
+          ],
+          [
+            "Laura Yazbek-Pilon",
+            ""
+          ],
+          [
+            "Laura Yazbek-Pilon",
+            ""
+          ],
+          [
+            "Romadina Daria",
+            ""
+          ],
+          [
+            "Luo Li Dan (Lorinda)",
+            ""
+          ],
+          [
+            "Rasolondrazanaka Vickene",
+            ""
+          ],
+          [
+            "Chen Mengyao",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Han Liu Pan",
+            ""
+          ],
+          [
+            "Han Liu Pan",
+            ""
+          ],
+          [
+            "Lu Zhe",
+            ""
+          ],
+          [
+            "Lu Zhe",
+            ""
+          ],
+          [
+            "Lu Zhe",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Laura Yazbek-Pilon",
+        "team_2_mvp_player_name": "Han Liu Pan",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5134/"
+      },
+      {
+        "team_1_name": "A\u00f1ejo FC Damas",
+        "team_2_name": "Total Sports FC",
+        "team_1_score": 4,
+        "team_2_score": 0,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hernanza Ruiz",
+          "Ida Marie Marott",
+          "Isabella de Azambuja Cao",
+          "Lv Jia (Nicky)",
+          "Dima Abuhumoud",
+          "Nina Triado",
+          "Julia Campagnolo",
+          "Helena Villar",
+          "Melina Neira",
+          "Bonnie Choi",
+          "Juliette Emilia Papon Ulloa",
+          "Mahana Rampling",
+          "Clara Qiu Liu",
+          "Vanessa Sophia Lind"
+        ],
+        "name_list_of_team_2_players": [
+          "Wang Jing Jing",
+          "Huang Zen Wen",
+          "Li Yun Ge",
+          "Yin Si Jun",
+          "Xu Ming Yu",
+          "Sun Yi Ran",
+          "Gao Ya Zhuo",
+          "Lei Xin Yu",
+          "Wang Rui"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Lv Jia (Nicky)",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ida Marie Marott",
+        "team_2_mvp_player_name": "Lei Xin Yu",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5135/"
+      },
+      {
+        "team_1_name": "Wunited FC",
+        "team_2_name": "Beijing Celtic Women FC",
+        "team_1_score": 5,
+        "team_2_score": 5,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "Li Ming Shi",
+          "Liu Ning",
+          "Guan Wen Fang",
+          "Li Xin Xiao",
+          "Hu Wan Qiu",
+          "Lin Nancy",
+          "Zhang Qi Yu",
+          "Huo Min Han",
+          "Lan Lan",
+          "Lei Jia Xin",
+          "Ariel Loo Jia Xuan",
+          "Xiong Xin Yi"
+        ],
+        "name_list_of_team_2_players": [
+          "Song Yu Chen",
+          "Suliana Lutu Utaatu",
+          "Liu Shu Ya",
+          "Chelsea Leigh Jones",
+          "Patience Leight Hopkins",
+          "Niamh Rose Dalton",
+          "Shannon Gallagher",
+          "Anna Rachel Lowthian",
+          "Cara Lee",
+          "Anne-Marie Cunniffe"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Li Ming Shi",
+            ""
+          ],
+          [
+            "Li Ming Shi",
+            ""
+          ],
+          [
+            "Li Ming Shi",
+            ""
+          ],
+          [
+            "Li Ming Shi",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Suliana Lutu Utaatu",
+            ""
+          ],
+          [
+            "Cara Lee",
+            ""
+          ],
+          [
+            "Cara Lee",
+            ""
+          ],
+          [
+            "Cara Lee",
+            ""
+          ],
+          [
+            "Cara Lee",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Zhang Qi Yu",
+        "team_2_mvp_player_name": "Cara Lee",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5136/"
+      },
+      {
+        "team_1_name": "Gran Reserva Damas",
+        "team_2_name": "Haruwin",
+        "team_1_score": 2,
+        "team_2_score": 1,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sophia Osbourne",
+          "Silke Geijo Alonso",
+          "Elena Giovi",
+          "Grace Osbourne",
+          "Alina Tito",
+          "Xiaofeng Long",
+          "Patricia Caizea",
+          "Linda Christina Sofia Ninio-Scherer",
+          "Sanaa Rehane Waahibi",
+          "Laura Mekaite",
+          "Franziska Schroeter"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Yi Ran",
+          "Zhang Jing Mei",
+          "Yan Yan Ying",
+          "Shi Lei",
+          "Yang Lu",
+          "Yin Li Min",
+          "Zhang Meng Yuan",
+          "Liu Shu Hao",
+          "Tang Ying Ying",
+          "Tang Tang",
+          "Shi Shu Yang",
+          "Zhang Zhuo",
+          "Ye Ye"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sophia Osbourne",
+            ""
+          ],
+          [
+            "Linda Christina Sofia Ninio-Scherer",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Zhang Meng Yuan",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Linda Christina Sofia Ninio-Scherer",
+        "team_2_mvp_player_name": "Zhang Meng Yuan",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5137/"
+      },
+      {
+        "team_1_name": "\u6ce2\u6d6aLas Olas",
+        "team_2_name": "Sexy FC Women",
+        "team_1_score": 0,
+        "team_2_score": 4,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "Su Jing",
+          "Lian Yina",
+          "Jiang Ming",
+          "Ming Ke",
+          "Xia Tian RU",
+          "Gong JI Yu",
+          "Chen Jia Min",
+          "Yi Yun Hong",
+          "Xian Xuan Tong",
+          "Jiang Yi Min",
+          "Ice",
+          "Liu Xin Ran"
+        ],
+        "name_list_of_team_2_players": [
+          "Catherine Claire Quaite",
+          "Fangyuan Chen",
+          "Abdulkadir Yasmin",
+          "Kiseleva Kseniia",
+          "Ke Xu",
+          "Shunag Wang",
+          "Nan Zhang",
+          "Iris Lonning",
+          "Ayse Altindag",
+          "Liu Jia Qi",
+          "Marina Roldan"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Fangyuan Chen",
+            ""
+          ],
+          [
+            "Shunag Wang",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Xia Tian RU",
+        "team_2_mvp_player_name": "Ayse Altindag",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5138/"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "competitions": [
+      {
+        "team_1_name": "Sexy FC Women",
+        "team_2_name": "Wunited FC",
+        "team_1_score": 2,
+        "team_2_score": 3,
+        "date": "2024-10-26T00:00:00",
+        "name_list_of_team_1_players": [
+          "Fangyuan Chen",
+          "Adia Peng",
+          "Abdulkadir Yasmin",
+          "Shunag Wang",
+          "Iris Lonning",
+          "Ayse Altindag",
+          "Marina Roldan"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Ning",
+          "Guan Wen Fang",
+          "Li Xin Xiao",
+          "Liu Zi Han",
+          "Hu Wan Qiu",
+          "Lin Nancy",
+          "Zhang Qi Yu",
+          "You Ying Yi"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ayse Altindag",
+            "10', 47'"
+          ],
+          [
+            "Marina Roldan",
+            "44'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Liu Ning",
+            "51'"
+          ],
+          [
+            "Hu Wan Qiu",
+            "35'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ayse Altindag",
+        "team_2_mvp_player_name": "Liu Ning",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5144/"
+      },
+      {
+        "team_1_name": "Beijing Celtic Women FC",
+        "team_2_name": "Beijing Bats FC",
+        "team_1_score": 3,
+        "team_2_score": 3,
+        "date": "2024-10-26T00:00:00",
+        "name_list_of_team_1_players": [
+          "Li Shu Yang (Kelly)",
+          "Emily Morgan McDaid",
+          "Suliana Lutu Utaatu",
+          "Liu Shu Ya",
+          "Chelsea Leigh Jones",
+          "Shannon Sogavare",
+          "Patience Leight Hopkins",
+          "Cara Lee"
+        ],
+        "name_list_of_team_2_players": [
+          "Dora Wang",
+          "Luo Li Dan (Lorinda)",
+          "Rasolondrazanaka Vickene",
+          "Chen Mengyao",
+          "Louise Townley",
+          "Emily Kingett",
+          "Lihua Wang",
+          "Michelle Chen",
+          "Ma Xiao Ting",
+          "Summer Mao"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Li Shu Yang (Kelly)",
+            ""
+          ],
+          [
+            "Li Shu Yang (Kelly)",
+            ""
+          ],
+          [
+            "Chelsea Leigh Jones",
+            ""
+          ],
+          [
+            "Cara Lee",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Luo Li Dan (Lorinda)",
+            ""
+          ],
+          [
+            "Rasolondrazanaka Vickene",
+            ""
+          ],
+          [
+            "Rasolondrazanaka Vickene",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Cara Lee",
+        "team_2_mvp_player_name": "Rasolondrazanaka Vickene",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5145/"
+      },
+      {
+        "team_1_name": "Wulimited",
+        "team_2_name": "Haruwin",
+        "team_1_score": 4,
+        "team_2_score": 1,
+        "date": "2024-10-26T00:00:00",
+        "name_list_of_team_1_players": [
+          "Xiaoning Chen \u9648\u6653\u5b81",
+          "Wang Jing",
+          "Jian Xin Hui",
+          "Gong Xu",
+          "Wang Shuang",
+          "Han Liu Pan",
+          "Deng Han Rui",
+          "Lu Zhe",
+          "Zhao Jing Xian",
+          "Li Si Ning"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Yi Ran",
+          "Deng Yi",
+          "Zhang Jing Mei",
+          "Ji Nian",
+          "Yan Yan Ying",
+          "Shi Lei",
+          "Yang Lu",
+          "Zhang Meng Yuan",
+          "Tang Ying Ying",
+          "Tang Tang",
+          "Zhang Zhuo"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Gong Xu",
+            "48'"
+          ],
+          [
+            "Lu Zhe",
+            "2', 52'"
+          ],
+          [
+            "Zhao Jing Xian",
+            "58'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Liu Yi Ran",
+            "2'"
+          ],
+          [
+            "Zhang Jing Mei",
+            "59'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Lu Zhe",
+        "team_2_mvp_player_name": null,
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5146/"
+      },
+      {
+        "team_1_name": "A\u00f1ejo FC Damas",
+        "team_2_name": "\u6ce2\u6d6aLas Olas",
+        "team_1_score": 3,
+        "team_2_score": 1,
+        "date": "2024-10-26T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ida Marie Marott",
+          "Lv Jia (Nicky)",
+          "Dima Abuhumoud",
+          "Helena Villar",
+          "Bonnie Choi"
+        ],
+        "name_list_of_team_2_players": [
+          "Lian Yina",
+          "Xu Xiao Lu",
+          "Zhao Jing Ya",
+          "Li Yu Ye",
+          "Shi Xin Yang",
+          "Ming Ke",
+          "Meng Ling Wei",
+          "Su Jing",
+          "Liu Ke Xin",
+          "Gong JI Yu",
+          "Liu Xin Yuan",
+          "Yi Yun Hong",
+          "Li Ruo Yuan",
+          "Lidia Lu Su",
+          "Li Fang Yu"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Li Ruo Yuan",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ida Marie Marott",
+        "team_2_mvp_player_name": "Lian Yina",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5147/"
+      },
+      {
+        "team_1_name": "Total Sports FC",
+        "team_2_name": "Gran Reserva Damas",
+        "team_1_score": 6,
+        "team_2_score": 0,
+        "date": "2024-10-26T00:00:00",
+        "name_list_of_team_1_players": [
+          "Wang Jing Jing",
+          "Li Xiang",
+          "Wang Rui",
+          "Ren Jing",
+          "Gao Ya Zhuo",
+          "Zhou Rui Mei",
+          "Yin Si Jun",
+          "Chen Xi Yuan",
+          "Liu Yu Xuan"
+        ],
+        "name_list_of_team_2_players": [
+          "Sophia Osbourne",
+          "Elena Giovi",
+          "Grace Osbourne",
+          "Anqi Yang",
+          "Hannah Nosurname",
+          "Rocio Chain",
+          "Linda Christina Sofia Ninio-Scherer",
+          "Evilena Ribeiro",
+          "Laura Mekaite"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Wang Jing Jing",
+            ""
+          ],
+          [
+            "Wang Jing Jing",
+            ""
+          ],
+          [
+            "Ren Jing",
+            ""
+          ],
+          [
+            "Ren Jing",
+            ""
+          ],
+          [
+            "Liu Yu Xuan",
+            ""
+          ],
+          [
+            "Liu Yu Xuan",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ren Jing",
+        "team_2_mvp_player_name": "Anqi Yang",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5148/"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "competitions": [
+      {
+        "team_1_name": "Beijing Bats FC",
+        "team_2_name": "Sexy FC Women",
+        "team_1_score": 2,
+        "team_2_score": 5,
+        "date": "2024-11-02T00:00:00",
+        "name_list_of_team_1_players": [
+          "Laura Yazbek-Pilon",
+          "Dora Wang",
+          "Romadina Daria",
+          "Luo Li Dan (Lorinda)",
+          "Rasolondrazanaka Vickene",
+          "Chen Mengyao",
+          "Emily Kingett",
+          "Lihua Wang",
+          "Summer Mao"
+        ],
+        "name_list_of_team_2_players": [
+          "Ke Xu",
+          "Marina Roldan",
+          "Ayse Altindag",
+          "Iris Lonning",
+          "Nan Zhang",
+          "Shunag Wang",
+          "Abdulkadir Yasmin",
+          "Adia Peng",
+          "Fangyuan Chen"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Romadina Daria",
+            ""
+          ],
+          [
+            "Rasolondrazanaka Vickene",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Nan Zhang",
+            ""
+          ],
+          [
+            "Shunag Wang",
+            ""
+          ],
+          [
+            "Shunag Wang",
+            ""
+          ],
+          [
+            "Abdulkadir Yasmin",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Luo Li Dan (Lorinda)",
+        "team_2_mvp_player_name": "Iris Lonning",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5157/"
+      },
+      {
+        "team_1_name": "Haruwin",
+        "team_2_name": "Beijing Celtic Women FC",
+        "team_1_score": 2,
+        "team_2_score": 3,
+        "date": "2024-11-02T00:00:00",
+        "name_list_of_team_1_players": [
+          "Liu Yi Ran",
+          "Zhang Jing Mei",
+          "Zhang Yan",
+          "Yan Yan Ying",
+          "Shi Lei",
+          "Yang Lu",
+          "Zhang Meng Yuan",
+          "Liu Shu Hao",
+          "Tang Ying Ying",
+          "Tang Tang",
+          "Shi Shu Yang",
+          "Zhang Zhuo",
+          "Ye Ye",
+          "Jin Yan Gong",
+          "Chen Dan"
+        ],
+        "name_list_of_team_2_players": [
+          "Li Shu Yang (Kelly)",
+          "Emily Morgan McDaid",
+          "Suliana Lutu Utaatu",
+          "Liu Shu Ya",
+          "Chelsea Leigh Jones",
+          "Patience Leight Hopkins",
+          "Niamh Rose Dalton",
+          "Anna Rachel Lowthian",
+          "Cara Lee",
+          "Ellen"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Liu Shu Hao"
+        ],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Liu Shu Hao",
+            ""
+          ],
+          [
+            "Tang Tang",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Chelsea Leigh Jones",
+            ""
+          ],
+          [
+            "Chelsea Leigh Jones",
+            ""
+          ],
+          [
+            "Cara Lee",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Yan Yan Ying",
+        "team_2_mvp_player_name": "Cara Lee",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5158/"
+      },
+      {
+        "team_1_name": "A\u00f1ejo FC Damas",
+        "team_2_name": "Wunited FC",
+        "team_1_score": 4,
+        "team_2_score": 1,
+        "date": "2024-11-02T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hernanza Ruiz",
+          "Ida Marie Marott",
+          "Lv Jia (Nicky)",
+          "Dima Abuhumoud",
+          "Julia Campagnolo",
+          "Helena Villar",
+          "Bonnie Choi",
+          "Valentina Rose Donovan"
+        ],
+        "name_list_of_team_2_players": [
+          "Wei Chun Yue",
+          "Li Ming Shi",
+          "Guan Wen Fang",
+          "Li Xin Xiao",
+          "Hu Wan Qiu",
+          "Lin Nancy",
+          "You Ying Yi"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "Hu Wan Qiu"
+        ],
+        "team_1_scored_players": [
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Valentina Rose Donovan",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Li Xin Xiao",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ida Marie Marott",
+        "team_2_mvp_player_name": "Lin Nancy",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5159/"
+      },
+      {
+        "team_1_name": "\u6ce2\u6d6aLas Olas",
+        "team_2_name": "Total Sports FC",
+        "team_1_score": 1,
+        "team_2_score": 4,
+        "date": "2024-11-02T00:00:00",
+        "name_list_of_team_1_players": [
+          "Xia Tian RU",
+          "Lian Yina",
+          "Zhao Jing Ya",
+          "Jiang Ming",
+          "Liu Ke Xin",
+          "Gong JI Yu",
+          "Chen Jia Min",
+          "Li Ruo Yuan",
+          "Xiao Deng",
+          "Jiu Mu",
+          "Huang Shao Xia"
+        ],
+        "name_list_of_team_2_players": [
+          "Chen Xi Yuan",
+          "Liu Yu Xuan",
+          "Zhao Yayi \u8d75\u96c5\u4eea",
+          "Wang Rui",
+          "Ren Jing",
+          "Sun Yi Ran",
+          "Xu Ming Yu",
+          "Zhou Rui Mei",
+          "Yin Si Jun",
+          "Zhang Yu Lu",
+          "Li Xiang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Xiao Deng",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Liu Yu Xuan",
+            ""
+          ],
+          [
+            "Liu Yu Xuan",
+            ""
+          ],
+          [
+            "Zhang Yu Lu",
+            ""
+          ],
+          [
+            "Zhang Yu Lu",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Huang Shao Xia",
+        "team_2_mvp_player_name": "Li Xiang",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5160/"
+      },
+      {
+        "team_1_name": "Gran Reserva Damas",
+        "team_2_name": "Wulimited",
+        "team_1_score": 0,
+        "team_2_score": 6,
+        "date": "2024-11-02T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sophia Osbourne",
+          "Silke Geijo Alonso",
+          "Elena Giovi",
+          "Grace Osbourne",
+          "Xiaofeng Long",
+          "Anqi Yang",
+          "Patricia Caizea",
+          "Hannah Nosurname",
+          "Rocio Chain",
+          "Evilena Ribeiro"
+        ],
+        "name_list_of_team_2_players": [
+          "Wang Jia Zi Yi",
+          "Wang Jing",
+          "Du Yu Jiao",
+          "Peng Xin Ting",
+          "Gong Xu",
+          "Wang Shuang",
+          "Han Liu Pan",
+          "Deng Han Rui",
+          "Lu Zhe",
+          "Li Si Ning",
+          "Xue Han Wu",
+          "Su Jing Yi"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Peng Xin Ting",
+            ""
+          ],
+          [
+            "Peng Xin Ting",
+            ""
+          ],
+          [
+            "Peng Xin Ting",
+            ""
+          ],
+          [
+            "Han Liu Pan",
+            ""
+          ],
+          [
+            "Xue Han Wu",
+            ""
+          ],
+          [
+            "Su Jing Yi",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Anqi Yang",
+        "team_2_mvp_player_name": "Peng Xin Ting",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5161/"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "competitions": [
+      {
+        "team_1_name": "Beijing Celtic Women FC",
+        "team_2_name": "Wulimited",
+        "team_1_score": 1,
+        "team_2_score": 4,
+        "date": "2024-11-09T00:00:00",
+        "name_list_of_team_1_players": [
+          "Li Shu Yang (Kelly)",
+          "Anna Rachel Lowthian",
+          "Cara Lee",
+          "Emily Morgan McDaid",
+          "Patience Leight Hopkins",
+          "Liu Shu Ya",
+          "Shannon Gallagher",
+          "Joey Belcon",
+          "Ellen",
+          "Chelsea Leigh Jones"
+        ],
+        "name_list_of_team_2_players": [
+          "Gong Xu",
+          "Wang Shuang",
+          "Xiaoning Chen \u9648\u6653\u5b81",
+          "Wang Jing",
+          "Liu Jia He Zi",
+          "Han Liu Pan",
+          "Deng Han Rui",
+          "Lu Zhe",
+          "Zhao Jing Xian",
+          "Li Si Ning"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Anna Rachel Lowthian",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Liu Jia He Zi",
+            ""
+          ],
+          [
+            "Deng Han Rui",
+            ""
+          ],
+          [
+            "Lu Zhe",
+            ""
+          ],
+          [
+            "Zhao Jing Xian",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Liu Shu Ya",
+        "team_2_mvp_player_name": "Deng Han Rui",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5167/"
+      },
+      {
+        "team_1_name": "A\u00f1ejo FC Damas",
+        "team_2_name": "Beijing Bats FC",
+        "team_1_score": 1,
+        "team_2_score": 0,
+        "date": "2024-11-09T00:00:00",
+        "name_list_of_team_1_players": [
+          "Juliette Emilia Papon Ulloa",
+          "Bonnie Choi",
+          "Dima Abuhumoud",
+          "Helena Villar",
+          "Julia Campagnolo",
+          "Isabella de Azambuja Cao",
+          "Hernanza Ruiz",
+          "Valentina Rose Donovan",
+          "Lv Jia (Nicky)",
+          "Clara Qiu Liu",
+          "Vanessa Sophia Lind"
+        ],
+        "name_list_of_team_2_players": [
+          "Emily Parker",
+          "Chen Mengyao",
+          "Louise Townley",
+          "Luo Li Dan (Lorinda)",
+          "Dora Wang",
+          "Summer Mao",
+          "Ma Xiao Ting",
+          "Emily Kingett",
+          "Romadina Daria",
+          "Rasolondrazanaka Vickene"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Dima Abuhumoud",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Lv Jia (Nicky)",
+        "team_2_mvp_player_name": "Rasolondrazanaka Vickene",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5168/"
+      },
+      {
+        "team_1_name": "Total Sports FC",
+        "team_2_name": "Wunited FC",
+        "team_1_score": 5,
+        "team_2_score": 1,
+        "date": "2024-11-09T00:00:00",
+        "name_list_of_team_1_players": [
+          "Li Xiang",
+          "Chen Xi Yuan",
+          "Liu Yu Xuan",
+          "Wang Rui",
+          "Ren Jing",
+          "Yin Si Jun"
+        ],
+        "name_list_of_team_2_players": [
+          "Wei Chun Yue",
+          "Li Ming Shi",
+          "Liu Ning",
+          "Liu Zi Han",
+          "Hu Wan Qiu",
+          "Zhang Qi Yu",
+          "You Ying Yi"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Liu Yu Xuan",
+            ""
+          ],
+          [
+            "Liu Yu Xuan",
+            ""
+          ],
+          [
+            "Ren Jing",
+            ""
+          ],
+          [
+            "Ren Jing",
+            ""
+          ],
+          [
+            "Ren Jing",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Li Ming Shi",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Liu Yu Xuan",
+        "team_2_mvp_player_name": "Li Ming Shi",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5169/"
+      },
+      {
+        "team_1_name": "\u6ce2\u6d6aLas Olas",
+        "team_2_name": "Gran Reserva Damas",
+        "team_1_score": 5,
+        "team_2_score": 0,
+        "date": "2024-11-09T00:00:00",
+        "name_list_of_team_1_players": [
+          "Huang Shao Xia",
+          "Lian Yina",
+          "Ming Ke",
+          "Zhang Guo Bo",
+          "Xia Tian RU",
+          "Gong JI Yu",
+          "Chen Jia Min",
+          "Li Ruo Yuan"
+        ],
+        "name_list_of_team_2_players": [
+          "Alina Tito",
+          "Hannah Nosurname",
+          "Franziska Schroeter",
+          "Anqi Yang",
+          "Evilena Ribeiro",
+          "Patricia Caizea",
+          "Laura Mekaite",
+          "Rocio Chain",
+          "Sanaa Rehane Waahibi",
+          "Elena Giovi"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Zhang Guo Bo",
+            ""
+          ],
+          [
+            "Zhang Guo Bo",
+            ""
+          ],
+          [
+            "Xia Tian RU",
+            ""
+          ],
+          [
+            "Xia Tian RU",
+            ""
+          ],
+          [
+            "Chen Jia Min",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Li Ruo Yuan",
+        "team_2_mvp_player_name": "Rocio Chain",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5170/"
+      },
+      {
+        "team_1_name": "Sexy FC Women",
+        "team_2_name": "Haruwin",
+        "team_1_score": 4,
+        "team_2_score": 2,
+        "date": "2024-11-09T00:00:00",
+        "name_list_of_team_1_players": [
+          "Catherine Claire Quaite",
+          "Ayse Altindag",
+          "Ke Xu",
+          "Iris Lonning",
+          "Abdulkadir Yasmin",
+          "Erika Wu",
+          "Pi Pi",
+          "Nan Zhang",
+          "Shunag Wang",
+          "Yang Zhuqin"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Yi Ran",
+          "Zhang Jing Mei",
+          "Yan Yan Ying",
+          "Shi Lei",
+          "Yang Lu",
+          "Zhang Meng Yuan",
+          "Liu Shu Hao",
+          "Tang Tang",
+          "Zhang Zhuo",
+          "Jiang Zhu Jun",
+          "Jin Yan Gong"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Nan Zhang",
+            ""
+          ],
+          [
+            "Shunag Wang",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Yan Yan Ying",
+            ""
+          ],
+          [
+            "Zhang Meng Yuan",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ayse Altindag",
+        "team_2_mvp_player_name": "Zhang Jing Mei",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5171/"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "competitions": [
+      {
+        "team_1_name": "Gran Reserva Damas",
+        "team_2_name": "Beijing Celtic Women FC",
+        "team_1_score": 2,
+        "team_2_score": 4,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [
+          "Silke Geijo Alonso",
+          "Alina Tito",
+          "Xiaofeng Long",
+          "Hannah Nosurname",
+          "Franziska Schroeter",
+          "Anqi Yang",
+          "Evilena Ribeiro",
+          "Patricia Caizea",
+          "Laura Mekaite",
+          "Grace Osbourne",
+          "Sanaa Rehane Waahibi",
+          "Sophia Osbourne"
+        ],
+        "name_list_of_team_2_players": [
+          "Niamh Rose Dalton",
+          "Anna Rachel Lowthian",
+          "Cara Lee",
+          "Suliana Lutu Utaatu",
+          "Patience Leight Hopkins",
+          "Liu Shu Ya",
+          "Joey Belcon",
+          "Chelsea Leigh Jones"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sanaa Rehane Waahibi",
+            ""
+          ],
+          [
+            "Sophia Osbourne",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Niamh Rose Dalton",
+            ""
+          ],
+          [
+            "Cara Lee",
+            ""
+          ],
+          [
+            "Suliana Lutu Utaatu",
+            ""
+          ],
+          [
+            "Suliana Lutu Utaatu",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Sanaa Rehane Waahibi",
+        "team_2_mvp_player_name": "Niamh Rose Dalton",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5177/"
+      },
+      {
+        "team_1_name": "Wunited FC",
+        "team_2_name": "\u6ce2\u6d6aLas Olas",
+        "team_1_score": 0,
+        "team_2_score": 2,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [
+          "Wei Chun Yue",
+          "Li Ming Shi",
+          "Liu Ning",
+          "Guan Wen Fang",
+          "Li Xin Xiao",
+          "Hu Wan Qiu",
+          "Lin Nancy",
+          "Huo Min Han",
+          "Xiong Xin Yi",
+          "You Ying Yi",
+          "Wang Xin Yu",
+          "Li Xiao Han"
+        ],
+        "name_list_of_team_2_players": [
+          "Huang Shao Xia",
+          "Lian Yina",
+          "Zhao Jing Ya",
+          "Wang Man Shi",
+          "Zhang Guo Bo",
+          "Xia Tian RU",
+          "Liu Ke Xin",
+          "Li Xue Qing",
+          "Gong JI Yu",
+          "Chen Jia Min",
+          "Yi Yun Hong",
+          "Li Fang Yu",
+          "OG"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Li Fang Yu",
+            ""
+          ],
+          [
+            "OG",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Li Xin Xiao",
+        "team_2_mvp_player_name": "Zhang Guo Bo",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5178/"
+      },
+      {
+        "team_1_name": "A\u00f1ejo FC Damas",
+        "team_2_name": "Haruwin",
+        "team_1_score": 7,
+        "team_2_score": 0,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [
+          "Juliette Emilia Papon Ulloa",
+          "Bonnie Choi",
+          "Julia Campagnolo",
+          "Isabella de Azambuja Cao",
+          "Ida Marie Marott",
+          "Valentina Rose Donovan",
+          "Lv Jia (Nicky)",
+          "Mahana Rampling",
+          "Vanessa Sophia Lind",
+          "Clara",
+          "Helena Villar"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Yi Ran",
+          "Deng Yi",
+          "Ji Nian",
+          "Zhang Yan",
+          "Yan Yan Ying",
+          "Zhang Meng Yuan",
+          "Liu Shu Hao",
+          "Zhang Zhuo",
+          "Jiang Zhu Jun"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Bonnie Choi",
+            ""
+          ],
+          [
+            "Julia Campagnolo",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ida Marie Marott",
+        "team_2_mvp_player_name": "Zhang Meng Yuan",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5179/"
+      },
+      {
+        "team_1_name": "Wulimited",
+        "team_2_name": "Sexy FC Women",
+        "team_1_score": 1,
+        "team_2_score": 3,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gong Xu",
+          "Xiaoning Chen \u9648\u6653\u5b81",
+          "Wang Jing",
+          "Chen Xiao Yu",
+          "Du Yu Jiao",
+          "Lu Zhe",
+          "Yu Nian Xi",
+          "Li Si Ning"
+        ],
+        "name_list_of_team_2_players": [
+          "Catherine Claire Quaite",
+          "Ayse Altindag",
+          "Iris Lonning",
+          "Abdulkadir Yasmin",
+          "Sun Yingchao",
+          "Adia Peng",
+          "Pi Pi",
+          "Nan Zhang",
+          "Shunag Wang",
+          "Yang Zhuqin"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Xiaoning Chen \u9648\u6653\u5b81",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Iris Lonning",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Lu Zhe",
+        "team_2_mvp_player_name": "Ayse Altindag",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5180/"
+      },
+      {
+        "team_1_name": "Total Sports FC",
+        "team_2_name": "Beijing Bats FC",
+        "team_1_score": 3,
+        "team_2_score": 0,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [],
+        "name_list_of_team_2_players": [],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": null,
+        "team_2_scored_players": null,
+        "team_1_red_card_player_names": null,
+        "team_2_red_card_player_names": null,
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": null,
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5181/"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "competitions": [
+      {
+        "team_1_name": "A\u00f1ejo FC Damas",
+        "team_2_name": "Wulimited",
+        "team_1_score": 7,
+        "team_2_score": 1,
+        "date": "2024-11-23T00:00:00",
+        "name_list_of_team_1_players": [
+          "Juliette Emilia Papon Ulloa",
+          "Bonnie Choi",
+          "Dima Abuhumoud",
+          "Helena Villar",
+          "Julia Campagnolo",
+          "Isabella de Azambuja Cao",
+          "Ida Marie Marott",
+          "Mahana Rampling",
+          "Vanessa Sophia Lind",
+          "OG"
+        ],
+        "name_list_of_team_2_players": [
+          "Gong Xu",
+          "Wang Shuang",
+          "Xiaoning Chen \u9648\u6653\u5b81",
+          "Deng Han Rui",
+          "Lu Zhe",
+          "Zhao Jing Xian",
+          "Li Si Ning",
+          "Yang Jia",
+          "Cheng Si Qi"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Isabella de Azambuja Cao",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Mahana Rampling",
+            ""
+          ],
+          [
+            "Mahana Rampling",
+            ""
+          ],
+          [
+            "OG",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Lu Zhe",
+            ""
+          ],
+          [
+            "Zhao Jing Xian",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ida Marie Marott",
+        "team_2_mvp_player_name": "Lu Zhe",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5187/"
+      },
+      {
+        "team_1_name": "\u6ce2\u6d6aLas Olas",
+        "team_2_name": "Beijing Bats FC",
+        "team_1_score": 2,
+        "team_2_score": 2,
+        "date": "2024-11-23T00:00:00",
+        "name_list_of_team_1_players": [
+          "Huang Shao Xia",
+          "Lian Yina",
+          "Zhao Jing Ya",
+          "Wang Man Shi",
+          "Xia Tian RU",
+          "Liu Ke Xin",
+          "Li Xue Qing",
+          "Yi Yun Hong",
+          "Li Ruo Yuan"
+        ],
+        "name_list_of_team_2_players": [
+          "Emily Parker",
+          "Luo Li Dan (Lorinda)",
+          "Lihua Wang",
+          "Ma Xiao Ting",
+          "Emily Kingett",
+          "Romadina Daria",
+          "Rasolondrazanaka Vickene",
+          "Louise Townley"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Xia Tian RU",
+            ""
+          ],
+          [
+            "Li Ruo Yuan",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Luo Li Dan (Lorinda)",
+            ""
+          ],
+          [
+            "Emily Kingett",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Li Ruo Yuan",
+        "team_2_mvp_player_name": "Luo Li Dan (Lorinda)",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5188/"
+      },
+      {
+        "team_1_name": "Gran Reserva Damas",
+        "team_2_name": "Wunited FC",
+        "team_1_score": 1,
+        "team_2_score": 3,
+        "date": "2024-11-23T00:00:00",
+        "name_list_of_team_1_players": [
+          "Xiaofeng Long",
+          "Hannah Nosurname",
+          "Franziska Schroeter",
+          "Anqi Yang",
+          "Laura Mekaite",
+          "Grace Osbourne",
+          "Rocio Chain",
+          "Elena Giovi"
+        ],
+        "name_list_of_team_2_players": [
+          "OG",
+          "Li Xiao Han",
+          "Li Ming Shi",
+          "Guan Wen Fang",
+          "Li Xin Xiao",
+          "Zhang Qi Yu",
+          "Huo Min Han",
+          "Xiong Xin Yi",
+          "You Ying Yi",
+          "Wang Qing"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Grace Osbourne",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "OG",
+            ""
+          ],
+          [
+            "Li Ming Shi",
+            ""
+          ],
+          [
+            "You Ying Yi",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Anqi Yang",
+        "team_2_mvp_player_name": "You Ying Yi",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5189/"
+      },
+      {
+        "team_1_name": "Sexy FC Women",
+        "team_2_name": "Beijing Celtic Women FC",
+        "team_1_score": 6,
+        "team_2_score": 2,
+        "date": "2024-11-23T00:00:00",
+        "name_list_of_team_1_players": [
+          "Marina Roldan",
+          "Ayse Altindag",
+          "Iris Lonning",
+          "Abdulkadir Yasmin",
+          "Erika Wu",
+          "Adia Peng",
+          "Pi Pi",
+          "Nan Zhang",
+          "Shunag Wang"
+        ],
+        "name_list_of_team_2_players": [
+          "Li Shu Yang (Kelly)",
+          "Cara Lee",
+          "Emily Morgan McDaid",
+          "Kwena Salome Sebethe",
+          "Cao Yi Zhi",
+          "Suliana Lutu Utaatu",
+          "Shannon Gallagher",
+          "Ellen",
+          "Song Yu Chen",
+          "Chelsea Leigh Jones"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Abdulkadir Yasmin",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Cara Lee",
+            ""
+          ],
+          [
+            "Cara Lee",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Marina Roldan",
+        "team_2_mvp_player_name": "Cara Lee",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5190/"
+      },
+      {
+        "team_1_name": "Total Sports FC",
+        "team_2_name": "Haruwin",
+        "team_1_score": 7,
+        "team_2_score": 2,
+        "date": "2024-11-23T00:00:00",
+        "name_list_of_team_1_players": [
+          "Wang Jing Jing",
+          "Chen Xi Yuan",
+          "Zhao Yayi \u8d75\u96c5\u4eea",
+          "Zuo Jia Xuan",
+          "Ren Jing",
+          "Yin Si Jun",
+          "Zhou Rui Mei",
+          "Li Dan"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Yi Ran",
+          "Deng Yi",
+          "Zhang Jing Mei",
+          "Ji Nian",
+          "Shi Lei",
+          "Yang Lu",
+          "Zhang Meng Yuan",
+          "Tang Ying Ying",
+          "Jiang Zhu Jun",
+          "Ye Ye",
+          "Wang Shen"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Wang Jing Jing",
+            ""
+          ],
+          [
+            "Chen Xi Yuan",
+            ""
+          ],
+          [
+            "Zhao Yayi \u8d75\u96c5\u4eea",
+            ""
+          ],
+          [
+            "Zuo Jia Xuan",
+            ""
+          ],
+          [
+            "Zuo Jia Xuan",
+            ""
+          ],
+          [
+            "Ren Jing",
+            ""
+          ],
+          [
+            "Yin Si Jun",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Zhang Jing Mei",
+            ""
+          ],
+          [
+            "Yang Lu",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Chen Xi Yuan",
+        "team_2_mvp_player_name": "Zhang Jing Mei",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5191/"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "competitions": [
+      {
+        "team_1_name": "Haruwin",
+        "team_2_name": "\u6ce2\u6d6aLas Olas",
+        "team_1_score": 0,
+        "team_2_score": 2,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [
+          "Liu Yi Ran",
+          "Deng Yi",
+          "Ji Nian",
+          "Yan Yan Ying",
+          "Shi Lei",
+          "Yang Lu",
+          "Zhang Meng Yuan",
+          "Liu Shu Hao",
+          "Tang Tang",
+          "Jiang Zhu Jun",
+          "Ye Ye",
+          "Wang Shen"
+        ],
+        "name_list_of_team_2_players": [
+          "Huang Shao Xia",
+          "Lian Yina",
+          "Zhao Jing Ya",
+          "Wang Man Shi",
+          "Zhang Guo Bo",
+          "Meng Ling Wei",
+          "Su Jing",
+          "Liu Ke Xin",
+          "Gong JI Yu",
+          "Chen Jia Min",
+          "Li Ruo Yuan",
+          "Li Fang Yu"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Chen Jia Min",
+            ""
+          ],
+          [
+            "Li Ruo Yuan",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Liu Shu Hao",
+        "team_2_mvp_player_name": "Zhang Guo Bo",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5207/"
+      },
+      {
+        "team_1_name": "Wulimited",
+        "team_2_name": "Total Sports FC",
+        "team_1_score": 3,
+        "team_2_score": 0,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [],
+        "name_list_of_team_2_players": [],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": null,
+        "team_2_scored_players": null,
+        "team_1_red_card_player_names": null,
+        "team_2_red_card_player_names": null,
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": null,
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5208/"
+      },
+      {
+        "team_1_name": "Beijing Bats FC",
+        "team_2_name": "Wunited FC",
+        "team_1_score": 4,
+        "team_2_score": 5,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [
+          "Azucena Ramirez",
+          "Chen Mengyao",
+          "Luo Li Dan (Lorinda)",
+          "Lihua Wang",
+          "Dora Wang",
+          "Ma Xiao Ting",
+          "Emily Kingett",
+          "Laura Yazbek-Pilon",
+          "Romadina Daria"
+        ],
+        "name_list_of_team_2_players": [
+          "Hu Wan Qiu",
+          "Wang Xin Yu",
+          "Li Xiao Han",
+          "Liu Ning",
+          "Guan Wen Fang",
+          "Li Xin Xiao",
+          "Lin Nancy",
+          "Zhang Qi Yu",
+          "Huo Min Han",
+          "Du Shu Han",
+          "Xiong Xin Yi",
+          "You Ying Yi"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Luo Li Dan (Lorinda)",
+            ""
+          ],
+          [
+            "Lihua Wang",
+            ""
+          ],
+          [
+            "Laura Yazbek-Pilon",
+            ""
+          ],
+          [
+            "Romadina Daria",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Liu Ning",
+            ""
+          ],
+          [
+            "Liu Ning",
+            ""
+          ],
+          [
+            "Liu Ning",
+            ""
+          ],
+          [
+            "Li Xin Xiao",
+            ""
+          ],
+          [
+            "Du Shu Han",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Emily Kingett",
+        "team_2_mvp_player_name": "Liu Ning",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5209/"
+      },
+      {
+        "team_1_name": "Gran Reserva Damas",
+        "team_2_name": "Sexy FC Women",
+        "team_1_score": 1,
+        "team_2_score": 9,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [
+          "Alina Tito",
+          "Xiaofeng Long",
+          "Hannah Nosurname",
+          "Franziska Schroeter",
+          "Anqi Yang",
+          "Evilena Ribeiro",
+          "Patricia Caizea",
+          "Grace Osbourne",
+          "Rocio Chain",
+          "Sophia Osbourne",
+          "Elena Giovi"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Jia Qi",
+          "Ayse Altindag",
+          "Iris Lonning",
+          "Abdulkadir Yasmin",
+          "Erika Wu",
+          "Fangyuan Chen",
+          "Nan Zhang",
+          "Shunag Wang",
+          "Mouansie Z. Lathifa"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Sophia Osbourne",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Ayse Altindag",
+            ""
+          ],
+          [
+            "Abdulkadir Yasmin",
+            ""
+          ],
+          [
+            "Nan Zhang",
+            ""
+          ],
+          [
+            "Nan Zhang",
+            ""
+          ],
+          [
+            "Mouansie Z. Lathifa",
+            ""
+          ],
+          [
+            "Mouansie Z. Lathifa",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Sophia Osbourne",
+        "team_2_mvp_player_name": "Ayse Altindag",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 2",
+        "link": "https://ciflchina.com/event/5210/"
+      },
+      {
+        "team_1_name": "Beijing Celtic Women FC",
+        "team_2_name": "A\u00f1ejo FC Damas",
+        "team_1_score": 3,
+        "team_2_score": 4,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [
+          "Niamh Rose Dalton",
+          "Anna Rachel Lowthian",
+          "Cara Lee",
+          "Kwena Salome Sebethe",
+          "Patience Leight Hopkins",
+          "Liu Shu Ya",
+          "Shannon Gallagher",
+          "Ellen",
+          "Song Yu Chen",
+          "Chelsea Leigh Jones",
+          "97"
+        ],
+        "name_list_of_team_2_players": [
+          "Vanessa Sophia Lind",
+          "Mahana Rampling",
+          "Lv Jia (Nicky)",
+          "Ida Marie Marott",
+          "Isabella de Azambuja Cao",
+          "Julia Campagnolo",
+          "Helena Villar",
+          "Dima Abuhumoud",
+          "Bonnie Choi"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Cara Lee",
+            ""
+          ],
+          [
+            "Ellen",
+            ""
+          ],
+          [
+            "97",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Ida Marie Marott",
+            ""
+          ],
+          [
+            "Julia Campagnolo",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Niamh Rose Dalton",
+        "team_2_mvp_player_name": "Ida Marie Marott",
+        "pitch_name": "UBP Ling Miao \u2013 Pitch 1",
+        "link": "https://ciflchina.com/event/5211/"
+      }
+    ]
+  }
+]

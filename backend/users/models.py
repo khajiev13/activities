@@ -19,7 +19,7 @@ class USER(DjangoNode):
     date = DateProperty(required=True)
     created_at = DateTimeProperty(default_now=True)
     email = EmailProperty()
-    gender = StringProperty(required=True)
+    gender = StringProperty(default="Not Set")
     followers = RelationshipFrom('users.models.USER', 'FOLLOWS')
     following = RelationshipTo('users.models.USER', 'FOLLOWS')
     hobbies = RelationshipTo('categories.models.CATEGORY', 'LIKES')

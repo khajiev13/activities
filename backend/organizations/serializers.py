@@ -3,7 +3,7 @@ from .models import ORGANIZATION
 from rest_framework import serializers
 from locations.serializers import LocationSerializer
 from django.utils.text import slugify
-from azure.storage.blob import BlobServiceClient
+# from azure.storage.blob import BlobServiceClient
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -49,34 +49,33 @@ class OrganizationSerializer(serializers.Serializer):
     #     return LocationSerializer(location).data
 
     def create(self, validated_data):
-        image = validated_data.pop('image', None)
-        print(image)
-        if image:
-            # Get the base name of the image file and the extension
-            base_name, extension = os.path.splitext(image.name)
-            # Sanitize the base name using Django's slugify function
-            sanitized_base_name = slugify(base_name)
-            # Form the new image name
-            sanitized_image_name = sanitized_base_name + extension
-            file_name = 'media/images/organizations/' + sanitized_image_name
+        # image = validated_data.pop('image', None)
+        # print(image)
+        # if image:
+        #     # Get the base name of the image file and the extension
+        #     base_name, extension = os.path.splitext(image.name)
+        #     # Sanitize the base name using Django's slugify function
+        #     sanitized_base_name = slugify(base_name)
+        #     # Form the new image name
+        #     sanitized_image_name = sanitized_base_name + extension
+        #     file_name = 'media/images/organizations/' + sanitized_image_name
 
-            # Create a blob client using the local file name as the name for the blob
-            blob_service_client = BlobServiceClient.from_connection_string(
-                AZURE_STORAGE_CONNECTION_STRING)
-            blob_client = blob_service_client.get_blob_client(
-                os.getenv('AZURE_CONTAINER'), file_name)
+        #     # Create a blob client using the local file name as the name for the blob
+        #     blob_service_client = BlobServiceClient.from_connection_string(
+        #         AZURE_STORAGE_CONNECTION_STRING)
+        #     blob_client = blob_service_client.get_blob_client(
+        #         os.getenv('AZURE_CONTAINER'), file_name)
 
-            # Upload the created file
-            blob_client.upload_blob(image.read())
-            file_url = blob_client.url
-        else:
-            file_url = None
+        #     # Upload the created file
+        #     blob_client.upload_blob(image.read())
+        #     file_url = blob_client.url
+        # else:
+        #     file_url = None
 
         # Create the organization instance
         organization = ORGANIZATION(
             name=validated_data['name'],
-
-            image_url=file_url  # Assume ORGANIZATION model has `image_url` field
+            image_url="file_url"  # Fix it later
         )
         organization.save()
         return organization

@@ -4,7 +4,7 @@ from neomodel.contrib.spatial_properties import (PointProperty)
 
 class LOCATION(DjangoNode):
     pk = UniqueIdProperty()
-    name = StringProperty(required=True)
+    name = StringProperty(default="Somewhere in Beijing")
     points = PointProperty(crs='wgs-84')
     city = RelationshipTo('cities.models.CITY', 'IS_IN', cardinality=One)
     activities = RelationshipFrom('activities.models.ACTIVITY', 'HAPPENS_AT')

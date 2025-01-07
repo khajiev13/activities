@@ -34,6 +34,7 @@ interface props {
 const JoinLeaveTeamButton = ({ team_name }: props) => {
   const [loading, setLoading] = useState(false);
 
+  // @ts-ignore
   const JoinTeam = () => {
     setLoading(true);
     axiosInstance

@@ -1,0 +1,1762 @@
+[
+  {
+    "number": 1,
+    "competitions": [
+      {
+        "team_1_name": "Beijing Huojian",
+        "team_2_name": "Summer Palace",
+        "team_1_score": 2,
+        "team_2_score": 1,
+        "date": "2024-09-07T00:00:00",
+        "name_list_of_team_1_players": [
+          "Omuyoma Jeremiah",
+          "Zhou Tong",
+          "Enoch Pius",
+          "Kwame Agyapong",
+          "Sendita Jeofrey",
+          "Imad El Merouani",
+          "Joseph Latham",
+          "Aaron Anthony",
+          "Emmanuel Okurut",
+          "Farhan Alam",
+          "Gu Hanyun",
+          "Yue Shenshen",
+          "Sean Dalton",
+          "Ryan Sewell",
+          "Mohamed Ali",
+          "Roma Khajiev"
+        ],
+        "name_list_of_team_2_players": [
+          "Xi Yan Zhe (Jimmy)",
+          "Jonathan Links",
+          "Duarte Seidi",
+          "Liu Ran",
+          "Anotida Muzapu",
+          "Adam Ferry",
+          "Pepper Meng",
+          "Andy Mo",
+          "Luc Wafford",
+          "Kris Patrick",
+          "Kristian Walton Sears",
+          "Joseph William Sell",
+          "Shang Ze Li (Jesse)",
+          "Li Hao (Tyler)",
+          "Sardorbek Sirojov",
+          "Illia Kholodenko",
+          "Anotida Kashitiku",
+          "Philipp Heller"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Imad El Merouani"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Xi Yan Zhe (Jimmy)",
+          "Jonathan Links"
+        ],
+        "team_1_scored_players": [
+          [
+            "Kwame Agyapong",
+            "63', 78'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Xi Yan Zhe (Jimmy)",
+            "16'"
+          ]
+        ],
+        "team_1_red_card_player_names": [
+          "Sendita Jeofrey"
+        ],
+        "team_2_red_card_player_names": [
+          "Liu Ran"
+        ],
+        "team_1_mvp_player_name": "Enoch Pius",
+        "team_2_mvp_player_name": "Anotida Muzapu",
+        "pitch_name": "Elements",
+        "link": "https://ciflchina.com/event/4182/"
+      },
+      {
+        "team_1_name": "Squirtle FC",
+        "team_2_name": "A\u00f1ejo Gran Reserva",
+        "team_1_score": 2,
+        "team_2_score": 2,
+        "date": "2024-09-07T00:00:00",
+        "name_list_of_team_1_players": [
+          "Wang Yifei \u738b\u9571\u970f",
+          "Zhao Yang \u8d75\u6d0b",
+          "Wang Xiao \u738b\u9a81",
+          "Xu Boyang \u5f90\u6ce2\u9633"
+        ],
+        "name_list_of_team_2_players": [
+          "Liam Crandall",
+          "Mario Espinal",
+          "Maiker Valdivia",
+          "Cristian Paladino",
+          "Daniele Long",
+          "Issac Antonio Pe\u00f1a",
+          "Zhen Guang Hao",
+          "Carlos Emmanuel Garcia",
+          "Eduardo Alameda Rodriguez",
+          "I\u00f1aki Belloso Ausin",
+          "Edmund Stavros",
+          "Filippo Pallarono",
+          "Everin Claussen",
+          "Gaizka Geijo",
+          "Adam Meng",
+          "Christian Hansen",
+          "Vincent Molina",
+          "Ryan Crandall"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Zhao Yang \u8d75\u6d0b"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Mario Espinal"
+        ],
+        "team_1_scored_players": [
+          [
+            "Wang Yifei \u738b\u9571\u970f",
+            "36', 87'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Liam Crandall",
+            "35', 66'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Wang Yifei \u738b\u9571\u970f",
+        "team_2_mvp_player_name": "Liam Crandall",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4180/"
+      },
+      {
+        "team_1_name": "Celtic Beijing",
+        "team_2_name": "China Club Football",
+        "team_1_score": 4,
+        "team_2_score": 2,
+        "date": "2024-09-07T00:00:00",
+        "name_list_of_team_1_players": [
+          "Jamie Connolly",
+          "John Fennell",
+          "Ye Zu Lin (Michael)",
+          "Ryan Loughran",
+          "Richard Woodward",
+          "Sam Thornber",
+          "Jack Derek Pollock",
+          "Brendan Anthony Fennell",
+          "Paul Maurice Murphy",
+          "Finn Todd",
+          "Caesar Nijat",
+          "Pauric Colm Cunningham",
+          "Juan Camilo Alvarez Aldana",
+          "Timmy Rea",
+          "David Barry"
+        ],
+        "name_list_of_team_2_players": [
+          "Eric Li",
+          "Andy Chen",
+          "Taylor Lam (Lam Cheuk Yin)",
+          "William Farkas",
+          "Ray Chow",
+          "Kieran Flanagan",
+          "Richard _Sheng Guangming)",
+          "Han Choi",
+          "Alan He (He Xiayi_",
+          "Anthony Liang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "John Fennell",
+            "52'"
+          ],
+          [
+            "Ye Zu Lin (Michael)",
+            "78'"
+          ],
+          [
+            "Ryan Loughran",
+            "5', 20'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Taylor Lam (Lam Cheuk Yin)",
+            "15'"
+          ],
+          [
+            "Ray Chow",
+            "41'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Jamie Connolly",
+        "team_2_mvp_player_name": "Andy Chen",
+        "pitch_name": "Elements",
+        "link": "https://ciflchina.com/event/4183/"
+      },
+      {
+        "team_1_name": "AFA",
+        "team_2_name": "Too Sexy",
+        "team_1_score": 1,
+        "team_2_score": 3,
+        "date": "2024-09-08T00:00:00",
+        "name_list_of_team_1_players": [
+          "Isaish Elliot",
+          "Charlie James Gin",
+          "Jett Matheson",
+          "Sandro Kucan",
+          "Du Yi Ming",
+          "Tiger Novak",
+          "Tan Zixi (Hayden)",
+          "Lachlan Robert Leonard"
+        ],
+        "name_list_of_team_2_players": [
+          "Andy Gun Jin An",
+          "Yangshixan Terry",
+          "Roberto Masili",
+          "Ismailov Mamut",
+          "Sean Tucker",
+          "Jason C Platt",
+          "Paul Major",
+          "Lucas de Azambuja",
+          "Corbin Parker Whitney",
+          "Milos Sorak",
+          "Oliver Anthony Dunhill",
+          "Mike Groothoff",
+          "Femi Akomolede",
+          "Dean Henderson",
+          "Alex Sicurella",
+          "Robert Ian MacLaren",
+          "Conor Patrick Dunn",
+          "Robert William Brown"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Charlie James Gin"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Roberto Masili",
+          "Ismailov Mamut",
+          "Jason C Platt"
+        ],
+        "team_1_scored_players": [
+          [
+            "Isaish Elliot",
+            "3'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Yangshixan Terry",
+            "27'"
+          ],
+          [
+            "Roberto Masili",
+            "14'"
+          ],
+          [
+            "Ismailov Mamut",
+            "90'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Isaish Elliot",
+        "team_2_mvp_player_name": "Paul Major",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4184/"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "competitions": [
+      {
+        "team_1_name": "Celtic Beijing",
+        "team_2_name": "A\u00f1ejo Gran Reserva",
+        "team_1_score": 6,
+        "team_2_score": 0,
+        "date": "2024-09-21T00:00:00",
+        "name_list_of_team_1_players": [
+          "Richard Woodward",
+          "Ryan Loughran",
+          "Rob Skupien",
+          "Brendan Anthony Fennell",
+          "Caesar Nijat"
+        ],
+        "name_list_of_team_2_players": [
+          "Mario Espinal",
+          "Eduardo Alameda Rodriguez",
+          "Gaizka Geijo"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Rob Skupien"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Mario Espinal",
+          "Eduardo Alameda Rodriguez"
+        ],
+        "team_1_scored_players": [
+          [
+            "Richard Woodward",
+            ""
+          ],
+          [
+            "Richard Woodward",
+            ""
+          ],
+          [
+            "Ryan Loughran",
+            ""
+          ],
+          [
+            "Ryan Loughran",
+            ""
+          ],
+          [
+            "Ryan Loughran",
+            ""
+          ],
+          [
+            "Brendan Anthony Fennell",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Richard Woodward",
+        "team_2_mvp_player_name": "Gaizka Geijo",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4208/"
+      },
+      {
+        "team_1_name": "Summer Palace",
+        "team_2_name": "Too Sexy",
+        "team_1_score": 1,
+        "team_2_score": 3,
+        "date": "2024-09-21T00:00:00",
+        "name_list_of_team_1_players": [
+          "Elmer Villca Felipe",
+          "Xi Yan Zhe (Jimmy)",
+          "L\u00e9on Vandenbroeck"
+        ],
+        "name_list_of_team_2_players": [
+          "Lucas de Azambuja",
+          "Oliver Anthony Dunhill",
+          "Paul Major",
+          "Roberto Masili"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Elmer Villca Felipe"
+        ],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "L\u00e9on Vandenbroeck",
+            "72'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Oliver Anthony Dunhill",
+            "23'"
+          ],
+          [
+            "Paul Major",
+            "11', 81'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Xi Yan Zhe (Jimmy)",
+        "team_2_mvp_player_name": "Paul Major",
+        "pitch_name": "Elements",
+        "link": "https://ciflchina.com/event/4210/"
+      },
+      {
+        "team_1_name": "Beijing Huojian",
+        "team_2_name": "China Club Football",
+        "team_1_score": 1,
+        "team_2_score": 2,
+        "date": "2024-09-21T00:00:00",
+        "name_list_of_team_1_players": [
+          "Victor Okeagu",
+          "Imad El Merouani",
+          "Omuyoma Jeremiah"
+        ],
+        "name_list_of_team_2_players": [
+          "Sangwoo Moon",
+          "Floyd Xiao (Xian Xiao)",
+          "Robert Huisung Kim",
+          "Raymond Jiang"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Imad El Merouani",
+            "10'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Sangwoo Moon",
+            "16'"
+          ],
+          [
+            "Raymond Jiang",
+            "5'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Omuyoma Jeremiah",
+        "team_2_mvp_player_name": "Floyd Xiao (Xian Xiao)",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4209/"
+      },
+      {
+        "team_1_name": "AFA",
+        "team_2_name": "Squirtle FC",
+        "team_1_score": 0,
+        "team_2_score": 6,
+        "date": "2024-09-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Lachlan Robert Leonard"
+        ],
+        "name_list_of_team_2_players": [
+          "Liu Tianyu \u5218\u5929\u5b87",
+          "Li Jitai \u674e\u57fa\u6cf0",
+          "Sami \u8d5b\u7c73-\u8428\u8fea\u514b",
+          "Pahrdin \u5e15\u54c8\u767b-\u963f\u4e70\u6c5f",
+          "Liu Yinjie \u5218\u5bc5\u6770"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Li Jitai \u674e\u57fa\u6cf0",
+            "68'"
+          ],
+          [
+            "Sami \u8d5b\u7c73-\u8428\u8fea\u514b",
+            "61', 72'"
+          ],
+          [
+            "Pahrdin \u5e15\u54c8\u767b-\u963f\u4e70\u6c5f",
+            "44', 65'"
+          ],
+          [
+            "Liu Yinjie \u5218\u5bc5\u6770",
+            "89'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Lachlan Robert Leonard",
+        "team_2_mvp_player_name": "Pahrdin \u5e15\u54c8\u767b-\u963f\u4e70\u6c5f",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4211/"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "competitions": [
+      {
+        "team_1_name": "Summer Palace",
+        "team_2_name": "Squirtle FC",
+        "team_1_score": 1,
+        "team_2_score": 3,
+        "date": "2024-09-28T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ole Engelhardt",
+          "Elmer Villca Felipe",
+          "Kristian Walton Sears"
+        ],
+        "name_list_of_team_2_players": [
+          "Pahrdin \u5e15\u54c8\u767b-\u963f\u4e70\u6c5f",
+          "Li Junxi \u674e\u4fca\u6c50",
+          "Chen Zihao \u9648\u5b50\u8c6a",
+          "Li Jitai \u674e\u57fa\u6cf0",
+          "Fei Ziming \u8d39\u5b50\u94ed",
+          "Liu Tianyu \u5218\u5929\u5b87"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Elmer Villca Felipe",
+          "Kristian Walton Sears"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Chen Zihao \u9648\u5b50\u8c6a"
+        ],
+        "team_1_scored_players": [
+          [
+            "Elmer Villca Felipe",
+            "60'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Chen Zihao \u9648\u5b50\u8c6a",
+            "25'"
+          ],
+          [
+            "Li Jitai \u674e\u57fa\u6cf0",
+            "52'"
+          ],
+          [
+            "Fei Ziming \u8d39\u5b50\u94ed",
+            "58'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ole Engelhardt",
+        "team_2_mvp_player_name": "Pahrdin \u5e15\u54c8\u767b-\u963f\u4e70\u6c5f",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4217/"
+      },
+      {
+        "team_1_name": "Too Sexy",
+        "team_2_name": "Beijing Huojian",
+        "team_1_score": 1,
+        "team_2_score": 3,
+        "date": "2024-09-28T00:00:00",
+        "name_list_of_team_1_players": [
+          "Paul Major",
+          "Jeff Dong",
+          "Julian Hendrik Paul Emmert"
+        ],
+        "name_list_of_team_2_players": [
+          "Enoch Pius",
+          "Farhan Alam",
+          "Imad El Merouani",
+          "Zhou Tong",
+          "Roma Khajiev"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "Enoch Pius",
+          "Imad El Merouani"
+        ],
+        "team_1_scored_players": [
+          [
+            "Paul Major",
+            "33'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Enoch Pius",
+            "81'"
+          ],
+          [
+            "Farhan Alam",
+            "5'"
+          ],
+          [
+            "Imad El Merouani",
+            "26'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Julian Hendrik Paul Emmert",
+        "team_2_mvp_player_name": "Enoch Pius",
+        "pitch_name": "Elements",
+        "link": "https://ciflchina.com/event/4219/"
+      },
+      {
+        "team_1_name": "China Club Football",
+        "team_2_name": "A\u00f1ejo Gran Reserva",
+        "team_1_score": 1,
+        "team_2_score": 1,
+        "date": "2024-09-28T00:00:00",
+        "name_list_of_team_1_players": [
+          "Kieran Flanagan",
+          "Raymond Jiang",
+          "Han Choi"
+        ],
+        "name_list_of_team_2_players": [
+          "Maiker Valdivia",
+          "Thomani Calvin Jr",
+          "Cristian Paladino"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Han Choi"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Cristian Paladino"
+        ],
+        "team_1_scored_players": [
+          [
+            "Raymond Jiang",
+            "72'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Thomani Calvin Jr",
+            "23'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Kieran Flanagan",
+        "team_2_mvp_player_name": "Maiker Valdivia",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4218/"
+      },
+      {
+        "team_1_name": "Celtic Beijing",
+        "team_2_name": "AFA",
+        "team_1_score": 4,
+        "team_2_score": 1,
+        "date": "2024-10-13T00:00:00",
+        "name_list_of_team_1_players": [
+          "Rob Skupien",
+          "Richard Woodward",
+          "Jack Derek Pollock",
+          "Quentin Mihes",
+          "David Barry",
+          "OG"
+        ],
+        "name_list_of_team_2_players": [
+          "Tiger Novak",
+          "Hu Gao Cheng",
+          "Leonas Boese"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "Tiger Novak",
+          "Hu Gao Cheng"
+        ],
+        "team_1_scored_players": [
+          [
+            "Rob Skupien",
+            "70'"
+          ],
+          [
+            "Richard Woodward",
+            "80'"
+          ],
+          [
+            "Quentin Mihes",
+            "36'"
+          ],
+          [
+            "OG",
+            "10'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Hu Gao Cheng",
+            "90'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Rob Skupien",
+        "team_2_mvp_player_name": "Tiger Novak",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4220/"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "competitions": [
+      {
+        "team_1_name": "Too Sexy",
+        "team_2_name": "Squirtle FC",
+        "team_1_score": 3,
+        "team_2_score": 0,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "Andy Gun Jin An",
+          "Roberto Masili",
+          "Dan James Cowen",
+          "Lewis McCarthy",
+          "Alex Sicurella",
+          "Robert Ian MacLaren",
+          "Ismailov Mamut",
+          "Conor Patrick Dunn",
+          "Sean Tucker",
+          "Julian Hendrik Paul Emmert",
+          "Wang Wei (\u738b\u4f1f)",
+          "Lu Ju",
+          "Jeff Dong",
+          "Paul Major"
+        ],
+        "name_list_of_team_2_players": [
+          "Li Junxi \u674e\u4fca\u6c50",
+          "Fei Ziming \u8d39\u5b50\u94ed",
+          "Wang Xiao \u738b\u9a81",
+          "Xu Boyang \u5f90\u6ce2\u9633",
+          "Li Jitai \u674e\u57fa\u6cf0",
+          "Wang Peiyuan \u738b\u57f9\u6e90",
+          "Liu Yinjie \u5218\u5bc5\u6770",
+          "Peng Huanjie \u5f6d\u7115\u6770"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Ismailov Mamut",
+          "Julian Hendrik Paul Emmert",
+          "Lu Ju"
+        ],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Robert Ian MacLaren",
+            "60'"
+          ],
+          [
+            "Jeff Dong",
+            "80', 85'"
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [
+          "Wang Wei (\u738b\u4f1f)"
+        ],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Jeff Dong",
+        "team_2_mvp_player_name": null,
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4226/"
+      },
+      {
+        "team_1_name": "Celtic Beijing",
+        "team_2_name": "Summer Palace",
+        "team_1_score": 1,
+        "team_2_score": 1,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "Paul Maurice Murphy",
+          "James Murray",
+          "Jack Derek Pollock",
+          "Richard Woodward",
+          "Timmy Rea",
+          "Jamie Re",
+          "Zhou Qi Yao",
+          "Juan Camilo Alvarez Aldana",
+          "John Fennell",
+          "Adam Roche",
+          "Pauric Colm Cunningham",
+          "Jack Flood",
+          "Caesar Nijat",
+          "Mickle Roshay Mattison"
+        ],
+        "name_list_of_team_2_players": [
+          "Sebastian Gregor",
+          "Li Hao (Tyler)",
+          "Illia Kholodenko",
+          "Xi Yan Zhe (Jimmy)",
+          "Jonathan Links",
+          "Joe Sell",
+          "Luc Wafford",
+          "Shang Ze Li (Jesse)",
+          "Kris Patrick",
+          "Kristian Walton Sears",
+          "Anotida Muzapu",
+          "Charles Luke Wharton",
+          "Philipp Heller"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "Illia Kholodenko"
+        ],
+        "team_1_scored_players": [
+          [
+            "Timmy Rea",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Xi Yan Zhe (Jimmy)",
+            ""
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Richard Woodward",
+        "team_2_mvp_player_name": "Anotida Muzapu",
+        "pitch_name": "Elements",
+        "link": "https://ciflchina.com/event/4228/"
+      },
+      {
+        "team_1_name": "China Club Football",
+        "team_2_name": "AFA",
+        "team_1_score": 1,
+        "team_2_score": 0,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "Kieran Flanagan",
+          "Raymond Jiang",
+          "Sangwoo Moon",
+          "Andy Chen",
+          "Taylor Lam (Lam Cheuk Yin)",
+          "Han Choi",
+          "Alan He (He Xiayi_",
+          "Robert Huisung Kim",
+          "Unathi Bucibe",
+          "Tom Jia (Tianyi Jia)"
+        ],
+        "name_list_of_team_2_players": [
+          "Isaish Elliot",
+          "Sandro Kucan",
+          "Du Yi Ming",
+          "Tiger Novak",
+          "Wang Xin Chen",
+          "Tan Zixi (Hayden)",
+          "Sun Shao Qing",
+          "Jett Matheson",
+          "Chu Yu Ming"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Unathi Bucibe"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Du Yi Ming",
+          "Jett Matheson"
+        ],
+        "team_1_scored_players": [
+          [
+            "Han Choi",
+            "4'"
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [
+          "Sun Shao Qing"
+        ],
+        "team_1_mvp_player_name": "Han Choi",
+        "team_2_mvp_player_name": null,
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4227/"
+      },
+      {
+        "team_1_name": "Beijing Huojian",
+        "team_2_name": "A\u00f1ejo Gran Reserva",
+        "team_1_score": 2,
+        "team_2_score": 7,
+        "date": "2024-10-20T00:00:00",
+        "name_list_of_team_1_players": [
+          "Omuyoma Jeremiah",
+          "Henok Negash",
+          "Song Aijun",
+          "Zhou Tong",
+          "Blessing Collins",
+          "Julian Kierst",
+          "Joseph Latham",
+          "Aaron Anthony",
+          "Victor Okeagu",
+          "Farhan Alam",
+          "Yue Shenshen",
+          "Ryan Sewell",
+          "Mohamed Bouhakka",
+          "Daniel Nwosu",
+          "Roma Khajiev"
+        ],
+        "name_list_of_team_2_players": [
+          "I\u00f1aki Belloso Ausin",
+          "Zhen Guang Hao",
+          "Pablo Reyes",
+          "Wu Hao",
+          "Issac Antonio Pe\u00f1a",
+          "Mario Espinal",
+          "Edmund Stavros",
+          "Eduardo Alameda Rodriguez",
+          "Adam Lloyd Goodall",
+          "James Allcock",
+          "Cristian Paladino",
+          "Filippo Pallarono",
+          "Daniel Garcia",
+          "Everin Claussen",
+          "Abubakar Sadiq Abdulkadir",
+          "Thomani Calvin Jr",
+          "Adam Meng"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Henok Negash",
+          "Blessing Collins",
+          "Yue Shenshen"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Mario Espinal"
+        ],
+        "team_1_scored_players": [
+          [
+            "Blessing Collins",
+            "90'"
+          ],
+          [
+            "Daniel Nwosu",
+            "68'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "I\u00f1aki Belloso Ausin",
+            "10'"
+          ],
+          [
+            "Mario Espinal",
+            "66'"
+          ],
+          [
+            "James Allcock",
+            "25'"
+          ],
+          [
+            "Everin Claussen",
+            "37'"
+          ],
+          [
+            "Thomani Calvin Jr",
+            "17', 75'"
+          ],
+          [
+            "Adam Meng",
+            "85'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Farhan Alam",
+        "team_2_mvp_player_name": "Thomani Calvin Jr",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4229/"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "competitions": [
+      {
+        "team_1_name": "Too Sexy",
+        "team_2_name": "Celtic Beijing",
+        "team_1_score": 1,
+        "team_2_score": 2,
+        "date": "2024-11-02T00:00:00",
+        "name_list_of_team_1_players": [
+          "Roberto Masili",
+          "Ismailov Mamut",
+          "Lewis McCarthy",
+          "Robert Ian MacLaren",
+          "Mike Groothoff",
+          "Oliver Anthony Dunhill",
+          "Milos Sorak",
+          "Corbin Parker Whitney",
+          "Paul Major",
+          "Jeff Dong",
+          "Jason C Platt",
+          "Conor Patrick Dunn",
+          "Mao Ze Yu (Zoey)",
+          "Alex Sicurella",
+          "Aws Rashid Moshin",
+          "Adam Walker"
+        ],
+        "name_list_of_team_2_players": [
+          "Jamie Connolly",
+          "Brendan Anthony Fennell",
+          "Paul Maurice Murphy",
+          "Rob Skupien",
+          "Richard Woodward",
+          "Juan Camilo Alvarez Aldana",
+          "Caesar Nijat",
+          "Jack Flood",
+          "Pauric Colm Cunningham",
+          "John Fennell",
+          "Timmy Rea",
+          "David Barry"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Aws Rashid Moshin"
+        ],
+        "team_2_yellow_card_player_names": [
+          "David Barry"
+        ],
+        "team_1_scored_players": [
+          [
+            "Conor Patrick Dunn",
+            "37'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Jack Flood",
+            "53'"
+          ],
+          [
+            "David Barry",
+            "47'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Jason C Platt",
+        "team_2_mvp_player_name": "Jack Flood",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4235/"
+      },
+      {
+        "team_1_name": "China Club Football",
+        "team_2_name": "Summer Palace",
+        "team_1_score": 1,
+        "team_2_score": 0,
+        "date": "2024-11-02T00:00:00",
+        "name_list_of_team_1_players": [
+          "Kieran Flanagan",
+          "Raymond Jiang",
+          "Sangwoo Moon",
+          "Andy Chen",
+          "Taylor Lam (Lam Cheuk Yin)",
+          "Ivan De Martin",
+          "Han Choi",
+          "Robert Huisung Kim",
+          "Tom Jia (Tianyi Jia)",
+          "William Farkas",
+          "Anthony Liang"
+        ],
+        "name_list_of_team_2_players": [
+          "Pepper Meng",
+          "Garikai Kashitiku",
+          "Luc Wafford",
+          "L\u00e9on Vandenbroeck",
+          "Kristian Walton Sears",
+          "Joseph William Sell",
+          "Xi Yan Zhe (Jimmy)",
+          "Jason Steven Vincent Alexis-Olubuyide",
+          "Jeff Idigo",
+          "Anotida Muzapu",
+          "Illia Kholodenko",
+          "Graciano Nyaguse",
+          "Anotida Kashitiku",
+          "Duarte Seidi",
+          "Liu Ran"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "L\u00e9on Vandenbroeck",
+          "Anotida Muzapu",
+          "Duarte Seidi"
+        ],
+        "team_1_scored_players": [
+          [
+            "Ivan De Martin",
+            "10'"
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ivan De Martin",
+        "team_2_mvp_player_name": null,
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4236/"
+      },
+      {
+        "team_1_name": "AFA",
+        "team_2_name": "A\u00f1ejo Gran Reserva",
+        "team_1_score": 3,
+        "team_2_score": 4,
+        "date": "2024-11-03T00:00:00",
+        "name_list_of_team_1_players": [
+          "Wang Xin Chen",
+          "Isaish Elliot",
+          "Sandro Kucan",
+          "Tiger Novak",
+          "Ariki Charles Ramplin",
+          "Tan Zixi (Hayden)",
+          "Leonas Boese",
+          "Cheng Guang Rui",
+          "Lachlan Robert Leonard",
+          "Sun Shao Qing",
+          "Charlie James Gin",
+          "Ricardo Granzzi",
+          "Jett Matheson"
+        ],
+        "name_list_of_team_2_players": [
+          "Eduardo Alameda Rodriguez",
+          "Daniel Garcia",
+          "Cristian Paladino",
+          "Pablo Reyes",
+          "Liam Crandall",
+          "I\u00f1aki Belloso Ausin",
+          "Issac Antonio Pe\u00f1a",
+          "Gabriel Gimenez",
+          "James Allcock",
+          "Edmund Stavros",
+          "Chen Zhe",
+          "Terry Trky",
+          "Filippo Pallarono",
+          "Abubakar Sadiq Abdulkadir",
+          "Gaizka Geijo",
+          "Adam Meng",
+          "Max Young"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Tiger Novak",
+            "52'"
+          ],
+          [
+            "Tan Zixi (Hayden)",
+            "86'"
+          ],
+          [
+            "Jett Matheson",
+            "25'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Liam Crandall",
+            "90'"
+          ],
+          [
+            "I\u00f1aki Belloso Ausin",
+            "31'"
+          ],
+          [
+            "Gaizka Geijo",
+            "4'"
+          ],
+          [
+            "Max Young",
+            "88'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Jett Matheson",
+        "team_2_mvp_player_name": "Max Young",
+        "pitch_name": "Elements",
+        "link": "https://ciflchina.com/event/4237/"
+      },
+      {
+        "team_1_name": "Squirtle FC",
+        "team_2_name": "Beijing Huojian",
+        "team_1_score": 8,
+        "team_2_score": 1,
+        "date": "2024-11-03T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hao Ning \u90dd\u5b81",
+          "Li Junxi \u674e\u4fca\u6c50",
+          "Liu Tianyu \u5218\u5929\u5b87",
+          "Wang Xiao \u738b\u9a81",
+          "Xu Boyang \u5f90\u6ce2\u9633",
+          "Li Jitai \u674e\u57fa\u6cf0",
+          "Wang Yifei \u738b\u9571\u970f",
+          "Yan Qiuye \u4e25\u79cb\u4e5f",
+          "Liu Yinjie \u5218\u5bc5\u6770",
+          "Sami \u8d5b\u7c73-\u8428\u8fea\u514b",
+          "Pahrdin \u5e15\u54c8\u767b-\u963f\u4e70\u6c5f",
+          "Peng Huanjie \u5f6d\u7115\u6770",
+          "Di Tian Yao",
+          "Wang Xiang An",
+          "JuraKulov Javokhir"
+        ],
+        "name_list_of_team_2_players": [
+          "Laurent Yoka",
+          "Song Aijun",
+          "Blessing Collins",
+          "Li Shan",
+          "Julian Kierst",
+          "Yue Shenshen",
+          "Aaron Anthony",
+          "Farhan Alam",
+          "Kwame Agyapong",
+          "Suleiman Mohd",
+          "Enoch Pius",
+          "Mohamed Bouhakka",
+          "Mohamed Ali",
+          "Roma Khajiev",
+          "An Zhaoning"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "Aaron Anthony",
+          "Farhan Alam"
+        ],
+        "team_1_scored_players": [
+          [
+            "Wang Yifei \u738b\u9571\u970f",
+            "35', 50'"
+          ],
+          [
+            "Yan Qiuye \u4e25\u79cb\u4e5f",
+            "17'"
+          ],
+          [
+            "Sami \u8d5b\u7c73-\u8428\u8fea\u514b",
+            "5'"
+          ],
+          [
+            "Pahrdin \u5e15\u54c8\u767b-\u963f\u4e70\u6c5f",
+            "32', 69'"
+          ],
+          [
+            "Wang Xiang An",
+            "20'"
+          ],
+          [
+            "JuraKulov Javokhir",
+            "11'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Kwame Agyapong",
+            "85'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Wang Xiang An",
+        "team_2_mvp_player_name": "Farhan Alam",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4238/"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "competitions": [
+      {
+        "team_1_name": "Celtic Beijing",
+        "team_2_name": "Squirtle FC",
+        "team_1_score": 0,
+        "team_2_score": 4,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [
+          "Sam Thornber",
+          "Brendan Anthony Fennell",
+          "Paul Diffley",
+          "Ryan Loughran",
+          "Juan Camilo Alvarez Aldana",
+          "Caesar Nijat",
+          "Jack Flood",
+          "Pauric Colm Cunningham",
+          "Zhou Qi Yao",
+          "James Murray"
+        ],
+        "name_list_of_team_2_players": [
+          "Xu Boyang \u5f90\u6ce2\u9633",
+          "\u963f\u8fea\u529b-\u8fbe\u543e\u63d0 Adil",
+          "Di Tian Yao",
+          "Li Junxi \u674e\u4fca\u6c50",
+          "Liu Tianyu \u5218\u5929\u5b87",
+          "Wang Xiao \u738b\u9a81",
+          "Li Jitai \u674e\u57fa\u6cf0",
+          "Yan Qiuye \u4e25\u79cb\u4e5f",
+          "Liu Yinjie \u5218\u5bc5\u6770",
+          "Zhao Yang \u8d75\u6d0b",
+          "Sami \u8d5b\u7c73-\u8428\u8fea\u514b",
+          "Pahrdin \u5e15\u54c8\u767b-\u963f\u4e70\u6c5f",
+          "Peng Huanjie \u5f6d\u7115\u6770",
+          "\u5c39\u4fca\u51ef YinJun Kai"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Ryan Loughran"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Liu Yinjie \u5218\u5bc5\u6770",
+          "Peng Huanjie \u5f6d\u7115\u6770"
+        ],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Di Tian Yao",
+            "68'"
+          ],
+          [
+            "Sami \u8d5b\u7c73-\u8428\u8fea\u514b",
+            "65', 85'"
+          ],
+          [
+            "Pahrdin \u5e15\u54c8\u767b-\u963f\u4e70\u6c5f",
+            "40'"
+          ]
+        ],
+        "team_1_red_card_player_names": [
+          "James Murray"
+        ],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Pauric Colm Cunningham",
+        "team_2_mvp_player_name": "Di Tian Yao",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4244/"
+      },
+      {
+        "team_1_name": "A\u00f1ejo Gran Reserva",
+        "team_2_name": "Summer Palace",
+        "team_1_score": 2,
+        "team_2_score": 0,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gustavo Gonzalez",
+          "Pablo Reyes",
+          "Cristian Paladino",
+          "Benjamin Allcock",
+          "Daniel Garcia",
+          "I\u00f1aki Belloso Ausin",
+          "Adam Meng",
+          "Gaizka Geijo",
+          "Abubakar Sadiq Abdulkadir",
+          "Everin Claussen",
+          "Edmund Stavros",
+          "Matthew Alan Quaite"
+        ],
+        "name_list_of_team_2_players": [
+          "Pepper Meng",
+          "Andy Mo",
+          "L\u00e9on Vandenbroeck",
+          "Joseph William Sell",
+          "Xi Yan Zhe (Jimmy)",
+          "Li Hao (Tyler)",
+          "Jeff Idigo",
+          "Alexander Benjamin Taubert",
+          "Luc Wafford",
+          "Jonathan Links",
+          "Elmer Villca Felipe",
+          "Anotida Muzapu",
+          "Graciano Nyaguse",
+          "Anotida Kashitiku",
+          "Philipp Heller",
+          "Duarte Seidi",
+          "Liu Ran"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Adam Meng",
+          "Everin Claussen",
+          "Edmund Stavros",
+          "Matthew Alan Quaite"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Li Hao (Tyler)"
+        ],
+        "team_1_scored_players": [
+          [
+            "I\u00f1aki Belloso Ausin",
+            ""
+          ],
+          [
+            "I\u00f1aki Belloso Ausin",
+            ""
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Abubakar Sadiq Abdulkadir",
+        "team_2_mvp_player_name": "L\u00e9on Vandenbroeck",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4245/"
+      },
+      {
+        "team_1_name": "China Club Football",
+        "team_2_name": "Too Sexy",
+        "team_1_score": 1,
+        "team_2_score": 0,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [
+          "Taylor Lam (Lam Cheuk Yin)",
+          "Hongxu Li",
+          "Jonathan Chen",
+          "Raymond Jiang",
+          "Sangwoo Moon",
+          "Richard _Sheng Guangming)",
+          "Andy Chen",
+          "Han Choi",
+          "Ivan De Martin",
+          "Kieran Flanagan",
+          "Robert Huisung Kim",
+          "Owen (Ohhyun) Kwon",
+          "Tom Jia (Tianyi Jia)",
+          "Andrew Chen"
+        ],
+        "name_list_of_team_2_players": [
+          "Alex Sicurella",
+          "Adam Walker"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Jonathan Chen"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Alex Sicurella",
+          "Adam Walker"
+        ],
+        "team_1_scored_players": [
+          [
+            "Han Choi",
+            "53'"
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Taylor Lam (Lam Cheuk Yin)",
+        "team_2_mvp_player_name": null,
+        "pitch_name": "Elements",
+        "link": "https://ciflchina.com/event/4246/"
+      },
+      {
+        "team_1_name": "Beijing Huojian",
+        "team_2_name": "AFA",
+        "team_1_score": 3,
+        "team_2_score": 2,
+        "date": "2024-11-17T00:00:00",
+        "name_list_of_team_1_players": [
+          "Laurent Yoka",
+          "Song Aijun",
+          "Blessing Collins",
+          "Li Shan",
+          "Julian Kierst",
+          "Yue Shenshen",
+          "Aaron Anthony",
+          "Emmanuel Okurut",
+          "Suleiman Mohd",
+          "Arend Mueller",
+          "Sendita Jeofrey",
+          "Enoch Pius",
+          "Jonah Okechukwu",
+          "Mohamed Ali",
+          "Roma Khajiev",
+          "Brendon Dokwani",
+          "Imad El Merouani"
+        ],
+        "name_list_of_team_2_players": [
+          "Ariki Charles Ramplin",
+          "Isaish Elliot",
+          "Sandro Kucan",
+          "Du Yi Ming",
+          "Bayan Changizi",
+          "Tiger Novak",
+          "Wang Xin Chen",
+          "Cheng Guang Rui",
+          "Lachlan Robert Leonard",
+          "Sun Shao Qing"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Enoch Pius",
+          "Brendon Dokwani"
+        ],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Laurent Yoka",
+            "55'"
+          ],
+          [
+            "Suleiman Mohd",
+            "79'"
+          ],
+          [
+            "Imad El Merouani",
+            "21'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Isaish Elliot",
+            "82'"
+          ],
+          [
+            "Tiger Novak",
+            "59'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Sendita Jeofrey",
+        "team_2_mvp_player_name": "Lachlan Robert Leonard",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4247/"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "competitions": [
+      {
+        "team_1_name": "A\u00f1ejo Gran Reserva",
+        "team_2_name": "Too Sexy",
+        "team_1_score": 2,
+        "team_2_score": 2,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [
+          "Thomani Calvin Jr",
+          "Liam Crandall",
+          "Pablo Reyes",
+          "Cristian Paladino",
+          "Benjamin Allcock",
+          "Issac Antonio Pe\u00f1a",
+          "Max Young",
+          "Ryan Crandall",
+          "Adam Meng",
+          "Gaizka Geijo",
+          "Abubakar Sadiq Abdulkadir",
+          "Tai Corbett",
+          "Terry Trky",
+          "Edmund Stavros",
+          "Daniele Long"
+        ],
+        "name_list_of_team_2_players": [
+          "Michele Li",
+          "Femi Akomolede",
+          "Anvar Faretdinov",
+          "Phurich Sunimonpa",
+          "Robert Ian MacLaren",
+          "Aws Rashid Moshin",
+          "Sean Tucker",
+          "Lu Ju",
+          "Wang Wei (\u738b\u4f1f)",
+          "Paul Major",
+          "Conor Patrick Dunn",
+          "Tawun Jack Gregory",
+          "Lewis McCarthy",
+          "Alex Sicurella",
+          "Adam Walker",
+          "Roberto Masili"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "Alex Sicurella",
+          "Roberto Masili"
+        ],
+        "team_1_scored_players": [
+          [
+            "Abubakar Sadiq Abdulkadir",
+            "62', 88'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Paul Major",
+            "22', 86'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Max Young",
+        "team_2_mvp_player_name": null,
+        "pitch_name": "Elements",
+        "link": "https://ciflchina.com/event/4258/"
+      },
+      {
+        "team_1_name": "Celtic Beijing",
+        "team_2_name": "Beijing Huojian",
+        "team_1_score": 4,
+        "team_2_score": 0,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [
+          "Jamie Connolly",
+          "Sam Thornber",
+          "Brendan Anthony Fennell",
+          "Sinclair Paul Mcmath",
+          "Richard Woodward",
+          "Ryan Loughran",
+          "Connor Kavanagh",
+          "Caesar Nijat",
+          "Jack Flood",
+          "Pauric Colm Cunningham",
+          "John Fennell",
+          "Tim Tsang",
+          "Timmy Rea",
+          "David Barry"
+        ],
+        "name_list_of_team_2_players": [
+          "Omuyoma Jeremiah",
+          "Song Aijun",
+          "Blessing Collins",
+          "Li Shan",
+          "Emmanuel Okurut",
+          "Farhan Alam",
+          "Ryan Sewell",
+          "Sendita Jeofrey",
+          "Enoch Pius",
+          "Mohamed Ali",
+          "Roma Khajiev",
+          "An Zhaoning"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Connor Kavanagh"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Omuyoma Jeremiah",
+          "Sendita Jeofrey",
+          "An Zhaoning"
+        ],
+        "team_1_scored_players": [
+          [
+            "Brendan Anthony Fennell",
+            "15'"
+          ],
+          [
+            "Sinclair Paul Mcmath",
+            "80'"
+          ],
+          [
+            "Ryan Loughran",
+            "73', 85'"
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Ryan Loughran",
+        "team_2_mvp_player_name": "Sendita Jeofrey",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4256/"
+      },
+      {
+        "team_1_name": "China Club Football",
+        "team_2_name": "Squirtle FC",
+        "team_1_score": 3,
+        "team_2_score": 0,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [
+          "Jun Ze Sun",
+          "Hongxu Li",
+          "Jiasheng Zhao",
+          "Jonathan Chen",
+          "Raymond Jiang",
+          "Eric Li",
+          "Han Choi",
+          "Taylor Lam (Lam Cheuk Yin)",
+          "Ivan De Martin",
+          "Kieran Flanagan",
+          "Robert Huisung Kim",
+          "Unathi Bucibe",
+          "Tom Jia (Tianyi Jia)",
+          "William Farkas",
+          "Anthony Liang"
+        ],
+        "name_list_of_team_2_players": [
+          "Huang Wei",
+          "\u5c39\u4fca\u51ef YinJun Kai",
+          "Di Tian Yao",
+          "Li Junxi \u674e\u4fca\u6c50",
+          "Li Jitai \u674e\u57fa\u6cf0",
+          "Xu Boyang \u5f90\u6ce2\u9633",
+          "Chen Zihao \u9648\u5b50\u8c6a",
+          "Wang Peiyuan \u738b\u57f9\u6e90",
+          "Yan Qiuye \u4e25\u79cb\u4e5f",
+          "Zhao Yang \u8d75\u6d0b",
+          "Pahrdin \u5e15\u54c8\u767b-\u963f\u4e70\u6c5f",
+          "Peng Huanjie \u5f6d\u7115\u6770"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "Yan Qiuye \u4e25\u79cb\u4e5f"
+        ],
+        "team_1_scored_players": [
+          [
+            "Jonathan Chen",
+            "58', 90'"
+          ],
+          [
+            "Han Choi",
+            "15'"
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [
+          "Wang Peiyuan \u738b\u57f9\u6e90"
+        ],
+        "team_1_mvp_player_name": "Jonathan Chen",
+        "team_2_mvp_player_name": "\u5c39\u4fca\u51ef YinJun Kai",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4257/"
+      },
+      {
+        "team_1_name": "AFA",
+        "team_2_name": "Summer Palace",
+        "team_1_score": 2,
+        "team_2_score": 4,
+        "date": "2024-12-01T00:00:00",
+        "name_list_of_team_1_players": [
+          "Gomez",
+          "Ricardo Granzzi",
+          "Jeff Matheson",
+          "Isaish Elliot",
+          "Sandro Kucan",
+          "Du Yi Ming",
+          "Tiger Novak",
+          "Ariki Charles Ramplin",
+          "Wang Xin Chen",
+          "Leonas Boese",
+          "Cheng Guang Rui",
+          "Sun Shao Qing",
+          "Charlie James Gin",
+          "Borja",
+          "Tan Zixi (Hayden)"
+        ],
+        "name_list_of_team_2_players": [
+          "Adam Ferry",
+          "Kris Patrick",
+          "Xi Yan Zhe (Jimmy)",
+          "Jason Steven Vincent Alexis-Olubuyide",
+          "Jeff Idigo",
+          "Yu Xiang Zhou",
+          "Jonathan Links",
+          "Charles Luke Wharton",
+          "Elmer Villca Felipe",
+          "Graciano Nyaguse",
+          "Anotida Kashitiku",
+          "Philipp Heller",
+          "Liu Ran",
+          "Anotida Muzapu"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Borja"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Elmer Villca Felipe",
+          "Graciano Nyaguse"
+        ],
+        "team_1_scored_players": [
+          [
+            "Sun Shao Qing",
+            "36'"
+          ],
+          [
+            "Tan Zixi (Hayden)",
+            "50'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Philipp Heller",
+            "82'"
+          ],
+          [
+            "Anotida Muzapu",
+            "2', 15', 87'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Tiger Novak",
+        "team_2_mvp_player_name": "Elmer Villca Felipe",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4259/"
+      }
+    ]
+  }
+]

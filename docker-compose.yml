@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    env_file:
+      - backend/core/.env
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=core.settings
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_APP_BACKEND_ADDRESS=http://localhost:8000
+      - backend_api_address=backend:8000
+    
+volumes:
+  node_modules:
+  frontend:
+  backend:

@@ -8,13 +8,15 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthentic
 import json
 from core.blob_functions import delete_picture
 from django.http import QueryDict
-from teams.cypher_queries import get_team_detail_information, list_teams_by_country, list_teams_by_state, list_teams_by_city, list_teams_by_name
+from teams.cypher_queries import get_team_detail_information, list_teams_by_state, list_teams_by_city, list_teams_by_name, list_teams_by_country
 from neomodel import UniqueProperty, DoesNotExist
 from rest_framework import status
 from teams.serializers import TeamListSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
+from teams.models import TEAM
+from countries.models import COUNTRY
 
 
 # Preprocessing the data so that we will not have categories[o], categories[1], categories[2]... in the response
@@ -114,9 +116,9 @@ class TeamListCreateView(generics.ListCreateAPIView):
             print(countries, states, cities)
             if countries:
                 # Convert the string to a list of countries before pasing it to a function
-                countries = [country.strip()
-                             for country in countries.split(",")]
+                countries = [country.strip() for country in countries.split(",")]
                 teams = list_teams_by_country(countries)
+                print(teams)
             elif states:
                 # Get the countries from params
                 countries = request.query_params.getlist('countries[]')

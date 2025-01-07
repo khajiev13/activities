@@ -1,7 +1,11 @@
 /venv/
 all_models.py
+credentials_google.json
 __pycache__/
 *.pyc
+
+credentials_google.json
+
 
 #Dockerfile
 Dockerfile

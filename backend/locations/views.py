@@ -100,7 +100,8 @@ class LocationViewSet(viewsets.ViewSet):
     def countries_states_cities(self, request):
         countries = COUNTRY.nodes.all()
         serializer = CountrySerializer(countries, many=True)
-        return Response(serializer.data)
+        print(serializer.data)
+        return Response(serializer.data,status=status.HTTP_200_OK)
     # def get_permissions(self):
     #     """
     #     Instantiates and returns the list of permissions that this view requires.

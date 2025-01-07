@@ -332,7 +332,6 @@ def list_teams_by_name(name: str):
             teams.public_team AS public_team"""
     params = {'name': name}
     results, meta = db.cypher_query(query, params, resolve_objects=True)
-    print(results)
     results_dicts = [{
         'name': result[0],
         'men_team': result[1],

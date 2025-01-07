@@ -1,4 +1,6 @@
-FROM docker.1panel.dev/node:20-alpine
+FROM node:20-alpine
+#FROM docker.1panel.dev/node:20-alpine
+
 WORKDIR /app
 COPY package*.json .
 

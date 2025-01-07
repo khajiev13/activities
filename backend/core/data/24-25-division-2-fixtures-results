@@ -1,0 +1,1798 @@
+[
+  {
+    "number": 1,
+    "competitions": [
+      {
+        "team_1_name": "Beijing \u708e\u9f99",
+        "team_2_name": "Maxyeild United",
+        "team_1_score": 3,
+        "team_2_score": 5,
+        "date": "2024-09-07T00:00:00",
+        "name_list_of_team_1_players": [
+          "Yu Yue \u4e8e\u8dc3",
+          "Francis Saah Koryon",
+          "Zhai  Hong  Yi \u7fdf\u5f18\u6bc5",
+          "Chen Lei \u9648\u78ca",
+          "Ba Jin Teng \u5df4\u91d1\u817e",
+          "He Yi \u4f55\u610f"
+        ],
+        "name_list_of_team_2_players": [
+          "Han Tong Yu",
+          "ruoxu ma \u9a6c\u82e5\u865a",
+          "lei liu  \u5218\u78ca",
+          "heng zhao \u8d75\u6052",
+          "SHEN BJOERN",
+          "mingyang du \u675c\u660e\u6d0b",
+          "zhen lan \u5170\u9707",
+          "zilong luo \u7f57\u5b50\u9f99",
+          "zhuohang lv \u5415\u5353\u822a",
+          "yuchi cao \u66f9\u5b87\u6c60"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Zhai  Hong  Yi \u7fdf\u5f18\u6bc5",
+          "Chen Lei \u9648\u78ca",
+          "Ba Jin Teng \u5df4\u91d1\u817e"
+        ],
+        "team_2_yellow_card_player_names": [
+          "ruoxu ma \u9a6c\u82e5\u865a",
+          "heng zhao \u8d75\u6052",
+          "mingyang du \u675c\u660e\u6d0b",
+          "zilong luo \u7f57\u5b50\u9f99",
+          "yuchi cao \u66f9\u5b87\u6c60"
+        ],
+        "team_1_scored_players": [
+          [
+            "Francis Saah Koryon",
+            "35', 83'"
+          ],
+          [
+            "He Yi \u4f55\u610f",
+            "15'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Han Tong Yu",
+            "44', 46'"
+          ],
+          [
+            "lei liu  \u5218\u78ca",
+            "82'"
+          ],
+          [
+            "SHEN BJOERN",
+            "52'"
+          ],
+          [
+            "yuchi cao \u66f9\u5b87\u6c60",
+            "20'"
+          ]
+        ],
+        "team_1_red_card_player_names": [
+          "Chen Lei \u9648\u78ca"
+        ],
+        "team_2_red_card_player_names": [
+          "ruoxu ma \u9a6c\u82e5\u865a",
+          "zilong luo \u7f57\u5b50\u9f99",
+          "yuchi cao \u66f9\u5b87\u6c60"
+        ],
+        "team_1_mvp_player_name": "Yu Yue \u4e8e\u8dc3",
+        "team_2_mvp_player_name": "heng zhao \u8d75\u6052",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4688/"
+      },
+      {
+        "team_1_name": "Origin FC",
+        "team_2_name": "CYPR",
+        "team_1_score": 5,
+        "team_2_score": 4,
+        "date": "2024-09-08T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ji Fang",
+          "Mirzoev Asomuddin",
+          "Chen Yan Song",
+          "Ye Ran",
+          "Yu Tao",
+          "Zhou Si Hao",
+          "Wang Teng",
+          "Chen Liang Yu",
+          "Luo Ning",
+          "Liu Ming",
+          "Li Qin Yang",
+          "Zhang Meng",
+          "Chen Yu",
+          "Wang Chang Le",
+          "Li Gong Chen"
+        ],
+        "name_list_of_team_2_players": [
+          "Xiaonan Liu",
+          "Mbollo Seyi Steve  Armel Chris",
+          "Hirmans Tabaharizato",
+          "Aleer Deng",
+          "Diagouraga Mady",
+          "Alex Iddles",
+          "Oswald Guerrero",
+          "Todd Balazovic",
+          "Pey Verene",
+          "Khamby",
+          "Aime Amadou Abakar Pazouyo.",
+          "Martin Hofmann",
+          "Christophe Willocx",
+          "Abdoulaye Cisse",
+          "Sean Comer",
+          "Kelvin Kaaya"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Mirzoev Asomuddin",
+          "Chen Yan Song",
+          "Yu Tao"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Xiaonan Liu",
+          "Aleer Deng",
+          "Diagouraga Mady",
+          "Oswald Guerrero"
+        ],
+        "team_1_scored_players": [
+          [
+            "Mirzoev Asomuddin",
+            "58', 67'"
+          ],
+          [
+            "Ye Ran",
+            "34'"
+          ],
+          [
+            "Yu Tao",
+            "75'"
+          ],
+          [
+            "Zhou Si Hao",
+            "87'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Mbollo Seyi Steve  Armel Chris",
+            "4'"
+          ],
+          [
+            "Alex Iddles",
+            "20'"
+          ],
+          [
+            "Pey Verene",
+            "77', 88'"
+          ]
+        ],
+        "team_1_red_card_player_names": [
+          "Mirzoev Asomuddin"
+        ],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Mirzoev Asomuddin",
+        "team_2_mvp_player_name": "Pey Verene",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4689/"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "competitions": [
+      {
+        "team_1_name": "Origin FC",
+        "team_2_name": "Beijing \u708e\u9f99",
+        "team_1_score": 3,
+        "team_2_score": 2,
+        "date": "2024-09-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Chen Liang Yu",
+          "Zhao Guan Jie",
+          "Mirzoev Asomuddin",
+          "Chen Zhi Yi",
+          "Yu Tao"
+        ],
+        "name_list_of_team_2_players": [
+          "He Qing Le \u4f55\u9752\u4e50",
+          "Francis Saah Koryon",
+          "Bai Yu \u767d\u5b87",
+          "Zhou Xiang Jun \u5468\u76f8\u541b",
+          "Zhang Hai Bo \u5f20\u6d77\u6ce2"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Chen Liang Yu",
+            "47'"
+          ],
+          [
+            "Zhao Guan Jie",
+            "27'"
+          ],
+          [
+            "Mirzoev Asomuddin",
+            "76'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Francis Saah Koryon",
+            "81'"
+          ],
+          [
+            "Bai Yu \u767d\u5b87",
+            "76'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [
+          "Zhou Xiang Jun \u5468\u76f8\u541b"
+        ],
+        "team_1_mvp_player_name": "Zhao Guan Jie",
+        "team_2_mvp_player_name": "Zhang Hai Bo \u5f20\u6d77\u6ce2",
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4703/"
+      },
+      {
+        "team_1_name": "Maxyeild United",
+        "team_2_name": "Changying FC",
+        "team_1_score": 1,
+        "team_2_score": 2,
+        "date": "2024-09-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Han Tong Yu",
+          "mingyang du \u675c\u660e\u6d0b",
+          "zhen lan \u5170\u9707",
+          "zhuohang lv \u5415\u5353\u822a"
+        ],
+        "name_list_of_team_2_players": [
+          "Yin Hao Zhen",
+          "Abudula Sini"
+        ],
+        "team_1_yellow_card_player_names": [
+          "mingyang du \u675c\u660e\u6d0b",
+          "zhen lan \u5170\u9707"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Abudula Sini"
+        ],
+        "team_1_scored_players": [
+          [
+            "Han Tong Yu",
+            "56'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Yin Hao Zhen",
+            "18', 75'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Han Tong Yu",
+        "team_2_mvp_player_name": "Yin Hao Zhen",
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4704/"
+      },
+      {
+        "team_1_name": "CYPR",
+        "team_2_name": "French LEquipe",
+        "team_1_score": 7,
+        "team_2_score": 3,
+        "date": "2024-09-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "Pey Verene",
+          "Kelvin Kaaya",
+          "Mbollo Seyi Steve  Armel Chris",
+          "Aime Amadou Abakar Pazouyo.",
+          "Theo Richnel",
+          "Abdoulaye Cisse",
+          "Christophe Willocx",
+          "Mew Lan"
+        ],
+        "name_list_of_team_2_players": [
+          "Wagner Moreira",
+          "Terentiy Shugaev",
+          "Karim Fahssis",
+          "Guanjie Liang",
+          "Rivaldo IE",
+          "Filocha Peter"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "Karim Fahssis",
+          "Filocha Peter"
+        ],
+        "team_1_scored_players": [
+          [
+            "Pey Verene",
+            "17'"
+          ],
+          [
+            "Kelvin Kaaya",
+            "77', 89', 90'"
+          ],
+          [
+            "Theo Richnel",
+            "21', 38'"
+          ],
+          [
+            "Abdoulaye Cisse",
+            "71'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Terentiy Shugaev",
+            "37'"
+          ],
+          [
+            "Guanjie Liang",
+            "8'"
+          ],
+          [
+            "Rivaldo IE",
+            "43'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Kelvin Kaaya",
+        "team_2_mvp_player_name": "Wagner Moreira",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4705/"
+      },
+      {
+        "team_1_name": "Red Cards",
+        "team_2_name": "\u7855\u679cFC",
+        "team_1_score": 1,
+        "team_2_score": 7,
+        "date": "2024-09-22T00:00:00",
+        "name_list_of_team_1_players": [
+          "\u6cb3\u9762\u4fe1\u543e\uff08KOMO SHINGO)",
+          "\u5f90\u6653\u98de\uff08Xu Xiaofei\uff09",
+          "\u82e5\u5409\u4e00\u8f1d\uff08Wakayoshi Kazuki\uff09"
+        ],
+        "name_list_of_team_2_players": [
+          "Yang Xi \u6768\u66e6",
+          "Guo Qing \u90ed\u5e86",
+          "Cheng Yi \u6210\u5f08",
+          "Obeng Kwakye sam",
+          "Bouzghoudi Brahim Kais",
+          "Cheng Hao \u7a0b\u6d69",
+          "Abdulkadir Al-amin Mohammed"
+        ],
+        "team_1_yellow_card_player_names": [
+          "\u82e5\u5409\u4e00\u8f1d\uff08Wakayoshi Kazuki\uff09"
+        ],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "\u6cb3\u9762\u4fe1\u543e\uff08KOMO SHINGO)",
+            "49'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Yang Xi \u6768\u66e6",
+            "24'"
+          ],
+          [
+            "Guo Qing \u90ed\u5e86",
+            "30'"
+          ],
+          [
+            "Cheng Yi \u6210\u5f08",
+            "11', 35'"
+          ],
+          [
+            "Obeng Kwakye sam",
+            "27'"
+          ],
+          [
+            "Bouzghoudi Brahim Kais",
+            "9'"
+          ],
+          [
+            "Abdulkadir Al-amin Mohammed",
+            "44'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "\u5f90\u6653\u98de\uff08Xu Xiaofei\uff09",
+        "team_2_mvp_player_name": "Bouzghoudi Brahim Kais",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4706/"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "competitions": [
+      {
+        "team_1_name": "\u7855\u679cFC",
+        "team_2_name": "CYPR",
+        "team_1_score": 2,
+        "team_2_score": 1,
+        "date": "2024-09-28T00:00:00",
+        "name_list_of_team_1_players": [
+          "Abdulkadir Al-amin Mohammed",
+          "Ai Ni Ding \u827e\u5c3c\u4e01",
+          "Elhafidh Ibrahim Said Ahmed Bourhane",
+          "Obeng Kwakye sam",
+          "Bouzghoudi Brahim Kais"
+        ],
+        "name_list_of_team_2_players": [
+          "Mbollo Seyi Steve  Armel Chris",
+          "Diagouraga Mady",
+          "Martin Maximo Ray",
+          "Jose Ortiz Rodas",
+          "Kelvin Kaaya",
+          "Hirmans Tabaharizato",
+          "Mew Lan"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Elhafidh Ibrahim Said Ahmed Bourhane"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Martin Maximo Ray",
+          "Jose Ortiz Rodas"
+        ],
+        "team_1_scored_players": [
+          [
+            "Abdulkadir Al-amin Mohammed",
+            "77'"
+          ],
+          [
+            "Ai Ni Ding \u827e\u5c3c\u4e01",
+            "86'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Mbollo Seyi Steve  Armel Chris",
+            "18'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [
+          "Kelvin Kaaya",
+          "Hirmans Tabaharizato"
+        ],
+        "team_1_mvp_player_name": "Abdulkadir Al-amin Mohammed",
+        "team_2_mvp_player_name": "Mew Lan",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4792/"
+      },
+      {
+        "team_1_name": "French LEquipe",
+        "team_2_name": "Beijing \u708e\u9f99",
+        "team_1_score": 0,
+        "team_2_score": 2,
+        "date": "2024-10-13T00:00:00",
+        "name_list_of_team_1_players": [
+          "Olivier Ferrage",
+          "Arnaud Plessis",
+          "Karim Fahssis",
+          "Danny Wilding",
+          "Megharat Adam"
+        ],
+        "name_list_of_team_2_players": [
+          "Yu Yue \u4e8e\u8dc3",
+          "Qu Quan wei \u6e20\u6743\u5a01",
+          "Song Feng Nan\u00a0 \u5b8b\u51e4\u6960",
+          "Yu Bo \u4e8e\u6e24"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Arnaud Plessis",
+          "Karim Fahssis",
+          "Danny Wilding",
+          "Megharat Adam"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Song Feng Nan\u00a0 \u5b8b\u51e4\u6960",
+          "Yu Bo \u4e8e\u6e24"
+        ],
+        "team_1_scored_players": [],
+        "team_2_scored_players": [
+          [
+            "Yu Yue \u4e8e\u8dc3",
+            "58', 84'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Olivier Ferrage",
+        "team_2_mvp_player_name": "Yu Yue \u4e8e\u8dc3",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4793/"
+      },
+      {
+        "team_1_name": "Red Cards",
+        "team_2_name": "Maxyeild United",
+        "team_1_score": null,
+        "team_2_score": null,
+        "date": "2024-10-13T00:00:00",
+        "name_list_of_team_1_players": [],
+        "name_list_of_team_2_players": [],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": null,
+        "team_2_scored_players": null,
+        "team_1_red_card_player_names": null,
+        "team_2_red_card_player_names": null,
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": null,
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4794/"
+      },
+      {
+        "team_1_name": "Changying FC",
+        "team_2_name": "Origin FC",
+        "team_1_score": null,
+        "team_2_score": null,
+        "date": "2024-10-13T00:00:00",
+        "name_list_of_team_1_players": [],
+        "name_list_of_team_2_players": [],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": null,
+        "team_2_scored_players": null,
+        "team_1_red_card_player_names": null,
+        "team_2_red_card_player_names": null,
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": null,
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4795/"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "competitions": [
+      {
+        "team_1_name": "Maxyeild United",
+        "team_2_name": "\u7855\u679cFC",
+        "team_1_score": 5,
+        "team_2_score": 3,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "ming luo \u7f57\u660e",
+          "beinan wang \u738b\u5317\u5357",
+          "delong zhang \u5f20\u5fb7\u9f99",
+          "heng li i\u674e\u6052",
+          "ruoxu ma \u9a6c\u82e5\u865a",
+          "lei liu  \u5218\u78ca",
+          "yuan he \u4f55\u6e90",
+          "yuchi cao \u66f9\u5b87\u6c60",
+          "zhen lan \u5170\u9707",
+          "Xia Guo Cheng",
+          "Yang Yi Xuan",
+          "Wang Duo Lin",
+          "Yang Lei",
+          "sijie chen  \u9648\u601d\u6377"
+        ],
+        "name_list_of_team_2_players": [
+          "Shi Xiang DI \u53f2\u5411\u8fea",
+          "MBOUSSA MOUI RIDEL",
+          "Ai Ni Ding \u827e\u5c3c\u4e01",
+          "Zhou Wei Bin\u5468\u709c\u658c",
+          "Cheng Yi \u6210\u5f08",
+          "Wang Xin Xin\u738b\u946b\u946b",
+          "Loubeh ornom Armand",
+          "Chen Yu Hang \u9648\u65bc\u676d",
+          "Elhafidh Ibrahim Said Ahmed Bourhane",
+          "Abdulkadir Al-amin Mohammed",
+          "Bouzghoudi Mohammed Younes",
+          "Obeng Kwakye sam",
+          "Bouzghoudi Brahim Kais"
+        ],
+        "team_1_yellow_card_player_names": [
+          "ming luo \u7f57\u660e",
+          "yuan he \u4f55\u6e90",
+          "Xia Guo Cheng",
+          "Yang Yi Xuan",
+          "Yang Lei",
+          "sijie chen  \u9648\u601d\u6377"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Ai Ni Ding \u827e\u5c3c\u4e01",
+          "Bouzghoudi Mohammed Younes",
+          "Obeng Kwakye sam"
+        ],
+        "team_1_scored_players": [
+          [
+            "ming luo \u7f57\u660e",
+            "75'"
+          ],
+          [
+            "yuchi cao \u66f9\u5b87\u6c60",
+            "86'"
+          ],
+          [
+            "Yang Yi Xuan",
+            "90'"
+          ],
+          [
+            "Yang Lei",
+            "15'"
+          ],
+          [
+            "sijie chen  \u9648\u601d\u6377",
+            "65'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Abdulkadir Al-amin Mohammed",
+            "55'"
+          ],
+          [
+            "Obeng Kwakye sam",
+            "10', 79'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [
+          "Cheng Yi \u6210\u5f08"
+        ],
+        "team_1_mvp_player_name": "Yang Lei",
+        "team_2_mvp_player_name": "Bouzghoudi Brahim Kais",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4810/"
+      },
+      {
+        "team_1_name": "Origin FC",
+        "team_2_name": "Red Cards",
+        "team_1_score": 2,
+        "team_2_score": 0,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "Amirshoev Farrukh",
+          "Liu Ming",
+          "Li Yi Zhou",
+          "Ji Fang",
+          "Deng Xin",
+          "Mirzoev Asomuddin",
+          "Wang Chang Le",
+          "Yu Tao",
+          "Li Kun Lin",
+          "Zhou Si Hao",
+          "Yu Qing"
+        ],
+        "name_list_of_team_2_players": [
+          "\u98ef\u585a\u5f18\u6a39\uff08Iizuka Hiroki\uff09",
+          "\u67f3\u751f\u7530\u6602\u4ec1\uff08YAGYUDA TAKAHITO)",
+          "\u5742\u53e3\u8cb4\u6d69\uff08SAKAGUCHI TAKAHIRO)",
+          "\u7bc9\u5c71\u3000\u5ead\u6597(TSUKIYAMA TEITO)",
+          "\u5218\u7530\uff08Liu Tian\uff09",
+          "Guo Hao (\u90ed\u8c6a)",
+          "Koh Mutsuki (\u9ad8\u7766\u6765)",
+          "Miyagawa Shuto (\u5bae\u5ddd\u79c0\u6597)",
+          "\u675c\u61ff\uff08Du yi\uff09",
+          "\u4f46\u7530\u8b19\u592a\u90ce\uff08Tada Kentaro\uff09",
+          "\u82e5\u5409\u4e00\u8f1d\uff08Wakayoshi Kazuki\uff09",
+          "\u4e2d\u8fbb\u7fd4\u592a\uff08Nakatsuji Shota\uff09",
+          "\u9752\u91ce\u76f4\u6a39\uff08Aono Naoki\uff09",
+          "\u5ca9\u5c3e\u90c1\u4e5f\uff08IWAO FUMIYA)"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "\u5218\u7530\uff08Liu Tian\uff09"
+        ],
+        "team_1_scored_players": [
+          [
+            "Li Yi Zhou",
+            "30'"
+          ],
+          [
+            "Yu Tao",
+            "83'"
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [
+          "\u82e5\u5409\u4e00\u8f1d\uff08Wakayoshi Kazuki\uff09"
+        ],
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": null,
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4811/"
+      },
+      {
+        "team_1_name": "French LEquipe",
+        "team_2_name": "Changying FC",
+        "team_1_score": 4,
+        "team_2_score": 5,
+        "date": "2024-10-19T00:00:00",
+        "name_list_of_team_1_players": [
+          "Wagner Moreira",
+          "Terentiy Shugaev",
+          "Guillaume Le Fourner",
+          "Karim Fahssis",
+          "Rodolphe Van Respaille",
+          "Qiwei Tian",
+          "Filocha Peter",
+          "Anli Chu Garcia",
+          "Aleksei Burkhanov",
+          "Adamu Philipo",
+          "Sun Ke",
+          "Megharat Adam",
+          "Raphael Pere",
+          "Olivier Ferrage",
+          "Sinan Tuncer",
+          "Ivanuiga Nikita"
+        ],
+        "name_list_of_team_2_players": [
+          "Yin Hao Zhen",
+          "Piao Zheng Yi",
+          "An Kang",
+          "Abudula Sini",
+          "Gong Yu",
+          "Yao Yao",
+          "Liu Jie",
+          "Wang Yin Qing",
+          "Shi Lei",
+          "Shao Zu Han",
+          "Yu Hai Jian",
+          "Zhang Guo Bin"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Filocha Peter",
+          "Adamu Philipo"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Abudula Sini",
+          "Yao Yao"
+        ],
+        "team_1_scored_players": [
+          [
+            "Terentiy Shugaev",
+            "20', 46'"
+          ],
+          [
+            "Aleksei Burkhanov",
+            "52'"
+          ],
+          [
+            "Sinan Tuncer",
+            "86'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Yin Hao Zhen",
+            "8'"
+          ],
+          [
+            "An Kang",
+            "17', 18'"
+          ],
+          [
+            "Yao Yao",
+            "89'"
+          ],
+          [
+            "Zhang Guo Bin",
+            "62'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": null,
+        "team_2_mvp_player_name": null,
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4812/"
+      },
+      {
+        "team_1_name": "CYPR",
+        "team_2_name": "Beijing \u708e\u9f99",
+        "team_1_score": 7,
+        "team_2_score": 3,
+        "date": "2024-10-20T00:00:00",
+        "name_list_of_team_1_players": [
+          "Diagouraga Mady",
+          "Khamby",
+          "Alex Iddles",
+          "Aime Amadou Abakar Pazouyo.",
+          "Kelvin Kaaya",
+          "Jose Ortiz Rodas",
+          "Mew Lan",
+          "Sean Comer",
+          "Christophe Willocx",
+          "Abdoulaye Cisse",
+          "Theo Richnel",
+          "Todd Balazovic",
+          "Song Haining",
+          "Mbollo Seyi Steve  Armel Chris",
+          "Martin Hofmann",
+          "Leyni Yacouba",
+          "Bikie Mmelegi Gosiame",
+          "Aly Guindo"
+        ],
+        "name_list_of_team_2_players": [
+          "Zhao Hong Bo\u00a0 \u8d75\u9e3f\u535a",
+          "Yu Yue \u4e8e\u8dc3",
+          "He Qing Le \u4f55\u9752\u4e50",
+          "Ke  Zhi  Chao \u53ef\u667a\u8d85",
+          "Sun Yan\u00a0 \u5b59\u5ca9",
+          "Francis Saah Koryon",
+          "Zhai  Hong  Yi \u7fdf\u5f18\u6bc5",
+          "Bai Yu \u767d\u5b87",
+          "Xu Yan \u8bb8\u5ca9",
+          "Song Feng Nan\u00a0 \u5b8b\u51e4\u6960",
+          "Jin Yuan Qiu  Shi \u91d1\u7f18\u79cb\u5b9e",
+          "Liu Jin Ge \u5218\u91d1\u6208",
+          "Zhou Xiang Jun \u5468\u76f8\u541b",
+          "Wang Tian You \u738b\u5929\u4f51"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Kelvin Kaaya",
+          "Martin Hofmann"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Ke  Zhi  Chao \u53ef\u667a\u8d85",
+          "Sun Yan\u00a0 \u5b59\u5ca9",
+          "Bai Yu \u767d\u5b87"
+        ],
+        "team_1_scored_players": [
+          [
+            "Khamby",
+            "12', 17'"
+          ],
+          [
+            "Aime Amadou Abakar Pazouyo.",
+            "62', 89'"
+          ],
+          [
+            "Kelvin Kaaya",
+            "53', 80'"
+          ],
+          [
+            "Leyni Yacouba",
+            "85'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Yu Yue \u4e8e\u8dc3",
+            "60', 77'"
+          ],
+          [
+            "He Qing Le \u4f55\u9752\u4e50",
+            "83'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [
+          "Liu Jin Ge \u5218\u91d1\u6208"
+        ],
+        "team_1_mvp_player_name": "Leyni Yacouba",
+        "team_2_mvp_player_name": "He Qing Le \u4f55\u9752\u4e50",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4813/"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "competitions": [
+      {
+        "team_1_name": "Maxyeild United",
+        "team_2_name": "Origin FC",
+        "team_1_score": 5,
+        "team_2_score": 1,
+        "date": "2024-11-02T00:00:00",
+        "name_list_of_team_1_players": [
+          "sijie chen  \u9648\u601d\u6377",
+          "yongyu han  \u97e9\u6850\u7fbd",
+          "zhengyuan xu  \u8bb8\u6b63\u6e90",
+          "Felix Szeto",
+          "ruoxu ma \u9a6c\u82e5\u865a",
+          "heng li i\u674e\u6052",
+          "delong zhang \u5f20\u5fb7\u9f99",
+          "beinan wang \u738b\u5317\u5357",
+          "lei liu  \u5218\u78ca",
+          "SHEN BJOERN",
+          "yishen shen \u7533\u7fca\u8fb0",
+          "zhuohang lv \u5415\u5353\u822a",
+          "zilong luo \u7f57\u5b50\u9f99",
+          "zhen lan \u5170\u9707",
+          "mingyang du \u675c\u660e\u6d0b",
+          "yuchi cao \u66f9\u5b87\u6c60",
+          "yuan he \u4f55\u6e90"
+        ],
+        "name_list_of_team_2_players": [
+          "Chen Liang Yu",
+          "Luo Ning",
+          "Amirshoev Farrukh",
+          "Li Qin Yang",
+          "Guo Shuo",
+          "Dong Yang",
+          "Mirzoev Asomuddin",
+          "Wang Chang Le",
+          "Li Gong Chen",
+          "Wang Sheng Qiang",
+          "Yu Tao",
+          "Li Kun Lin",
+          "Ma Jun Xiao"
+        ],
+        "team_1_yellow_card_player_names": [
+          "zhen lan \u5170\u9707"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Mirzoev Asomuddin"
+        ],
+        "team_1_scored_players": [
+          [
+            "sijie chen  \u9648\u601d\u6377",
+            "80'"
+          ],
+          [
+            "yongyu han  \u97e9\u6850\u7fbd",
+            "54'"
+          ],
+          [
+            "SHEN BJOERN",
+            "88'"
+          ],
+          [
+            "zilong luo \u7f57\u5b50\u9f99",
+            "30', 48'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Yu Tao",
+            "83'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "zilong luo \u7f57\u5b50\u9f99",
+        "team_2_mvp_player_name": "Yu Tao",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4815/"
+      },
+      {
+        "team_1_name": "Red Cards",
+        "team_2_name": "French LEquipe",
+        "team_1_score": 1,
+        "team_2_score": 2,
+        "date": "2024-11-02T00:00:00",
+        "name_list_of_team_1_players": [
+          "\u6cb3\u9762\u4fe1\u543e\uff08KOMO SHINGO)",
+          "Guo Hao (\u90ed\u8c6a)",
+          "\u98ef\u585a\u5f18\u6a39\uff08Iizuka Hiroki\uff09",
+          "\u6700\u4e0a \u96bc\u4e16 (MOGAMI TAKAYO)",
+          "\u8352\u6728 \u96c4\u5927 (ARAKI YUTA)",
+          "\u5ddd\u5cf6 \u96c5\u77e2 (KAWASHIMA MASAYA)",
+          "\u5916\u6c60\u6f64\u5e73\uff08HOKAIKE JUMPEI)",
+          "\u5218\u7530\uff08Liu Tian\uff09",
+          "\u5f90\u6653\u98de\uff08Xu Xiaofei\uff09",
+          "\u675c\u61ff\uff08Du yi\uff09",
+          "\u82e5\u5409\u4e00\u8f1d\uff08Wakayoshi Kazuki\uff09",
+          "\u4e2d\u8fbb\u7fd4\u592a\uff08Nakatsuji Shota\uff09",
+          "\u9752\u91ce\u76f4\u6a39\uff08Aono Naoki\uff09"
+        ],
+        "name_list_of_team_2_players": [
+          "Terentiy Shugaev",
+          "Guillaume Le Fourner",
+          "Ferdinando Cinotto",
+          "Wagner Moreira",
+          "Adamu Philipo",
+          "Abdirizak Yare",
+          "Danny Wilding",
+          "Jacobus Adriian Smit",
+          "Sinan Tuncer",
+          "Ivanuiga Nikita",
+          "Johnny Jin",
+          "Filocha Peter",
+          "Megharat Adam",
+          "Olivier Ferrage",
+          "Joffrey Dupuis",
+          "Adrian Ruisanchez",
+          "Julien Moulieres",
+          "Lassina Cisse"
+        ],
+        "team_1_yellow_card_player_names": [
+          "\u6700\u4e0a \u96bc\u4e16 (MOGAMI TAKAYO)"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Terentiy Shugaev",
+          "Ferdinando Cinotto",
+          "Wagner Moreira",
+          "Filocha Peter"
+        ],
+        "team_1_scored_players": [
+          [
+            "\u98ef\u585a\u5f18\u6a39\uff08Iizuka Hiroki\uff09",
+            "86'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Sinan Tuncer",
+            "18'"
+          ],
+          [
+            "Adrian Ruisanchez",
+            "35'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [
+          "Olivier Ferrage"
+        ],
+        "team_1_mvp_player_name": "\u5f90\u6653\u98de\uff08Xu Xiaofei\uff09",
+        "team_2_mvp_player_name": "Wagner Moreira",
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4816/"
+      },
+      {
+        "team_1_name": "CYPR",
+        "team_2_name": "Changying FC",
+        "team_1_score": 1,
+        "team_2_score": 0,
+        "date": "2024-11-02T00:00:00",
+        "name_list_of_team_1_players": [
+          "Khamby",
+          "Martin Maximo Ray",
+          "Aime Amadou Abakar Pazouyo.",
+          "Diagouraga Mady",
+          "Aleer Deng",
+          "Hirmans Tabaharizato",
+          "Jose Ortiz Rodas",
+          "Aly Guindo",
+          "Xiaonan Liu",
+          "Sean Comer",
+          "Theo Richnel",
+          "Todd Balazovic",
+          "Mbollo Seyi Steve  Armel Chris",
+          "Kelvin Kaaya",
+          "Leidivander Bernardo Morais"
+        ],
+        "name_list_of_team_2_players": [
+          "Yin Hao Zhen",
+          "Piao Zheng Yi",
+          "An Kang",
+          "Abudula Sini",
+          "Zhang Guo Bin",
+          "Gong Yu",
+          "Yao Yao",
+          "Liu Jie",
+          "Wang Yin Qing",
+          "Shi Lei",
+          "Shao Zu Han"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Aly Guindo"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Abudula Sini",
+          "Liu Jie"
+        ],
+        "team_1_scored_players": [
+          [
+            "Mbollo Seyi Steve  Armel Chris",
+            "25'"
+          ]
+        ],
+        "team_2_scored_players": [],
+        "team_1_red_card_player_names": [
+          "Diagouraga Mady"
+        ],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Aleer Deng",
+        "team_2_mvp_player_name": "Yin Hao Zhen",
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4817/"
+      },
+      {
+        "team_1_name": "Beijing \u708e\u9f99",
+        "team_2_name": "\u7855\u679cFC",
+        "team_1_score": 2,
+        "team_2_score": 4,
+        "date": "2024-11-03T00:00:00",
+        "name_list_of_team_1_players": [
+          "Yu Yue \u4e8e\u8dc3",
+          "Sun Yan\u00a0 \u5b59\u5ca9",
+          "Zhai  Hong  Yi \u7fdf\u5f18\u6bc5",
+          "Xu Yan \u8bb8\u5ca9",
+          "Chen Lei \u9648\u78ca",
+          "Song Feng Nan\u00a0 \u5b8b\u51e4\u6960",
+          "Ba Jin Teng \u5df4\u91d1\u817e",
+          "Jin Yuan Qiu  Shi \u91d1\u7f18\u79cb\u5b9e",
+          "Wu Yi Fan \u5434\u4e00\u5e06",
+          "Zhang Qi \u7ae0\u742a",
+          "Jia Xiao Chen",
+          "Fu Bin",
+          "Xiao Yun"
+        ],
+        "name_list_of_team_2_players": [
+          "MBOUSSA MOUI RIDEL",
+          "Shi Xiang DI \u53f2\u5411\u8fea",
+          "Anzuna Jonathan",
+          "Zhao Fu Duo \u8d75\u798f\u591a",
+          "Loubeh ornom Armand",
+          "Chen Xu Dong \u9648\u65ed\u4e1c",
+          "Abdulkadir Al-amin Mohammed",
+          "Diallo Samba",
+          "Ag Aly Baba Alhassane",
+          "Bouzghoudi Mohammed Younes",
+          "Bouzghoudi Brahim Kais"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Sun Yan\u00a0 \u5b59\u5ca9",
+          "Ba Jin Teng \u5df4\u91d1\u817e"
+        ],
+        "team_2_yellow_card_player_names": [],
+        "team_1_scored_players": [
+          [
+            "Zhai  Hong  Yi \u7fdf\u5f18\u6bc5",
+            "8', 69'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Chen Xu Dong \u9648\u65ed\u4e1c",
+            "15'"
+          ],
+          [
+            "Abdulkadir Al-amin Mohammed",
+            "9'"
+          ],
+          [
+            "Bouzghoudi Mohammed Younes",
+            "21'"
+          ],
+          [
+            "Bouzghoudi Brahim Kais",
+            "50'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Yu Yue \u4e8e\u8dc3",
+        "team_2_mvp_player_name": "Bouzghoudi Brahim Kais",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4818/"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "competitions": [
+      {
+        "team_1_name": "CYPR",
+        "team_2_name": "Red Cards",
+        "team_1_score": 6,
+        "team_2_score": 3,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [
+          "Hirmans Tabaharizato",
+          "Martin Maximo Ray",
+          "Khamby",
+          "Jose Ortiz Rodas",
+          "Xiaonan Liu",
+          "Christophe Willocx",
+          "Abdoulaye Cisse",
+          "Bai Long Yi",
+          "Theo Richnel",
+          "Todd Balazovic",
+          "Yu Shuoben",
+          "Mbollo Seyi Steve  Armel Chris",
+          "Kelvin Kaaya",
+          "Oswald Guerrero"
+        ],
+        "name_list_of_team_2_players": [
+          "\u67f3\u751f\u7530\u6602\u4ec1\uff08YAGYUDA TAKAHITO)",
+          "\u9577\u5ca1\u88d5\u4e00\uff08Nagaoka Yuichi)",
+          "\u7bc9\u5c71\u3000\u5ead\u6597(TSUKIYAMA TEITO)",
+          "Guo Hao (\u90ed\u8c6a)",
+          "\u98ef\u585a\u5f18\u6a39\uff08Iizuka Hiroki\uff09",
+          "Fang Yue (\u65b9\u8dc3)",
+          "Koh Mutsuki (\u9ad8\u7766\u6765)",
+          "Miyagawa Shuto (\u5bae\u5ddd\u79c0\u6597)",
+          "\u5f90\u6653\u98de\uff08Xu Xiaofei\uff09",
+          "\u675c\u61ff\uff08Du yi\uff09",
+          "\u82e5\u5409\u4e00\u8f1d\uff08Wakayoshi Kazuki\uff09",
+          "\u4e2d\u8fbb\u7fd4\u592a\uff08Nakatsuji Shota\uff09",
+          "\u9752\u91ce\u76f4\u6a39\uff08Aono Naoki\uff09",
+          "\u6fa4\u7530 \u8b58\u4ec1 (SAWADA SATOHITO)",
+          "\u6e21\u8fba\u4fca\u4e9c(WATANABE TOSHIA)"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Todd Balazovic"
+        ],
+        "team_2_yellow_card_player_names": [
+          "\u7bc9\u5c71\u3000\u5ead\u6597(TSUKIYAMA TEITO)"
+        ],
+        "team_1_scored_players": [
+          [
+            "Theo Richnel",
+            "66'"
+          ],
+          [
+            "Mbollo Seyi Steve  Armel Chris",
+            "46', 48', 68'"
+          ],
+          [
+            "Kelvin Kaaya",
+            "23', 53'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "\u67f3\u751f\u7530\u6602\u4ec1\uff08YAGYUDA TAKAHITO)",
+            "35'"
+          ],
+          [
+            "Miyagawa Shuto (\u5bae\u5ddd\u79c0\u6597)",
+            "51'"
+          ],
+          [
+            "\u6e21\u8fba\u4fca\u4e9c(WATANABE TOSHIA)",
+            "41'"
+          ]
+        ],
+        "team_1_red_card_player_names": [
+          "Martin Maximo Ray"
+        ],
+        "team_2_red_card_player_names": [
+          "Guo Hao (\u90ed\u8c6a)"
+        ],
+        "team_1_mvp_player_name": "Kelvin Kaaya",
+        "team_2_mvp_player_name": "\u6fa4\u7530 \u8b58\u4ec1 (SAWADA SATOHITO)",
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4844/"
+      },
+      {
+        "team_1_name": "\u7855\u679cFC",
+        "team_2_name": "Origin FC",
+        "team_1_score": 4,
+        "team_2_score": 2,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [
+          "Ai Ni Ding \u827e\u5c3c\u4e01",
+          "Wang Su \u738b\u658c",
+          "Yang Xi \u6768\u66e6",
+          "Zhao Fu Duo \u8d75\u798f\u591a",
+          "Loubeh ornom Armand",
+          "Shi Xiang DI \u53f2\u5411\u8fea",
+          "Chen Yu Hang \u9648\u65bc\u676d",
+          "Cheng Yi \u6210\u5f08",
+          "Chen Xu Dong \u9648\u65ed\u4e1c",
+          "Diallo Samba",
+          "Ag Aly Baba Alhassane",
+          "Ma Zhen Ning",
+          "Bouzghoudi Mohammed Younes",
+          "Obeng Kwakye sam",
+          "Bouzghoudi Brahim Kais",
+          "Derraoui Hamza",
+          "Sun Zhi Xian"
+        ],
+        "name_list_of_team_2_players": [
+          "Chen Liang Yu",
+          "Li Qin Yang",
+          "Zhang Meng",
+          "Mirzoev Asomuddin",
+          "Chen Zhi Yi",
+          "Li Gong Chen",
+          "Yan Peng",
+          "Zhao Le Fan",
+          "Yu Tao",
+          "Li Kun Lin",
+          "Si Run Gang",
+          "Zhou Yue",
+          "Wang Hao"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Ma Zhen Ning",
+          "Bouzghoudi Brahim Kais"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Chen Liang Yu",
+          "Li Gong Chen",
+          "Wang Hao"
+        ],
+        "team_1_scored_players": [
+          [
+            "Shi Xiang DI \u53f2\u5411\u8fea",
+            "83'"
+          ],
+          [
+            "Cheng Yi \u6210\u5f08",
+            "9'"
+          ],
+          [
+            "Obeng Kwakye sam",
+            "45'"
+          ],
+          [
+            "Derraoui Hamza",
+            "68'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Mirzoev Asomuddin",
+            "11'"
+          ],
+          [
+            "Wang Hao",
+            "6'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Bouzghoudi Brahim Kais",
+        "team_2_mvp_player_name": "Yu Tao",
+        "pitch_name": "Elements",
+        "link": "https://ciflchina.com/event/4843/"
+      },
+      {
+        "team_1_name": "Changying FC",
+        "team_2_name": "Beijing \u708e\u9f99",
+        "team_1_score": 2,
+        "team_2_score": 5,
+        "date": "2024-11-16T00:00:00",
+        "name_list_of_team_1_players": [
+          "Yin Hao Zhen",
+          "Piao Zheng Yi",
+          "An Kang",
+          "Abudula Sini",
+          "Zhang Guo Bin",
+          "Gong Yu",
+          "Yao Yao",
+          "Wang Yin Qing",
+          "Wu Dan",
+          "Shi Lei",
+          "Xiang Bin",
+          "Wang Mao"
+        ],
+        "name_list_of_team_2_players": [
+          "Yu Yue \u4e8e\u8dc3",
+          "He Qing Le \u4f55\u9752\u4e50",
+          "Sun Yan\u00a0 \u5b59\u5ca9",
+          "Niu Rong Kang",
+          "Song Feng Nan\u00a0 \u5b8b\u51e4\u6960",
+          "Chen Lei \u9648\u78ca",
+          "Francis Saah Koryon",
+          "Jin Yuan Qiu  Shi \u91d1\u7f18\u79cb\u5b9e",
+          "Liu Jin Ge \u5218\u91d1\u6208",
+          "Wu Yi Fan \u5434\u4e00\u5e06",
+          "Wang Yuan Hao",
+          "Zheng Zhou"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Abudula Sini"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Liu Jin Ge \u5218\u91d1\u6208"
+        ],
+        "team_1_scored_players": [
+          [
+            "Yin Hao Zhen",
+            "27', 41'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Sun Yan\u00a0 \u5b59\u5ca9",
+            "85'"
+          ],
+          [
+            "Niu Rong Kang",
+            "30', 75'"
+          ],
+          [
+            "Chen Lei \u9648\u78ca",
+            "15', 50'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Yin Hao Zhen",
+        "team_2_mvp_player_name": "Niu Rong Kang",
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4845/"
+      },
+      {
+        "team_1_name": "Maxyeild United",
+        "team_2_name": "French LEquipe",
+        "team_1_score": 3,
+        "team_2_score": 3,
+        "date": "2024-11-17T00:00:00",
+        "name_list_of_team_1_players": [
+          "sijie chen  \u9648\u601d\u6377",
+          "zhengyuan xu  \u8bb8\u6b63\u6e90",
+          "Felix Szeto",
+          "ruoxu ma \u9a6c\u82e5\u865a",
+          "delong zhang \u5f20\u5fb7\u9f99",
+          "lei liu  \u5218\u78ca",
+          "Xia Guo Cheng",
+          "zhuohang lv \u5415\u5353\u822a",
+          "zhen lan \u5170\u9707",
+          "mingyang du \u675c\u660e\u6d0b",
+          "yuchi cao \u66f9\u5b87\u6c60",
+          "yuan he \u4f55\u6e90"
+        ],
+        "name_list_of_team_2_players": [
+          "Karim Fahssis",
+          "Ferdinando Cinotto",
+          "Wagner Moreira",
+          "Aleksei Burkhanov",
+          "Adamu Philipo",
+          "Abdirizak Yare",
+          "Guillaume Le Fourner",
+          "Sinan Tuncer",
+          "Adrian Ruisanchez",
+          "Arnaud Plessis",
+          "Camille Bortolini",
+          "Raphael Pere",
+          "Olivier Ferrage"
+        ],
+        "team_1_yellow_card_player_names": [
+          "sijie chen  \u9648\u601d\u6377"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Raphael Pere"
+        ],
+        "team_1_scored_players": [
+          [
+            "zhengyuan xu  \u8bb8\u6b63\u6e90",
+            "38', 58'"
+          ],
+          [
+            "ruoxu ma \u9a6c\u82e5\u865a",
+            "12'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Abdirizak Yare",
+            "70'"
+          ],
+          [
+            "Guillaume Le Fourner",
+            "8'"
+          ],
+          [
+            "Sinan Tuncer",
+            "82'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "yuan he \u4f55\u6e90",
+        "team_2_mvp_player_name": "Karim Fahssis",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4846/"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "competitions": [
+      {
+        "team_1_name": "Origin FC",
+        "team_2_name": "French LEquipe",
+        "team_1_score": 5,
+        "team_2_score": 1,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [
+          "Zhang Meng",
+          "Amirshoev Farrukh",
+          "Chen Liang Yu",
+          "Chen Yu",
+          "Deng Xin",
+          "Ma Jun Xiao",
+          "Zhou Yue",
+          "Wang Hao",
+          "Feng Yu Tang",
+          "Yu Tao",
+          "Mirzoev Asomuddin",
+          "Wang Sheng Qiang",
+          "Li Kun Lin",
+          "Yu Qing",
+          "Luo Tian",
+          "Ji Fang"
+        ],
+        "name_list_of_team_2_players": [
+          "Karim Fahssis",
+          "Rodolphe Van Respaille",
+          "Guanjie Liang",
+          "Wagner Moreira",
+          "Adamu Philipo",
+          "Abdirizak Yare",
+          "Guillaume Le Fourner",
+          "Danny Wilding",
+          "Sinan Tuncer",
+          "Adrian Ruisanchez",
+          "Terentiy Shugaev",
+          "Arnaud Plessis",
+          "Camille Bortolini",
+          "Filocha Peter",
+          "Megharat Adam",
+          "Raphael Pere",
+          "Olivier Ferrage"
+        ],
+        "team_1_yellow_card_player_names": [],
+        "team_2_yellow_card_player_names": [
+          "Camille Bortolini",
+          "Raphael Pere"
+        ],
+        "team_1_scored_players": [
+          [
+            "Zhang Meng",
+            "52'"
+          ],
+          [
+            "Wang Hao",
+            "58', 72'"
+          ],
+          [
+            "Yu Tao",
+            "65'"
+          ],
+          [
+            "Wang Sheng Qiang",
+            "77'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Filocha Peter",
+            "50'"
+          ]
+        ],
+        "team_1_red_card_player_names": [
+          "Zhang Meng",
+          "Deng Xin",
+          "Feng Yu Tang"
+        ],
+        "team_2_red_card_player_names": [
+          "Abdirizak Yare",
+          "Danny Wilding",
+          "Megharat Adam"
+        ],
+        "team_1_mvp_player_name": "Wang Hao",
+        "team_2_mvp_player_name": "Filocha Peter",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4831/"
+      },
+      {
+        "team_1_name": "Red Cards",
+        "team_2_name": "Beijing \u708e\u9f99",
+        "team_1_score": 2,
+        "team_2_score": 3,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [
+          "\u5742\u53e3\u8cb4\u6d69\uff08SAKAGUCHI TAKAHIRO)",
+          "\u9577\u5ca1\u88d5\u4e00\uff08Nagaoka Yuichi)",
+          "\u7bc9\u5c71\u3000\u5ead\u6597(TSUKIYAMA TEITO)",
+          "Guo Hao (\u90ed\u8c6a)",
+          "Koh Mutsuki (\u9ad8\u7766\u6765)",
+          "Miyagawa Shuto (\u5bae\u5ddd\u79c0\u6597)",
+          "\u6fa4\u7530 \u8b58\u4ec1 (SAWADA SATOHITO)",
+          "\u5916\u6c60\u6f64\u5e73\uff08HOKAIKE JUMPEI)",
+          "\u5218\u7530\uff08Liu Tian\uff09",
+          "\u5f90\u6653\u98de\uff08Xu Xiaofei\uff09",
+          "\u82e5\u5409\u4e00\u8f1d\uff08Wakayoshi Kazuki\uff09",
+          "\u6e21\u8fba\u4fca\u4e9c(WATANABE TOSHIA)",
+          "\u4e2d\u8fbb\u7fd4\u592a\uff08Nakatsuji Shota\uff09",
+          "\u9752\u91ce\u76f4\u6a39\uff08Aono Naoki\uff09"
+        ],
+        "name_list_of_team_2_players": [
+          "Yu Yue \u4e8e\u8dc3",
+          "He Qing Le \u4f55\u9752\u4e50",
+          "Ke  Zhi  Chao \u53ef\u667a\u8d85",
+          "Sun Yan\u00a0 \u5b59\u5ca9",
+          "Francis Saah Koryon",
+          "Fu Bin",
+          "Jia Xiao Chen",
+          "Zheng Zhou",
+          "Fu Bo Zun",
+          "Liu Jin Ge \u5218\u91d1\u6208",
+          "Yu Bo \u4e8e\u6e24",
+          "Jin Yuan Qiu  Shi \u91d1\u7f18\u79cb\u5b9e",
+          "Song Feng Nan\u00a0 \u5b8b\u51e4\u6960"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Koh Mutsuki (\u9ad8\u7766\u6765)",
+          "Miyagawa Shuto (\u5bae\u5ddd\u79c0\u6597)",
+          "\u6e21\u8fba\u4fca\u4e9c(WATANABE TOSHIA)",
+          "\u4e2d\u8fbb\u7fd4\u592a\uff08Nakatsuji Shota\uff09"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Yu Bo \u4e8e\u6e24"
+        ],
+        "team_1_scored_players": [
+          [
+            "Miyagawa Shuto (\u5bae\u5ddd\u79c0\u6597)",
+            "21'"
+          ],
+          [
+            "\u4e2d\u8fbb\u7fd4\u592a\uff08Nakatsuji Shota\uff09",
+            "7'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Yu Yue \u4e8e\u8dc3",
+            "56'"
+          ],
+          [
+            "He Qing Le \u4f55\u9752\u4e50",
+            "15', 75'"
+          ]
+        ],
+        "team_1_red_card_player_names": [
+          "Guo Hao (\u90ed\u8c6a)",
+          "\u6fa4\u7530 \u8b58\u4ec1 (SAWADA SATOHITO)"
+        ],
+        "team_2_red_card_player_names": [
+          "Sun Yan\u00a0 \u5b59\u5ca9"
+        ],
+        "team_1_mvp_player_name": "\u5f90\u6653\u98de\uff08Xu Xiaofei\uff09",
+        "team_2_mvp_player_name": "Fu Bo Zun",
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4832/"
+      },
+      {
+        "team_1_name": "\u7855\u679cFC",
+        "team_2_name": "Changying FC",
+        "team_1_score": 5,
+        "team_2_score": 4,
+        "date": "2024-11-30T00:00:00",
+        "name_list_of_team_1_players": [
+          "Shi Xiang DI \u53f2\u5411\u8fea",
+          "MBOUSSA MOUI RIDEL",
+          "Ai Ni Ding \u827e\u5c3c\u4e01",
+          "Wang Su \u738b\u658c",
+          "SHYSHOV IEGOR",
+          "Chai Wei \u67f4\u4f1f",
+          "Zhao Fu Duo \u8d75\u798f\u591a",
+          "Cheng Yi \u6210\u5f08",
+          "Chen Yu Hang \u9648\u65bc\u676d",
+          "Elhafidh Ibrahim Said Ahmed Bourhane",
+          "Nie Jun Lai \u8042\u9a8f\u6765",
+          "Derraoui Hamza",
+          "Bouzghoudi Mohammed Younes",
+          "Diallo Samba",
+          "Obeng Kwakye sam"
+        ],
+        "name_list_of_team_2_players": [
+          "Wen Kun",
+          "Yao Yao",
+          "Wang Mao",
+          "Yu Hai Jian",
+          "Shi Lei",
+          "Wang Yin Qing",
+          "Gong Yu",
+          "Liu Sheng Feng",
+          "Abudula Sini",
+          "Piao Zheng Yi",
+          "Yin Hao Zhen"
+        ],
+        "team_1_yellow_card_player_names": [
+          "Diallo Samba"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Abudula Sini"
+        ],
+        "team_1_scored_players": [
+          [
+            "Ai Ni Ding \u827e\u5c3c\u4e01",
+            "36'"
+          ],
+          [
+            "Derraoui Hamza",
+            "72'"
+          ],
+          [
+            "Obeng Kwakye sam",
+            "51', 52', 63'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "Yao Yao",
+            "56', 72'"
+          ],
+          [
+            "Wang Yin Qing",
+            "49'"
+          ],
+          [
+            "Yin Hao Zhen",
+            "76'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "Bouzghoudi Mohammed Younes",
+        "team_2_mvp_player_name": "Yao Yao",
+        "pitch_name": "Changying",
+        "link": "https://ciflchina.com/event/4833/"
+      },
+      {
+        "team_1_name": "Maxyeild United",
+        "team_2_name": "CYPR",
+        "team_1_score": 1,
+        "team_2_score": 1,
+        "date": "2024-12-01T00:00:00",
+        "name_list_of_team_1_players": [
+          "yongyu han  \u97e9\u6850\u7fbd",
+          "Felix Szeto",
+          "ruoxu ma \u9a6c\u82e5\u865a",
+          "heng li i\u674e\u6052",
+          "delong zhang \u5f20\u5fb7\u9f99",
+          "Xia Guo Cheng",
+          "yishen shen \u7533\u7fca\u8fb0",
+          "zhuohang lv \u5415\u5353\u822a",
+          "zhen lan \u5170\u9707",
+          "mingyang du \u675c\u660e\u6d0b",
+          "jiashi qu \u66f2\u5bb6\u4ed5",
+          "yuan he \u4f55\u6e90",
+          "lei liu  \u5218\u78ca"
+        ],
+        "name_list_of_team_2_players": [
+          "Hirmans Tabaharizato",
+          "Aime Amadou Abakar Pazouyo.",
+          "Diagouraga Mady",
+          "Aleer Deng",
+          "Jose Ortiz Rodas",
+          "Leyni Yacouba",
+          "Aly Guindo",
+          "Leidivander Bernardo Morais",
+          "Xiaonan Liu",
+          "Abdoulaye Cisse",
+          "Sean Comer",
+          "Theo Richnel",
+          "Todd Balazovic",
+          "Mbollo Seyi Steve  Armel Chris",
+          "Kelvin Kaaya",
+          "Oswald Guerrero",
+          "OG"
+        ],
+        "team_1_yellow_card_player_names": [
+          "ruoxu ma \u9a6c\u82e5\u865a",
+          "heng li i\u674e\u6052",
+          "Xia Guo Cheng",
+          "mingyang du \u675c\u660e\u6d0b"
+        ],
+        "team_2_yellow_card_player_names": [
+          "Hirmans Tabaharizato",
+          "Diagouraga Mady",
+          "Abdoulaye Cisse",
+          "Theo Richnel",
+          "Todd Balazovic"
+        ],
+        "team_1_scored_players": [
+          [
+            "yongyu han  \u97e9\u6850\u7fbd",
+            "9'"
+          ]
+        ],
+        "team_2_scored_players": [
+          [
+            "OG",
+            "90'"
+          ]
+        ],
+        "team_1_red_card_player_names": [],
+        "team_2_red_card_player_names": [],
+        "team_1_mvp_player_name": "delong zhang \u5f20\u5fb7\u9f99",
+        "team_2_mvp_player_name": "Aleer Deng",
+        "pitch_name": "Bashang",
+        "link": "https://ciflchina.com/event/4834/"
+      }
+    ]
+  }
+]

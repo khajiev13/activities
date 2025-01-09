@@ -39,9 +39,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']
-                 ] if 'WEBSITE_HOSTNAME' in os.environ else ['127.0.0.1', 'localhost:3001',
-                                                             'http://10.63.155.250:5173/', 'localhost:5173', 'eventopia-backend-due3e9c5bkd3heaf.italynorth-01.azurewebsites.net']
+ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else ['127.0.0.1', 'localhost:3000','localhost:3001','http://10.63.155.250:5173/', 'localhost:5173', 'eventopia-backend-due3e9c5bkd3heaf.italynorth-01.azurewebsites.net','khajiev13.jprq.site']
 # CSRF_TRUSTED_ORIGINS = ['https://' + os.environ['WEBSITE_HOSTNAME']
 #                         ] if 'WEBSITE_HOSTNAME' in os.environ else ['127.0.0.1', 'localhost:3001',
 #                                                                     'http://10.63.155.250:5173/', 'localhost:5173', 'eventopia-backend-due3e9c5bkd3heaf.italynorth-01.azurewebsites.net']

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = process.env.backend_api_address || 'http://127.0.0.1:8000/';
+const baseURL ='http://khajiev13.jprq.site/';
 // Try https://eventopia-backend-due3e9c5bkd3heaf.francecentral-01.azurewebsites.net/ for production
 // Try 'http://127.0.0.1:8000/' for development
 

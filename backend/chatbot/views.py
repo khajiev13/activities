@@ -9,6 +9,12 @@ from rest_framework.permissions import IsAuthenticated
 import os
 
 
+
+# Set environment variables
+os.environ["OPENAI_API_KEY"] = "sk-96139fc7d02941d5b01226f676e3164f"
+os.environ["OPENAI_API_BASE"] = "https://api.deepseek.com/v1"
+
+
 def process_message(message):
     graph = Neo4jGraph(
         url=os.getenv('NEO4J_BOLT_URL'), username=os.getenv('NEO4J_USERNAME'), password=os.getenv('NEO4J_PASSWORD')
@@ -40,7 +46,11 @@ def process_message(message):
     )
 
     chain = GraphCypherQAChain.from_llm(
-        ChatOpenAI(temperature=0),
+        ChatOpenAI(
+            temperature=0,
+            model_name="deepseek-chat",
+            openai_api_base="https://api.deepseek.com/v1"
+        ),
         graph=graph,
         verbose=True,
         cypher_prompt=CYPHER_GENERATION_PROMPT,

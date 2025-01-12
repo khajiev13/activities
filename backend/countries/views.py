@@ -21,7 +21,6 @@ class CountryList(APIView):
                 "states": states,
                 "cities": cities,
             })
-            print(cities)
         serializer = CountrySerializer(data, many=True)
         response = Response(serializer.data)
         end_query = time.time()

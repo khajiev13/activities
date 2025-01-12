@@ -10,10 +10,6 @@ import os
 
 
 
-# Set environment variables
-os.environ["OPENAI_API_KEY"] = "sk-96139fc7d02941d5b01226f676e3164f"
-os.environ["OPENAI_API_BASE"] = "https://api.deepseek.com/v1"
-
 
 def process_message(message):
     graph = Neo4jGraph(

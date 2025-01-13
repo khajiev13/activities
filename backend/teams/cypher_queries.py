@@ -205,51 +205,41 @@ def list_teams_by_country(countries: list):
 def list_teams_by_state(countries: list, states: list):
     """Lists all the teams based in a state."""
     query = """
-        MATCH (c:COUNTRY) WHERE c.name IN $countries
-        MATCH (c)<-[:IS_IN] - (s:STATE)<-[:STATE_BASED_IN]-(teams:TEAM) WHERE s.name IN $names
-        MATCH (teams)-[:TSHIRT_COLOR]->(tshirtColor:COLOR)
-        MATCH (teams)-[:SOCKS_COLOR]->(socksColor:COLOR)
-        MATCH (teams)-[:SHORTS_COLOR]->(shortsColor:COLOR)
-        MATCH (teams)-[:AWAY_TSHIRT_COLOR]->(awayTshirtColor:COLOR)
-        MATCH (teams)-[:IS_TYPE_OF]->(category:CATEGORY)
-        MATCH (teams)-[:BASED_IN]->(location)-[:IS_IN]->(city)-[:IS_IN]->(state)-[:IS_IN]->(country)
-        RETURN teams.name AS name, 
-            teams.men_team AS men_team, 
-            teams.founded_at AS founded_at, 
-            teams.image_url AS image_url, 
-            collect(properties(category)) AS categories, 
-            collect(properties(tshirtColor)) AS tshirt_color, 
-            collect(properties(shortsColor)) AS shorts_color, 
-            collect(properties(socksColor)) AS socks_color, 
-            collect(properties(awayTshirtColor)) AS away_tshirt_color, 
-            collect(properties(location)) AS location,
-            city.name AS city_name, 
-            state.name AS state_name, 
-            country.name AS country_name,
-            teams.public_team AS public_team
+            MATCH (c:COUNTRY) WHERE c.name IN $countries
+            MATCH (c)<-[:IS_IN]-(s:STATE)<-[:STATE_BASED_IN]-(teams:TEAM) WHERE s.name IN $names
+            MATCH (teams)-[:TSHIRT_COLOR]->(tshirtColor:COLOR)
+            MATCH (teams)-[:SOCKS_COLOR]->(socksColor:COLOR)
+            MATCH (teams)-[:SHORTS_COLOR]->(shortsColor:COLOR)
+            MATCH (teams)-[:AWAY_TSHIRT_COLOR]->(awayTshirtColor:COLOR)
+            MATCH (teams)-[:IS_TYPE_OF]->(category:CATEGORY)
+            MATCH (teams)-[:BASED_IN]->(location)-[:IS_IN]->(city)-[:IS_IN]->(state)-[:IS_IN]->(country)
+            WITH teams, city, state, country,
+                collect(properties(category)) as categories,
+                collect(properties(tshirtColor)) as tshirt_colors,
+                collect(properties(shortsColor)) as shorts_colors,
+                collect(properties(socksColor)) as socks_colors,
+                collect(properties(awayTshirtColor)) as away_tshirt_colors,
+                collect(properties(location)) as locations
+            RETURN {
+                name: teams.name,
+                men_team: teams.men_team,
+                founded_at: teams.founded_at,
+                image_url: teams.image_url,
+                categories: categories,
+                tshirt_color: tshirt_colors,
+                shorts_color: shorts_colors,
+                socks_color: socks_colors,
+                away_tshirt_color: away_tshirt_colors,
+                location: locations,
+                city_name: city.name,
+                state_name: state.name,
+                country_name: country.name,
+                public_team: teams.public_team
+            }
         """
     params = {'names': states, 'countries': countries}
     results, meta = db.cypher_query(query, params, resolve_objects=True)
-    print(results)
-    results_dicts = [{
-        'name': result[0],
-        'men_team': result[1],
-        # Convert it to python datetime because serializer datetime field does not accept neotime
-        'founded_at': result[2].isoformat(),
-        'image_url': result[3],
-        'categories': result[4][0],
-        'tshirt_color': result[5][0],
-        'shorts_color': result[6][0],
-        'socks_color': result[7][0],
-        'away_tshirt_color': result[8][0],
-        'location': result[9][0],
-        'city_name': result[10],
-        'state_name': result[11],
-        'country_name': result[12],
-        'public_team': result[13],
-    } for result in results
-    ]
-    return results_dicts
+    return results
 
 
 def list_teams_by_city(countries: list, states: list, cities: list):

@@ -18,31 +18,3 @@ class CountrySerializer(serializers.Serializer):
     # def get_number_of_organizations(self, obj):
     #     return len(obj.organizations.all())
     states = StateSerializer(many=True, required=False)
-
-    def to_representation(self, instance):
-        country_data = instance["country"]
-        states_data = instance["states"] or []  # Handle empty states
-        cities_data = instance["cities"] or []  # Handle empty cities
-
-        # Build states map
-        states_map = {}
-        for state in states_data:
-            if state:  # Check if state exists
-                states_map[state.id] = {
-                    "name": state["name"],
-                    "cities": []
-                }
-
-        # Add cities to their states
-        for city in cities_data:
-            if city and hasattr(city, '__relationship__'):
-                state_id = city.__relationship__.start_node_id
-                if state_id in states_map:
-                    states_map["cities"].append({
-                        "name": city["name"]
-                    })
-
-        return {
-            "name": country_data["name"],
-            "states": list(states_map.values()),
-        }

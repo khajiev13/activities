@@ -22,16 +22,16 @@ class TeamListSerializer(serializers.Serializer):
     men_team = serializers.BooleanField()
     founded_at = serializers.DateField()
     image_url = serializers.CharField(allow_null=True, required=False)
-    public_team = serializers.BooleanField()
+    categories = CategorySerializer(many=True)
     tshirt_color = ColorSerializer(many=True)
     shorts_color = ColorSerializer(many=True)
-    away_tshirt_color = ColorSerializer(many=True)
     socks_color = ColorSerializer(many=True)
-    country_name = serializers.StringRelatedField()
-    state_name = serializers.StringRelatedField()
-    city_name = serializers.StringRelatedField()
+    away_tshirt_color = ColorSerializer(many=True)
     location = LocationSerializer(many=True)
-    categories = CategorySerializer(many=True)
+    city_name = serializers.StringRelatedField()
+    state_name = serializers.StringRelatedField()
+    country_name = serializers.StringRelatedField()
+    public_team = serializers.BooleanField()
 
 
 class TeamDetailSerializer(serializers.Serializer):

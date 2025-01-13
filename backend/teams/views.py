@@ -113,7 +113,6 @@ class TeamListCreateView(generics.ListCreateAPIView):
             # City might be a list of cities
             cities = self.kwargs.get('cities', None)
             search_name = self.kwargs.get('search', None)
-            print(countries, states, cities)
             if countries:
                 # Convert the string to a list of countries before pasing it to a function
                 countries = [country.strip() for country in countries.split(",")]
@@ -135,7 +134,9 @@ class TeamListCreateView(generics.ListCreateAPIView):
                 teams = list_teams_by_city(countries, states, cities)
             elif search_name:
                 teams = list_teams_by_name(search_name)
+            teams = [team[0] for team in teams]
             serializer = TeamListSerializer(teams, many=True)
+        
             return Response(serializer.data)
 
         except DoesNotExist:

@@ -15,11 +15,10 @@ class CountryList(APIView):
         countries = COUNTRY.get_all_countries_with_states_and_cities()
         # Convert query rows to a list of dicts:
         data = []
-        for country, states, cities in countries:
+        for country, states in countries:
             data.append({
-                "country": country,
-                "states": states,
-                "cities": cities,
+                "name": country,
+                "states":states
             })
         serializer = CountrySerializer(data, many=True)
         response = Response(serializer.data)

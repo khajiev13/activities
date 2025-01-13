@@ -17,8 +17,10 @@ class COUNTRY(DjangoNode):
             MATCH (country:COUNTRY)
             OPTIONAL MATCH (country)<-[:IS_IN]-(state:STATE)
             OPTIONAL MATCH (state)<-[:IS_IN]-(city:CITY)
-            RETURN country, collect(DISTINCT state) AS states, collect(DISTINCT city) AS cities
-        """
+            WITH country, state, collect({name: city.name}) as cities
+            WITH country, collect({name: state.name, cities: cities}) as states
+            RETURN country.name as name, states
+            """
         results, meta = db.cypher_query(query)
         return results
     class Meta:

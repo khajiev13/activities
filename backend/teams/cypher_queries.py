@@ -2,6 +2,60 @@ from neomodel import db
 from neomodel.contrib.spatial_properties import NeomodelPoint
 
 
+
+GET_TEAM_DETAIL_INFORMATION = """
+            MATCH (team:TEAM {name: $team_name})
+            // Categories
+            OPTIONAL MATCH (team)-[:IS_TYPE_OF]->(category)
+            OPTIONAL MATCH (team)-[:TSHIRT_COLOR]->(tshirtColor)
+            OPTIONAL MATCH (team)-[:SHORTS_COLOR]->(shortsColor)
+            OPTIONAL MATCH (team)-[:SOCKS_COLOR]->(socksColor)
+            OPTIONAL MATCH (team)-[:AWAY_TSHIRT_COLOR]->(awayTshirtColor)
+            OPTIONAL MATCH (team)<-[:SPONSORS]-(sponsor)
+            OPTIONAL MATCH (team)-[:BELONGS_TO]->(organization)
+            OPTIONAL MATCH (team)<-[member_rel:IS_MEMBER_OF]-(members:USER)-[:IS]->(role:ROLE)
+            OPTIONAL MATCH (team)-[:BASED_IN]->(location:LOCATION)-[:IS_IN]->(city:CITY)-[:IS_IN]->(state:STATE)-[:IS_IN]->(country:COUNTRY)
+            WITH team, city, state, country,
+                COLLECT(DISTINCT properties(category)) as categories,
+                COLLECT(DISTINCT properties(tshirtColor)) as tshirt_colors,
+                COLLECT(DISTINCT properties(shortsColor)) as shorts_colors,
+                COLLECT(DISTINCT properties(socksColor)) as socks_colors,
+                COLLECT(DISTINCT properties(awayTshirtColor)) as away_tshirt_colors,
+                COLLECT(DISTINCT properties(sponsor)) as sponsors,
+                COLLECT(DISTINCT properties(organization)) as organizations,
+                COLLECT(DISTINCT properties(location)) as locations,
+                COLLECT({
+                    first_name: members.first_name,
+                    last_name: members.last_name,
+                    username: members.username,
+                    gender: members.gender,
+                    image_url: members.image_url,
+                    role: role.name,
+                    name_on_jersey: member_rel.name_on_jersey,
+                    player_number: member_rel.player_number,
+                    plays_for_division: member_rel.plays_for_division
+                }) as team_members
+            RETURN {
+                name: team.name,
+                men_team: team.men_team,
+                founded_at: team.founded_at,
+                image_url: team.image_url,
+                categories: categories,
+                tshirt_color: tshirt_colors,
+                shorts_color: shorts_colors,
+                socks_color: socks_colors,
+                away_tshirt_color: away_tshirt_colors,
+                sponsors: sponsors,
+                belongs_to_organization: organizations,
+                location: locations,
+                city_name: city.name,
+                state_name: state.name,
+                country_name: country.name,
+                public_team: team.public_team,
+                members: team_members
+            } as team
+        """
+
 def create_and_connect_nodes_for_team(team) -> bool:
     """"params should be a dictionary with the following keys:
     name, belongs_to_organization, categories, sponsors, country, state, city, pk_for_location, uniform_colors
@@ -82,76 +136,6 @@ def create_and_connect_nodes_for_team(team) -> bool:
     except Exception as e:
         return 0
 
-
-def get_team_detail_information(team_name: str) -> dict:
-    """
-    Retrieves detailed information about a team.
-    Args:
-        team_name (str): The name of the team.
-    Returns:
-        Dictionary: A dictionary containing the results  of the query.
-    """
-    query = """
-        MATCH (team:TEAM {name: $team_name})
-        // Categories
-        OPTIONAL MATCH (team)-[:IS_TYPE_OF]->(category)
-        // Uniform Colors
-        OPTIONAL MATCH (team)-[:TSHIRT_COLOR]->(tshirtColor)
-        OPTIONAL MATCH (team)-[:SHORTS_COLOR]->(shortsColor)
-        OPTIONAL MATCH (team)-[:SOCKS_COLOR]->(socksColor)
-        OPTIONAL MATCH (team)-[:AWAY_TSHIRT_COLOR]->(awayTshirtColor)
-        // Sponsors and Organization
-        OPTIONAL MATCH (team)<-[:SPONSORS]-(sponsor)
-        OPTIONAL MATCH (team)-[:BELONGS_TO]->(organization)
-        //Get the members
-        OPTIONAL MATCH (team)-[:MEMBERS]->(members:USER)
-        // Location Details
-        OPTIONAL MATCH (team)-[:BASED_IN]->(location)-[:IS_IN]->(city)-[:IS_IN]->(state)-[:IS_IN]->(country)
-        RETURN team.name AS name, 
-            team.men_team AS men_team, 
-            team.founded_at AS founded_at, 
-            team.image_url AS image_url, 
-            collect(properties(category)) AS categories, 
-            collect(properties(tshirtColor)) AS tshirt_color, 
-            collect(properties(shortsColor)) AS shorts_color, 
-            collect(properties(socksColor)) AS socks_color, 
-            collect(properties(awayTshirtColor)) AS away_tshirt_color, 
-            collect(properties(sponsor)) AS sponsors, 
-            collect(properties(organization))AS belongs_to_organization ,
-            collect(properties(location)) AS location,
-            city.name AS city_name, 
-            state.name AS state_name, 
-            country.name AS country_name,
-            team.public_team AS public_team,
-            collect(properties(members)) AS members
-    """
-    params = {
-        'team_name': team_name
-    }
-    results, meta = db.cypher_query(query, params)
-    results_dict = {
-        'name': results[0][0],
-        'men_team': results[0][1],
-        # Convert it to python datetime because serializer datetime field does not accept neotime
-        'founded_at': results[0][2].isoformat(),
-        'image_url': results[0][3],
-        'categories': results[0][4],
-        'tshirt_color': results[0][5],
-        'shorts_color': results[0][6],
-        'socks_color': results[0][7],
-        'away_tshirt_color': results[0][8],
-        'sponsors': results[0][9],
-        'belongs_to_organization': results[0][10],
-        'location': results[0][11],
-        'city_name': results[0][12],
-        'state_name': results[0][13],
-        'country_name': results[0][14],
-        'public_team': results[0][15],
-        'members': results[0][16],
-    }
-    results_dict['location'][0]['points'] = NeomodelPoint(
-        (results_dict['location'][0]['points'].latitude, results_dict['location'][0]['points'].longitude), crs='wgs-84')
-    return results_dict
 
 
 def list_teams_by_country(countries: list):
@@ -239,6 +223,7 @@ def list_teams_by_state(countries: list, states: list):
         """
     params = {'names': states, 'countries': countries}
     results, meta = db.cypher_query(query, params, resolve_objects=True)
+    
     return results
 
 

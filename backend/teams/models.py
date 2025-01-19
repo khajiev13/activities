@@ -2,6 +2,7 @@ from django.db import models
 from neomodel import (StringProperty, IntegerProperty, DateProperty, StructuredRel,RelationshipFrom, BooleanProperty, UniqueIdProperty, RelationshipTo, One, ZeroOrOne, DateTimeProperty)
 from django_neomodel import DjangoNode
 from competitions.models import Team_Score
+from neomodel import db
 from datetime import datetime
 
 
@@ -17,7 +18,6 @@ class Since(StructuredRel):
 
     def __str__(self):
         return str(self.since)
-
 
 # Create your models here.
 class TEAM(DjangoNode):
@@ -52,6 +52,7 @@ class TEAM(DjangoNode):
     participated_activities = RelationshipTo('activities.models.ACTIVITY', 'PARTICIPATES_IN')
 
 
+    
     # We need this function because django neomodel does not support unique properties
 
     # def element_id_property(self):# Commented it out because it was causing an error

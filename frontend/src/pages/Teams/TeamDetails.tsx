@@ -9,6 +9,7 @@ const TeamDetails = () => {
     return;
   }
   useEffect(() => {
+    console.log("TEAm details page is working.")
     axiosInstance.get(`api/teams/${team_name}/`).then((response) => {
       console.log(response.data);
     });

@@ -20,4 +20,6 @@ urlpatterns = [
     path('api/locations/', include(('locations.urls', 'locations'), namespace='locations') ),
     path('api/organizations/', include(('organizations.urls', 'organizations'), namespace='organizations') ),
     path('api/countries/',include(('countries.urls','countries'), namespace='countries')),
+    path('api/states/',include(('states.urls','countries'), namespace='states')),
+
 ]

@@ -8,7 +8,7 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthentic
 import json
 from core.blob_functions import delete_picture
 from django.http import QueryDict
-from teams.cypher_queries import get_team_detail_information, list_teams_by_state, list_teams_by_city, list_teams_by_name, list_teams_by_country
+from teams.cypher_queries import  list_teams_by_state, list_teams_by_city, list_teams_by_name, list_teams_by_country
 from neomodel import UniqueProperty, DoesNotExist
 from rest_framework import status
 from teams.serializers import TeamListSerializer
@@ -16,8 +16,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
 from teams.models import TEAM
-from countries.models import COUNTRY
-
+from teams.services import TeamService
 
 # Preprocessing the data so that we will not have categories[o], categories[1], categories[2]... in the response
 
@@ -81,7 +80,7 @@ class TeamListCreateView(generics.ListCreateAPIView):
         processed_data = preprocess_request_data(request)
         serializer = self.get_serializer(data=processed_data)
         serializer.is_valid(raise_exception=True)
-
+        
         try:
             team = self.perform_create(serializer)
 
@@ -117,14 +116,13 @@ class TeamListCreateView(generics.ListCreateAPIView):
                 # Convert the string to a list of countries before pasing it to a function
                 countries = [country.strip() for country in countries.split(",")]
                 teams = list_teams_by_country(countries)
-                print(teams)
             elif states:
                 # Get the countries from params
                 countries = request.query_params.getlist('countries[]')
                 # Convert the string to a list of states before pasing it to a function
                 states = [state.strip() for state in states.split(",")]
-                print(countries, states)
                 teams = list_teams_by_state(countries, states)
+                teams = [team[0] for team in teams]
             elif cities:
                 # Convert the string to a list of cities before pasing it to a function
                 cities = [city.strip() for city in cities.split(",")]
@@ -134,7 +132,6 @@ class TeamListCreateView(generics.ListCreateAPIView):
                 teams = list_teams_by_city(countries, states, cities)
             elif search_name:
                 teams = list_teams_by_name(search_name)
-            teams = [team[0] for team in teams]
             serializer = TeamListSerializer(teams, many=True)
         
             return Response(serializer.data)
@@ -148,18 +145,19 @@ class TeamDetailView(generics.RetrieveUpdateDestroyAPIView, TeamUserWritePermiss
     lookup_field = 'name'
     queryset = TEAM.nodes
     serializer_class = TeamDetailSerializer
-
+    
     def get_object(self):
         try:
             team_name = self.kwargs[self.lookup_field]
-            team_info = get_team_detail_information(team_name)
+            team_info = TeamService.get_team_detail_information(team_name)
             # Pass the data to the serializer
-            serializer = TeamDetailSerializer(data=team_info)
+            serializer = TeamDetailSerializer(data=team_info, many=False)
             # Raise an exception if the data is not valid
             serializer.is_valid(raise_exception=True)
-            print(team_info)
         except DoesNotExist:
             raise Http404
+        except Exception as e:
+            print(f"Something went wrong: {e}")
 
         return serializer.validated_data  # Return the validated data
 
@@ -172,6 +170,7 @@ class TeamDetailView(generics.RetrieveUpdateDestroyAPIView, TeamUserWritePermiss
         else:
             return Response({"message": "An error occurred while deleting the image from storage."}, status=500)
 
+    
 
 class JoinLeaveTeamView(APIView):
     permission_classes = (IsAuthenticated,)

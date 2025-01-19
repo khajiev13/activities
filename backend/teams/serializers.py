@@ -79,6 +79,5 @@ class TeamDetailSerializer(serializers.Serializer):
 
 
 class TeamCustomSerializer(serializers.Serializer):
-    name = serializers.CharField(
-        allow_null=True, max_length=200, required=False)
+    name = serializers.CharField(allow_null=True, max_length=200, required=False)
     image_url = serializers.CharField(allow_null=True, required=False)

@@ -58,15 +58,7 @@ class TEAM(DjangoNode):
     # def element_id_property(self):# Commented it out because it was causing an error
     #     return self.name
 
-    def join_leave_team_toggle(self, user):
-        if self.members.is_connected(user):
-            # If the user is already a member, disconnect them
-            self.members.disconnect(user)
-            return False  # Indicates the user has left the team
-        else:
-            # If the user is not a member, connect them
-            self.members.connect(user)
-            return True  # Indicates the user has joined the team
+
 
     def __str__(self):
         return self.name

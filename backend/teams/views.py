@@ -182,7 +182,7 @@ class JoinLeaveTeamView(APIView):
             raise NotFound(
                 'Activity with id {} does not exist'.format(team_name))
 
-        joined = team.join_leave_team_toggle(request.user)
+        joined = TeamService.join_leave_team_toggle(request.user)
         if (joined):
             return Response({'message': 'You have successfully joined the team.'}, status=status.HTTP_200_OK)
         else:

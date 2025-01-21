@@ -6,7 +6,7 @@ from teams.models import TEAM
 from locations.serializers import LocationSerializer
 from colors.serializers import ColorSerializer
 from categories.serializers import CategorySerializer
-from teams.cypher_queries import create_and_connect_nodes_for_team
+from teams.services import TeamService
 from core.blob_functions import delete_picture
 from locations.serializers import LocationSerializer
 from colors.serializers import ColorSerializer
@@ -61,7 +61,7 @@ class TeamDetailSerializer(serializers.Serializer):
         if image:
             validated_data['image_url'] = create_image(image, 'teams')
         team = TEAM(**validated_data)
-        success = create_and_connect_nodes_for_team(team)
+        success = TeamService.create_and_connect_nodes_for_team(team)
         if success:
             print('Team created successfully')
         else:

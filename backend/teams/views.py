@@ -8,7 +8,6 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthentic
 import json
 from core.blob_functions import delete_picture
 from django.http import QueryDict
-from teams.cypher_queries import  list_teams_by_state, list_teams_by_city, list_teams_by_name, list_teams_by_country
 from neomodel import UniqueProperty, DoesNotExist
 from rest_framework import status
 from teams.serializers import TeamListSerializer
@@ -19,7 +18,6 @@ from teams.models import TEAM
 from teams.services import TeamService
 
 # Preprocessing the data so that we will not have categories[o], categories[1], categories[2]... in the response
-
 def preprocess_request_data(request):
     if isinstance(request.data, QueryDict):
         data = {key: value[0] for key, value in request.data.lists(
@@ -97,10 +95,6 @@ class TeamListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return TEAM.nodes.all()
 
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return TeamDetailSerializer
-        return TeamListSerializer
 
     def list(self, request, *args, **kwargs):
         try:
@@ -112,26 +106,28 @@ class TeamListCreateView(generics.ListCreateAPIView):
             # City might be a list of cities
             cities = self.kwargs.get('cities', None)
             search_name = self.kwargs.get('search', None)
+
+            team_service = TeamService()
             if countries:
                 # Convert the string to a list of countries before pasing it to a function
                 countries = [country.strip() for country in countries.split(",")]
-                teams = list_teams_by_country(countries)
+                teams = team_service.list_teams_by_country(countries)
             elif states:
                 # Get the countries from params
                 countries = request.query_params.getlist('countries[]')
                 # Convert the string to a list of states before pasing it to a function
                 states = [state.strip() for state in states.split(",")]
-                teams = list_teams_by_state(countries, states)
-                teams = [team[0] for team in teams]
+                teams = team_service.list_teams_by_state(countries, states)
+                
             elif cities:
                 # Convert the string to a list of cities before pasing it to a function
                 cities = [city.strip() for city in cities.split(",")]
                 # Get the countries and states from params
                 countries = request.query_params.getlist('countries[]')
                 states = request.query_params.getlist('states[]')
-                teams = list_teams_by_city(countries, states, cities)
+                teams = team_service.list_teams_by_city(countries, states, cities)
             elif search_name:
-                teams = list_teams_by_name(search_name)
+                teams = team_service.list_teams_by_name(search_name)
             serializer = TeamListSerializer(teams, many=True)
         
             return Response(serializer.data)
@@ -148,8 +144,9 @@ class TeamDetailView(generics.RetrieveUpdateDestroyAPIView, TeamUserWritePermiss
     
     def get_object(self):
         try:
+            team_service = TeamService()
             team_name = self.kwargs[self.lookup_field]
-            team_info = TeamService.get_team_detail_information(team_name)
+            team_info = team_service.get_team_detail_information(team_name)
             # Pass the data to the serializer
             serializer = TeamDetailSerializer(data=team_info, many=False)
             # Raise an exception if the data is not valid
@@ -182,7 +179,8 @@ class JoinLeaveTeamView(APIView):
             raise NotFound(
                 'Activity with id {} does not exist'.format(team_name))
 
-        joined = TeamService.join_leave_team_toggle(request.user)
+        team_service = TeamService()
+        joined = team_service.join_leave_team_toggle(request.user)
         if (joined):
             return Response({'message': 'You have successfully joined the team.'}, status=status.HTTP_200_OK)
         else:

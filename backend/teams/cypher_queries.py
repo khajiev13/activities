@@ -1,6 +1,71 @@
-from neomodel import db
-from neomodel.contrib.spatial_properties import NeomodelPoint
+#This file only stores queries as variables
 
+CREATE_AND_CONNECT_NODES_FOR_TEAM = """
+                MERGE (team:TEAM {name: $teamname, founded_at: $founded_at, image_url: $image_url, men_team: $men_team, public_team: $public_team})
+                MERGE (tshirt_color:COLOR {name: $tshirt_color})
+                MERGE (shorts_color:COLOR {name: $shorts_color})
+                MERGE (socks_color:COLOR {name: $socks_color})
+                MERGE (awaytshirt_color:COLOR {name: $awaytshirt_color})
+                MERGE (team)-[:TSHIRT_COLOR]->(tshirt_color)
+                MERGE (team)-[:SHORTS_COLOR]->(shorts_color)
+                MERGE (team)-[:SOCKS_COLOR]->(socks_color)
+                MERGE (team)-[:AWAY_TSHIRT_COLOR]->(awaytshirt_color)
+                WITH team
+                MERGE (country:COUNTRY {name: $country_name})
+                MERGE (state:STATE {name: $state_name})-[:IS_IN]->(country)
+                MERGE (city:CITY {name: $city_name})-[:IS_IN]->(state)
+                MERGE (location:LOCATION {pk: $pk_for_location})-[:IS_IN]->(city)
+                WITH team, country, state, city, location
+                MERGE (team)-[:BASED_IN]->(location)
+                MERGE (team)-[:CITY_BASED_IN]->(city)
+                MERGE (team)-[:STATE_BASED_IN]->(state)
+                MERGE (team)-[:COUNTRY_BASED_IN]->(country)
+                WITH team
+                OPTIONAL MATCH (organization:ORGANIZATION {pk: $belongs_to_organization_pk})
+                FOREACH (categoryPk IN $categories_data | 
+                    MERGE (category:CATEGORY {pk: categoryPk})
+                    MERGE (team)-[:IS_TYPE_OF]->(category))
+                FOREACH (sponsorPk IN CASE WHEN $sponsors_pks IS NOT NULL AND size($sponsors_pks) > 0 THEN $sponsors_pks ELSE [] END | 
+                    MERGE (sponsor:ORGANIZATION {pk: sponsorPk})
+                    MERGE (sponsor)-[:SPONSORS {since: datetime()}]->(team))
+                FOREACH (org IN CASE WHEN organization IS NOT NULL THEN [1] ELSE [] END | 
+                    MERGE (team)-[:BELONGS_TO]->(organization))          
+                RETURN team
+            """
+
+LIST_TEAMS_BY_STATE = query = """
+            MATCH (c:COUNTRY) WHERE c.name IN $countries
+            MATCH (c)<-[:IS_IN]-(s:STATE)<-[:STATE_BASED_IN]-(teams:TEAM) WHERE s.name IN $names
+            MATCH (teams)-[:TSHIRT_COLOR]->(tshirtColor:COLOR)
+            MATCH (teams)-[:SOCKS_COLOR]->(socksColor:COLOR)
+            MATCH (teams)-[:SHORTS_COLOR]->(shortsColor:COLOR)
+            MATCH (teams)-[:AWAY_TSHIRT_COLOR]->(awayTshirtColor:COLOR)
+            MATCH (teams)-[:IS_TYPE_OF]->(category:CATEGORY)
+            MATCH (teams)-[:BASED_IN]->(location)-[:IS_IN]->(city)-[:IS_IN]->(state)-[:IS_IN]->(country)
+            WITH teams, city, state, country,
+                collect(properties(category)) as categories,
+                collect(properties(tshirtColor)) as tshirt_colors,
+                collect(properties(shortsColor)) as shorts_colors,
+                collect(properties(socksColor)) as socks_colors,
+                collect(properties(awayTshirtColor)) as away_tshirt_colors,
+                collect(properties(location)) as locations
+            RETURN {
+                name: teams.name,
+                men_team: teams.men_team,
+                founded_at: teams.founded_at,
+                image_url: teams.image_url,
+                categories: categories,
+                tshirt_color: tshirt_colors,
+                shorts_color: shorts_colors,
+                socks_color: socks_colors,
+                away_tshirt_color: away_tshirt_colors,
+                location: locations,
+                city_name: city.name,
+                state_name: state.name,
+                country_name: country.name,
+                public_team: teams.public_team
+            }
+        """
 
 
 GET_TEAM_DETAIL_INFORMATION = """
@@ -57,11 +122,7 @@ GET_TEAM_DETAIL_INFORMATION = """
         """
 
 
-
-
-def list_teams_by_country(countries: list):
-    """Lists all the teams based in a country."""
-    query = """
+LIST_TEAMS_BY_COUNTRY = """
         MATCH (c:COUNTRY)<-[:COUNTRY_BASED_IN]-(teams:TEAM) WHERE c.name IN $names
         MATCH (teams)-[:TSHIRT_COLOR]->(tshirtColor:COLOR)
         MATCH (teams)-[:SOCKS_COLOR]->(socksColor:COLOR)
@@ -69,63 +130,14 @@ def list_teams_by_country(countries: list):
         MATCH (teams)-[:AWAY_TSHIRT_COLOR]->(awayTshirtColor:COLOR)
         MATCH (teams)-[:IS_TYPE_OF]->(category:CATEGORY)
         MATCH (teams)-[:BASED_IN]->(location)-[:IS_IN]->(city)-[:IS_IN]->(state)-[:IS_IN]->(country)
-        RETURN teams.name AS name, 
-            teams.men_team AS men_team, 
-            teams.founded_at AS founded_at, 
-            teams.image_url AS image_url, 
-            collect(properties(category)) AS categories, 
-            collect(properties(tshirtColor)) AS tshirt_color, 
-            collect(properties(shortsColor)) AS shorts_color, 
-            collect(properties(socksColor)) AS socks_color, 
-            collect(properties(awayTshirtColor)) AS away_tshirt_color, 
-            collect(properties(location)) AS location,
-            city.name AS city_name, 
-            state.name AS state_name, 
-            country.name AS country_name,
-            teams.public_team AS public_team
-    """
-    params = {'names': countries}
-    results, meta = db.cypher_query(query, params, resolve_objects=True)
-    results_dicts = [{
-        'name': result[0],
-        'men_team': result[1],
-        # Convert it to python datetime because serializer datetime field does not accept neotime
-        'founded_at': result[2].format(),
-        'image_url': result[3],
-        'categories': result[4][0],
-        'tshirt_color': result[5][0],
-        'shorts_color': result[6][0],
-        'socks_color': result[7][0],
-        'away_tshirt_color': result[8][0],
-        'location': result[9][0],
-        'city_name': result[10],
-        'state_name': result[11],
-        'country_name': result[12],
-        'public_team': result[13],
-    } for result in results
-    ]
-    return results_dicts
-
-
-def list_teams_by_state(countries: list, states: list):
-    """Lists all the teams based in a state."""
-    query = """
-            MATCH (c:COUNTRY) WHERE c.name IN $countries
-            MATCH (c)<-[:IS_IN]-(s:STATE)<-[:STATE_BASED_IN]-(teams:TEAM) WHERE s.name IN $names
-            MATCH (teams)-[:TSHIRT_COLOR]->(tshirtColor:COLOR)
-            MATCH (teams)-[:SOCKS_COLOR]->(socksColor:COLOR)
-            MATCH (teams)-[:SHORTS_COLOR]->(shortsColor:COLOR)
-            MATCH (teams)-[:AWAY_TSHIRT_COLOR]->(awayTshirtColor:COLOR)
-            MATCH (teams)-[:IS_TYPE_OF]->(category:CATEGORY)
-            MATCH (teams)-[:BASED_IN]->(location)-[:IS_IN]->(city)-[:IS_IN]->(state)-[:IS_IN]->(country)
-            WITH teams, city, state, country,
+        WITH teams, city, state, country,
                 collect(properties(category)) as categories,
                 collect(properties(tshirtColor)) as tshirt_colors,
                 collect(properties(shortsColor)) as shorts_colors,
                 collect(properties(socksColor)) as socks_colors,
                 collect(properties(awayTshirtColor)) as away_tshirt_colors,
                 collect(properties(location)) as locations
-            RETURN {
+        RETURN {
                 name: teams.name,
                 men_team: teams.men_team,
                 founded_at: teams.founded_at,
@@ -141,16 +153,9 @@ def list_teams_by_state(countries: list, states: list):
                 country_name: country.name,
                 public_team: teams.public_team
             }
-        """
-    params = {'names': states, 'countries': countries}
-    results, meta = db.cypher_query(query, params, resolve_objects=True)
-    
-    return results
+    """
 
-
-def list_teams_by_city(countries: list, states: list, cities: list):
-    """Lists all the teams based in a city."""
-    query = """
+LIST_TEAMS_BY_CITY = """
         MATCH (c:COUNTRY) WHERE c.name IN $country_names
         MATCH (c)<-[:IS_IN] - (s:STATE) WHERE s.name IN $state_names
         MATCH (s)<-[:IS_IN] - (ci:CITY) WHERE ci.name IN $city_names
@@ -163,48 +168,33 @@ def list_teams_by_city(countries: list, states: list, cities: list):
         MATCH (teams)-[:AWAY_TSHIRT_COLOR]->(awayTshirtColor:COLOR)
         MATCH (teams)-[:IS_TYPE_OF]->(category:CATEGORY)
         MATCH (teams)-[:BASED_IN]->(location)-[:IS_IN]->(city)-[:IS_IN]->(state)-[:IS_IN]->(country)
-        RETURN teams.name AS name, 
-            teams.men_team AS men_team, 
-            teams.founded_at AS founded_at, 
-            teams.image_url AS image_url, 
-            collect(properties(category)) AS categories, 
-            collect(properties(tshirtColor)) AS tshirt_color, 
-            collect(properties(shortsColor)) AS shorts_color, 
-            collect(properties(socksColor)) AS socks_color, 
-            collect(properties(awayTshirtColor)) AS away_tshirt_color, 
-            collect(properties(location)) AS location,
-            city.name AS city_name, 
-            state.name AS state_name, 
-            country.name AS country_name,
-            teams.public_team AS public_team"""
-    params = {'city_names': cities,
-              'state_names': states, 'country_names': countries}
-    results, meta = db.cypher_query(query, params, resolve_objects=True)
-    print(results)
-    results_dicts = [{
-        'name': result[0],
-        'men_team': result[1],
-        # Convert it to python datetime because serializer datetime field does not accept neotime
-        'founded_at': result[2].isoformat(),
-        'image_url': result[3],
-        'categories': result[4][0],
-        'tshirt_color': result[5][0],
-        'shorts_color': result[6][0],
-        'socks_color': result[7][0],
-        'away_tshirt_color': result[8][0],
-        'location': result[9][0],
-        'city_name': result[10],
-        'state_name': result[11],
-        'country_name': result[12],
-        'public_team': result[13],
-    } for result in results
-    ]
-    return results_dicts
+        WITH teams, city, state, country,
+                collect(properties(category)) as categories,
+                collect(properties(tshirtColor)) as tshirt_colors,
+                collect(properties(shortsColor)) as shorts_colors,
+                collect(properties(socksColor)) as socks_colors,
+                collect(properties(awayTshirtColor)) as away_tshirt_colors,
+                collect(properties(location)) as locations
+        RETURN {
+                name: teams.name,
+                men_team: teams.men_team,
+                founded_at: teams.founded_at,
+                image_url: teams.image_url,
+                categories: categories,
+                tshirt_color: tshirt_colors,
+                shorts_color: shorts_colors,
+                socks_color: socks_colors,
+                away_tshirt_color: away_tshirt_colors,
+                location: locations,
+                city_name: city.name,
+                state_name: state.name,
+                country_name: country.name,
+                public_team: teams.public_team
+            }
+"""
 
 
-def list_teams_by_name(name: str):
-    """Lists all the teams based in a city."""
-    query = """
+LIST_TEAMS_BY_NAME = """
         MATCH (teams:TEAM) WHERE teams.name CONTAINS $name
         MATCH (teams)-[:TSHIRT_COLOR]->(tshirtColor:COLOR)
         MATCH (teams)-[:SOCKS_COLOR]->(socksColor:COLOR)
@@ -212,38 +202,32 @@ def list_teams_by_name(name: str):
         MATCH (teams)-[:AWAY_TSHIRT_COLOR]->(awayTshirtColor:COLOR)
         MATCH (teams)-[:IS_TYPE_OF]->(category:CATEGORY)
         MATCH (teams)-[:BASED_IN]->(location)-[:IS_IN]->(city)-[:IS_IN]->(state)-[:IS_IN]->(country)
-        RETURN teams.name AS name, 
-            teams.men_team AS men_team, 
-            teams.founded_at AS founded_at, 
-            teams.image_url AS image_url, 
-            collect(properties(category)) AS categories, 
-            collect(properties(tshirtColor)) AS tshirt_color, 
-            collect(properties(shortsColor)) AS shorts_color, 
-            collect(properties(socksColor)) AS socks_color, 
-            collect(properties(awayTshirtColor)) AS away_tshirt_color, 
-            collect(properties(location)) AS location,
-            city.name AS city_name, 
-            state.name AS state_name, 
-            country.name AS country_name,
-            teams.public_team AS public_team"""
-    params = {'name': name}
-    results, meta = db.cypher_query(query, params, resolve_objects=True)
-    results_dicts = [{
-        'name': result[0],
-        'men_team': result[1],
-        # Convert it to python datetime because serializer datetime field does not accept neotime
-        'founded_at': result[2].format(),
-        'image_url': result[3],
-        'categories': result[4][0],
-        'tshirt_color': result[5][0],
-        'shorts_color': result[6][0],
-        'socks_color': result[7][0],
-        'away_tshirt_color': result[8][0],
-        'location': result[9][0],
-        'city_name': result[10],
-        'state_name': result[11],
-        'country_name': result[12],
-        'public_team': result[13],
-    } for result in results
-    ]
-    return results_dicts
+        WITH teams, city, state, country,
+            collect(properties(category)) as categories,
+            collect(properties(tshirtColor)) as tshirt_colors,
+            collect(properties(shortsColor)) as shorts_colors,
+            collect(properties(socksColor)) as socks_colors,
+            collect(properties(awayTshirtColor)) as away_tshirt_colors,
+            collect(properties(location)) as locations
+        RETURN {
+            name: teams.name,
+            men_team: teams.men_team,
+            founded_at: teams.founded_at,
+            image_url: teams.image_url,
+            categories: categories,
+            tshirt_color: tshirt_colors,
+            shorts_color: shorts_colors,
+            socks_color: socks_colors,
+            away_tshirt_color: away_tshirt_colors,
+            location: locations,
+            city_name: city.name,
+            state_name: state.name,
+            country_name: country.name,
+            public_team: teams.public_team
+        } as team_data
+        """
+
+
+
+
+

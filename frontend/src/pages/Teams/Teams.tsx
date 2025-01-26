@@ -1,6 +1,6 @@
 import SearchNavbar from '@/components/SearchNavbar';
 import TeamListingCard from '@/components/TeamsPage/TeamListingCard';
-import TeamSchema from '../../components/TeamsPage/TeamsListingSchema';
+import TeamSchema from '../../types/TeamsListingSchema.ts';
 import { useState } from 'react';
 import { z } from 'zod';
 

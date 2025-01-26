@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { MapPin } from 'lucide-react';
+import React from "react";
 
 type BadgeCityNameProps = {
   cityName: string;

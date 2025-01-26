@@ -16,6 +16,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
 from teams.models import TEAM
 from teams.services import TeamService
+import time
+
 
 # Preprocessing the data so that we will not have categories[o], categories[1], categories[2]... in the response
 def preprocess_request_data(request):
@@ -98,6 +100,9 @@ class TeamListCreateView(generics.ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         try:
+            start_time = time.time()
+            print(f"[{time.time()}] Request received")
+        
             # Check if the request is for a specific country, state, or city
             # Country might be a list of countries
             countries = self.kwargs.get('countries', None)
@@ -115,7 +120,7 @@ class TeamListCreateView(generics.ListCreateAPIView):
             elif states:
                 # Get the countries from params
                 countries = request.query_params.getlist('countries[]')
-                # Convert the string to a list of states before pasing it to a function
+                # Convert the string to a list of states before passing it to a function
                 states = [state.strip() for state in states.split(",")]
                 teams = team_service.list_teams_by_state(countries, states)
                 
@@ -129,7 +134,9 @@ class TeamListCreateView(generics.ListCreateAPIView):
             elif search_name:
                 teams = team_service.list_teams_by_name(search_name)
             serializer = TeamListSerializer(teams, many=True)
-        
+            end_time = time.time()
+            print(f"[{time.time()}] Request processed. Total time: {end_time - start_time:.2f}s")
+
             return Response(serializer.data)
 
         except DoesNotExist:
@@ -155,7 +162,7 @@ class TeamDetailView(generics.RetrieveUpdateDestroyAPIView, TeamUserWritePermiss
             raise Http404
         except Exception as e:
             print(f"Something went wrong: {e}")
-
+        print(serializer.data)
         return serializer.validated_data  # Return the validated data
 
     def destroy(self, request, *args, **kwargs):

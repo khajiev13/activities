@@ -5,7 +5,7 @@ from .cypher_queries import GET_TEAM_DETAIL_INFORMATION, LIST_TEAMS_BY_STATE, CR
 
 class TeamService:
     
-    def get_team_detail_information(team_name: str) -> dict:
+    def get_team_detail_information(self,team_name: str) -> dict:
         """
         Retrieves detailed information about a team.
         Args:
@@ -31,7 +31,7 @@ class TeamService:
             return True  # Indicates the user has joined the team
         
 
-    def create_and_connect_nodes_for_team(team) -> bool:
+    def create_and_connect_nodes_for_team(self,team) -> bool:
         """"params should be a dictionary with the following keys:
         name, belongs_to_organization, categories, sponsors, country, state, city, pk_for_location, uniform_colors
         \n Then it will connect the team with the organization, categories, sponsors, location, and uniform colors.
@@ -82,7 +82,7 @@ class TeamService:
         
 
     
-    def list_teams_by_state(countries: list, states: list):
+    def list_teams_by_state(self,countries: list, states: list):
         """Lists all the teams based in a state."""
         
         params = {'names': states, 'countries': countries}
@@ -90,7 +90,7 @@ class TeamService:
         teams = [team[0] for team in results] #Gotta choose the first item in a list because it returns a list of values
         return teams
     
-    def list_teams_by_country(countries: list):
+    def list_teams_by_country(self,countries: list):
         """Lists all the teams based in a country."""
         
         params = {'names': countries}
@@ -99,7 +99,7 @@ class TeamService:
         return teams
 
 
-def list_teams_by_city(countries: list, states: list, cities: list):
+def list_teams_by_city(self,countries: list, states: list, cities: list):
     """Lists all the teams based in a city."""
     
     params = {'city_names': cities,
@@ -109,7 +109,7 @@ def list_teams_by_city(countries: list, states: list, cities: list):
     return teams
 
 
-def list_teams_by_name(name: str):
+def list_teams_by_name(self,name: str):
     """Lists all the teams based in a city."""
     
     params = {'name': name}

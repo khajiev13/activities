@@ -19,7 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import useFetchCategories from './useFetchCategories';
+import useFetchCategories from '../../../hooks/useFetchCategories.ts';
 import CategoryLoadingSkeleton from './CategoryLoadingSkeleton';
 import AddNewCategory from './AddNewCategory';
 

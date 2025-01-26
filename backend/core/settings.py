@@ -177,6 +177,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Add this
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.Neo4jLoggingMiddleware',
+
 ]
 
 
@@ -335,7 +337,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -352,22 +353,25 @@ LOGGING = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),
             'formatter': 'verbose',
-        }
+        },
+        'neo4j_file': {
+            'class': 'logging.FileHandler',
+            'filename': 'logs/neo4j_queries.log',
+            'formatter': 'verbose',
+        },
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'neo4j.queries': {
+            'handlers': ['console', 'neo4j_file'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     },
 }
-
 # Ensure logs directory exists
 os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)

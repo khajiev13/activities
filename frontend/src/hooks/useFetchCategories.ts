@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axiosInstance from '@/axios';
+import axiosInstance from '@/axios.tsx';
 
 type Category = {
   pk: string;

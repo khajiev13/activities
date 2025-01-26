@@ -82,7 +82,7 @@ const TeamCard: React.FC<TeamCardProps> = ({
                 </div>
               </ResizablePanel>
               <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={75} onClick={() => navigate(name)}>
+              <ResizablePanel defaultSize={75} onClick={() => navigate(`../teams/${name}`)}>
                 <div className="flex h-full items-center justify-center p-6">
                   <div>
                     <img

@@ -2,7 +2,7 @@ import axiosInstance from '@/axios';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 // import { WobbleCard } from '@/components/ui/wobble-card';
-import { ActivityDetailsType } from '@/components/ActivitiesPage/ActivitiesListSchema';
+import { ActivityDetailsType } from '@/types/ActivitiesListSchema.ts';
 import { useState } from 'react';
 import ActivityDetail from '@/components/ActivitiesPage/ActivityDetail';
 

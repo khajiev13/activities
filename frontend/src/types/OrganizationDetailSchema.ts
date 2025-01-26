@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import TeamSchema from '../TeamsPage/TeamsListingSchema';
-import { ActivityCardProps } from '../ActivitiesPage/ActivitiesListSchema';
+import TeamSchema from './TeamsListingSchema.ts';
+import { ActivityCardProps } from './ActivitiesListSchema.ts';
 
 const OrganizationDetailSchema = z.object({
   pk: z.string(),

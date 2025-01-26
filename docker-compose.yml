@@ -9,12 +9,13 @@ services:
     env_file:
       - backend/core/.env
     volumes:
-      - ./backend:/app
+      - ./backend:/app  # ✅ Host code mounted to container
     ports:
       - "8000:8000"
     environment:
-      - DEBUG=1
+      - DEBUG=1  # Django debug mode (auto-reloads when files change)
       - DJANGO_SETTINGS_MODULE=core.settings
+    command: python manage.py runserver 0.0.0.0:8000  # Explicit run command for auto-reload
 
   frontend:
     build:
@@ -25,13 +26,12 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend:/app  # Host code mounted to container
+      - /app/node_modules  # Isolate host node_modules
     environment:
-      - VITE_APP_BACKEND_ADDRESS=http://localhost:8000
-      - backend_api_address=backend:8000
-    
+      - VITE_APP_BACKEND_ADDRESS=http://backend:8000  # ✅ Use service name instead of localhost
+    depends_on:
+      - backend  # Ensure backend starts first
+
 volumes:
-  node_modules:
-  frontend:
-  backend:
+  node_modules:  # Persist node_modules to avoid conflicts

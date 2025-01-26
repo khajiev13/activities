@@ -4,7 +4,7 @@ import BaseMap from './BaseMap';
 import * as maptilersdk from '@maptiler/sdk';
 import SearchNavbar from '../SearchNavbar';
 import { SearchForButtons } from './UI/SearchForButtons';
-import { ActivityCardPropsType } from '../ActivitiesPage/ActivitiesListSchema';
+import { ActivityCardPropsType } from '../../types/ActivitiesListSchema.ts';
 import ListActivityCard from '../ActivitiesPage/ListActivityCard';
 import { displayActivities } from './MapFunctions/DisplayActivities';
 import { TeamType } from '@/pages/Teams/Teams';

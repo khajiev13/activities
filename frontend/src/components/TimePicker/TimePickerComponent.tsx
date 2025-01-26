@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import { Clock } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { TimePickerInput } from './time-picker-input';
+import { Label } from '@/components/ui/label.tsx';
+import { TimePickerInput } from './time-picker-input.tsx';
 
 interface TimePickerDemoProps {
   date: Date | undefined;

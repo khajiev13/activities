@@ -1,4 +1,4 @@
-import { ActivityCardPropsType } from '@/components/ActivitiesPage/ActivitiesListSchema';
+import { ActivityCardPropsType } from '@/types/ActivitiesListSchema.ts';
 import * as maptilersdk from '@maptiler/sdk'; // replace with actual import
 import pin from '@/assets/pngs/pin.png';
 

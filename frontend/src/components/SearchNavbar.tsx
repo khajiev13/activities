@@ -25,7 +25,7 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer';
 import { Globe2Icon } from 'lucide-react';
-import { OrganizationListingType } from './OrganizationsPage/OrganizationsListingSchema';
+import { OrganizationListingType } from '../types/OrganizationsListingSchema.ts';
 
 type Country = {
   name: string;

@@ -30,7 +30,7 @@ import { LocationDetails } from '../Map/MapFunctions/AddLocation';
 import SelectedLocation from './NewActivityDrawer/SelectedLocation';
 import { DatePickerWithPresets } from './NewActivityDrawer/DatePickerWithPresets';
 import { DisplaySunriseSunset } from './NewActivityDrawer/DisplaySunriseSunset';
-import { TimePickerComponent } from './NewActivityDrawer/TimePicker/TimePickerComponent';
+import { TimePickerComponent } from '@/components/TimePicker/TimePickerComponent';
 import { Switch } from '@/components/ui/switch';
 import { IsCompetition } from './NewActivityDrawer/IsCompetition';
 import { useToast } from '../ui/use-toast';

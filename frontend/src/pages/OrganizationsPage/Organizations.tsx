@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import SearchNavbar from '../../components/SearchNavbar';
-import { OrganizationListingType } from '@/components/OrganizationsPage/OrganizationsListingSchema';
+import { OrganizationListingType } from '@/types/OrganizationsListingSchema.ts';
 
 type Props = {};
 

@@ -1,5 +1,5 @@
 import ListActivityCard from '@/components/ActivitiesPage/ListActivityCard';
-import { ActivityCardPropsType } from '@/components/ActivitiesPage/ActivitiesListSchema';
+import { ActivityCardPropsType } from '@/types/ActivitiesListSchema.ts';
 import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import SearchNavbar from '@/components/SearchNavbar';

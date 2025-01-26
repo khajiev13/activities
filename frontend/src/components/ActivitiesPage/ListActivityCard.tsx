@@ -29,7 +29,7 @@ import {
 import { Link } from 'react-router-dom';
 import BadgeCityName from '../BadgeCityName';
 import { Badge } from '../ui/badge';
-import { ActivityCardPropsType } from './ActivitiesListSchema';
+import { ActivityCardPropsType } from '../../types/ActivitiesListSchema.ts';
 import {
   HoverCard,
   HoverCardContent,

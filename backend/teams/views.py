@@ -162,7 +162,6 @@ class TeamDetailView(generics.RetrieveUpdateDestroyAPIView, TeamUserWritePermiss
             raise Http404
         except Exception as e:
             print(f"Something went wrong: {e}")
-        print(serializer.data)
         return serializer.validated_data  # Return the validated data
 
     def destroy(self, request, *args, **kwargs):

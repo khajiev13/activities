@@ -8,17 +8,10 @@ from subprocess import call
 
 load_dotenv()
 
-
-config.NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD')
-config.NEO4J_USERNAME = os.getenv('NEO4J_USERNAME')
-config.DATABASE_URL = f"neo4j+s://{config.NEO4J_USERNAME}:{config.NEO4J_PASSWORD}{os.getenv('NEO4J_INSTANCE')}"
+config.DATABASE_URL = f"neo4j+s://{os.getenv('NEO4J_USERNAME')}:{os.getenv('NEO4J_PASSWORD')}{os.getenv('NEO4J_INSTANCE')}"
 
 
-# you are free to add this configurations
-NEOMODEL_SIGNALS = True
-NEOMODEL_FORCE_TIMEZONE = False
-NEOMODEL_ENCRYPTED_CONNECTION = True
-NEOMODEL_MAX_POOL_SIZE = 50
+
 
 # neomodel_install_labels core.py activities.models --db neo4j+s://neo4j:JHI6pt17is0ozAbnAY0dfF-UcbP8lt_B_ou9dWAn-DU@bb345263.databases.neo4j.io:7687
 # neomodel_remove_labels --db neo4j+s://neo4j:JHI6pt17is0ozAbnAY0dfF-UcbP8lt_B_ou9dWAn-DU@bb345263.databases.neo4j.io:7687
@@ -178,7 +171,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.Neo4jLoggingMiddleware',
-
 ]
 
 

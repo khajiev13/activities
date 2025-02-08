@@ -13,7 +13,6 @@ from competitions.serializers import CompetitionSerializer
 from countries.serializers import CountrySerializer
 from states.serializers import StateSerializer
 from cities.serializers import CitySerializer
-from .cypher_queries import create_activity
 import datetime
 
 
@@ -59,10 +58,6 @@ class ActivitySerializer(serializers.Serializer):
     state = StateSerializer(many=False, required=False)
     city = CitySerializer(many=False, required=False)
 
-    def create(self, validated_data):
-        print(validated_data)
-        activity = create_activity(validated_data)
-        return activity
 
     def update(self, instance, validated_data):
         for field, value in validated_data.items():

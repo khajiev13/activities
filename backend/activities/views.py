@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from neomodel.exceptions import UniqueProperty
 from .models import ACTIVITY
 from .serializers import ActivitySerializer
-from .cypher_queries import list_activities_by_country, list_activities_by_state, list_activities_by_city, list_activities_by_name
+from .services import ActivityService
 from neomodel import DoesNotExist
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse
@@ -46,6 +46,9 @@ class ActivityListCreateView(generics.ListCreateAPIView):
         methods=["POST"]
     )
     def post(self, request, *args, **kwargs):
+
+        activity_service = ActivityService()
+
         activityserializer = ActivitySerializer(data=request.data)
         # Get the current user's username
         if 'creator' not in activityserializer.initial_data:
@@ -53,7 +56,7 @@ class ActivityListCreateView(generics.ListCreateAPIView):
         activityserializer.initial_data['creator']['username'] = request.user.username
         if activityserializer.is_valid():
             # This calls the `create` method on the serializer
-            activity = activityserializer.save()
+            activity = activity_service.create_activity(activityserializer)
             return Response(activity, status=status.HTTP_201_CREATED)
         return Response(activityserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -115,6 +118,7 @@ class ActivityListCreateView(generics.ListCreateAPIView):
     )
     def list(self, request, *args, **kwargs):
         try:
+            activity_service = ActivityService()
             # Check if the request is for a specific country, state, or city
             # Country might be a list of countries
             countries = self.kwargs.get('countries', None)
@@ -126,22 +130,22 @@ class ActivityListCreateView(generics.ListCreateAPIView):
             if countries:
                 # Convert the string to a list of countries before pasing it to a function
                 countries = [country.strip() for country in countries.split(",")]
-                teams = list_activities_by_country(countries)
+                teams = activity_service.list_activities_by_country(countries)
             elif states:
                 # Get the countries from params
                 countries = request.query_params.getlist('countries[]')
                 # Convert the string to a list of states before pasing it to a function
                 states = [state.strip() for state in states.split(",")]
-                teams = list_activities_by_state(countries, states)
+                teams = activity_service.list_activities_by_state(countries, states)
             elif cities:
                 # Convert the string to a list of cities before pasing it to a function
                 cities = [city.strip() for city in cities.split(",")]
                 # Get the countries and states from params
                 countries = request.query_params.getlist('countries[]')
                 states = request.query_params.getlist('states[]')
-                teams = list_activities_by_city(countries, states, cities)
+                teams = activity_service.list_activities_by_city(countries, states, cities)
             elif search_name:
-                teams = list_activities_by_name(search_name)
+                teams = activity_service.list_activities_by_name(search_name)
             serializer = ActivitySerializer(teams, many=True)
             return Response(serializer.data)
 

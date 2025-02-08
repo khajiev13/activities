@@ -2,8 +2,15 @@ import axiosInstance from '@/axios';
 import JoinLeaveTeamButton from '@/components/TeamsPage/JoinTeamButton';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import TeamCard from "@/components/TeamsPage/TeamCard.tsx";
+import TeamCard from "@/components/TeamsPage/TeamCard";
 import TeamDetailsSchema, { type TeamDetail } from "@/types/TeamDetailsSchema.ts"; // Import the type
+
+
+
+
+
+
+
 
 const TeamDetails = () => {
     const { team_name } = useParams();
@@ -58,6 +65,7 @@ const TeamDetails = () => {
                 away_tshirt_color={team.away_tshirt_color[0]?.name || 'Unknown'}
                 color_picker_needed={false}
             />
+       
         </>
     );
 };

@@ -146,10 +146,11 @@ api/
 - **When it's read:** services read config in their constructors, never per request.
 
 ```yaml
-app:      { public_base_url: "http://localhost:5173", cors_origins: ["http://localhost:5173"], log_level: INFO }
+app:      { public_base_url: "http://localhost:5173", cors_origins: [], log_level: INFO }  # same-origin via Vite proxy / Caddy; no CORS
 neo4j:    { uri: "bolt://neo4j:7687", user: neo4j, password: "...", database: neo4j }
 sqlite:   { path: "/data/auth/eventopia.sqlite3" }
-auth:     { jwt_secret: "...", access_ttl_seconds: 900, refresh_ttl_days: 30, otp_pepper: "...",
+auth:     { jwt_secret: "...", access_ttl_seconds: 900, refresh_ttl_days: 30, refresh_reuse_grace_seconds: 30,
+            refresh_cookie_name: eventopia_refresh, cookie_secure: false, otp_pepper: "...",
             otp_ttl_seconds: 300, otp_max_attempts: 5, otp_resend_seconds: 60,
             otp_max_per_phone_per_hour: 5, otp_max_per_ip_per_hour: 20,
             webapp_init_data_max_age_seconds: 86400, default_phone_region: UZ }
@@ -246,18 +247,36 @@ s3:       { endpoint_url: "http://silo:9000", access_key: "...", secret_key: "..
 - **`POST /api/auth/telegram/webapp {init_data}`**
   - Validate per the Telegram docs: secret = HMAC-SHA256(key "WebAppData", bot_token), then HMAC of the sorted data-check-string, compared in constant time.
   - Reject `auth_date` older than `webapp_init_data_max_age_seconds`.
-- **If the Telegram user has an identity with a verified phone:** ensure the profile and issue a session.
+- **If the Telegram user has an identity with a verified phone:** ensure the profile and return an access token. No refresh token and no cookie (see Sessions below).
 - **Otherwise:** return 403 code 103, `phone_required`.
   - The Mini App will then call Telegram's `requestContact`. The contact arrives in the bot chat and the poller verifies it with the same rule.
   - The Mini App retries afterwards.
 
-#### Sessions and tokens
-- **Access token:** a JWT (PyJWT, HS256) lasting 15 minutes. Claims: `sub=uid`, `username`, `typ=access`, `iat`, `exp`. Sent as `Authorization: Bearer`.
-- **Refresh token:** an opaque random value (32 bytes, URL-safe), stored only as SHA-256 in `refresh_sessions`, lasting 30 days.
-  - **`POST /api/auth/refresh`** rotates it: the old one is revoked and points to the new one through `replaced_by`.
+#### Sessions and tokens (decided by the owner: the best-practice option for each place the app runs)
+
+Nothing auth-related is ever written to `localStorage` or `sessionStorage`.
+
+- **Access token (both places):** a JWT (PyJWT, HS256) lasting 15 minutes. Claims: `sub=uid`, `username`, `typ=access`, `iat`, `exp`.
+  - Sent as `Authorization: Bearer`.
+  - The frontend keeps it **in memory only**, in a module-level variable, not in storage.
+- **Inside Telegram (Mini App):**
+  - **No cookies and no refresh token.**
+  - On launch, and whenever the access token expires, the app sends `Telegram.WebApp.initData` (raw and unmodified) to `POST /api/auth/telegram/webapp` and gets a fresh access token.
+  - Why no cookies: Telegram Web runs Mini Apps inside an iframe, where browsers block or partition cookies. And `initData` is available on every launch anyway.
+- **On the website (browser):**
+  - **The refresh token lives in an HttpOnly cookie**, so injected scripts can't read it.
+  - **Cookie:** name `eventopia_refresh`, flags `HttpOnly; Secure; SameSite=Strict; Path=/api/auth; Max-Age=30 days`.
+    - `Secure` is controlled by `auth.cookie_secure`, which is false only in local HTTP development.
+  - **Value:** opaque random (32 bytes, URL-safe), stored only as SHA-256 in `refresh_sessions`.
+  - **Page load:** the app calls `POST /api/auth/refresh`. If the cookie is valid it gets an access token. If not, the user is logged out.
+  - **`POST /api/auth/refresh`:** rotates the token. The old one is revoked and points to the new one through `replaced_by`, and the new cookie is set.
   - **Reuse detection:** presenting a token that was already rotated revokes the whole `family_id`.
-- **`POST /api/auth/logout {refresh_token}`** revokes that session.
-- **Login responses return:** `{access_token, refresh_token, user: {uid, username, first_name, last_name, image_url}}`.
+    - **Exception, the 30-second grace window:** a token that was rotated within the last 30 seconds gets a new access token, without rotating or revoking anything. Two tabs refreshing at once would otherwise log the user out. The browser already holds the newer cookie.
+  - **`POST /api/auth/logout`:** revokes the session in the cookie and clears the cookie.
+  - **CSRF protection:** the API is same-origin with the site and allows no cross-origin requests. The cookie is `SameSite=Strict` and only sent to `/api/auth`. `refresh` and `logout` also require the header `X-Requested-With: eventopia`, which a cross-site form cannot send.
+- **Login responses** (`otp/verify`, `telegram/webapp`) return `{access_token, user: {uid, username, first_name, last_name, image_url}}`.
+  - `otp/verify` also sets the refresh cookie.
+  - `telegram/webapp` never sets a cookie.
 - **Disabled accounts:** an account with `status=disabled` can't log in, and its access tokens are refused on the next request (the account is checked per request against a small in-process TTL cache, up to 60 s).
 
 ### 6.6 Graph model (Neo4j)
@@ -370,11 +389,16 @@ The fixtures and results files stay unloaded.
    - The no-message hint with the @eventopiarobot link.
    - The password form is removed.
 3. **Register page:** replaced by a "Sign up in Telegram" screen. It links to `https://t.me/eventopiarobot`, with a QR code for desktop. All registration form code is removed.
-4. **Auth handling:**
-   - Refresh triggers on HTTP 401 (not `statusText`).
-   - Refreshes are single-flight: parallel 401s share one refresh.
-   - Logout calls `/api/auth/logout` and clears only auth keys.
-   - A route guard redirects write actions to `/login`.
+4. **Auth handling (§6.5 Sessions):**
+   - **Token storage:**
+     - The access token is kept in memory only.
+     - Remove every `localStorage` use for tokens and profile fields; profile data comes from the login response and `/api/users/me`.
+     - Requests use `withCredentials` so the refresh cookie goes along.
+   - **Startup:** the app calls `/api/auth/refresh` with the `X-Requested-With: eventopia` header.
+   - **Refresh on 401:** refresh is triggered by HTTP 401 (not `statusText`), and it is single-flight: parallel 401s share one refresh.
+   - **Logout:** calls `/api/auth/logout`, then clears the in-memory token. The theme setting stays.
+   - **Route guard:** sends write actions to `/login`.
+   - **Inside Telegram:** an auth strategy switch picks the `initData` exchange when `window.Telegram?.WebApp?.initData` is present. The Mini App work (sub-project 3) builds on it.
 5. **Build passes:**
    - Pin `@types/react` and `@types/react-dom` to 18.
    - Remove the Next.js imports and the `process.env` define.
@@ -399,7 +423,10 @@ The fixtures and results files stay unloaded.
   - phone takeover by a new identity
   - OTP expiry, attempts, resend cooldown, supersede, rate limits
   - identical responses for unknown and known phones
-  - refresh rotation and reuse detection
+  - refresh rotation, reuse detection, and the 30-second grace window
+  - refresh-cookie flags (`HttpOnly`, `SameSite=Strict`, `Path=/api/auth`, `Secure` when configured)
+  - `refresh` and `logout` rejected without `X-Requested-With`
+  - `telegram/webapp` never setting a cookie
   - `initData` validation with tampered and expired data
   - `ensure_profile` repairing a missing USER node
 - **Discipline:** tests are written first (TDD).
@@ -444,7 +471,10 @@ Python 3.13; uv 0.13.7 (lockfile)
 2. The OTP response is identical for registered and unknown numbers. The page points people to the bot instead of saying "not registered".
 3. OTP parameters: 6 digits, 5 minutes, 5 attempts, 60-second resend, 5 per phone per hour, 20 per IP per hour. Codes are sent with `protect_content`.
 4. If a number is recycled, the newest Telegram verification of a phone wins. The previous holder loses the phone and their sessions.
-5. Access tokens last 15 minutes. Refresh tokens last 30 days, rotate, and revoke their whole family on reuse. Tokens stay in localStorage for now; cookies could come with the Mini App work.
+5. **Owner decided 2026-11-07: the best-practice option for each place.**
+   - Website: access token in memory, plus a refresh token in an HttpOnly `SameSite=Strict` cookie that lasts 30 days, rotates, and revokes its whole family on reuse (30-second grace for tabs refreshing at once).
+   - Mini App: an `initData` exchange on launch and on expiry, with no cookies and no refresh token.
+   - Access tokens last 15 minutes. Nothing is stored in localStorage.
 6. The skill's response envelope is adopted. Payloads stay snake_case, and the frontend unwraps `data` in one interceptor.
 7. Endpoints with no frontend caller are dropped. Only the creator relationship is recorded; there is no edit or delete yet.
 8. Bot texts are in Uzbek (Latin), Russian and English.
@@ -464,10 +494,10 @@ All responses use the envelope (§6.4). "User" means a valid access token is req
 | Method | Path | Auth | Request | Notes |
 |---|---|---|---|---|
 | POST | `/api/auth/otp/request` | public | `{phone}` | Always `{retry_after_seconds}`; 429 when rate-limited |
-| POST | `/api/auth/otp/verify` | public | `{phone, code}` | Session payload (§6.5); 401 code 102 on any failure |
-| POST | `/api/auth/telegram/webapp` | public | `{init_data}` | Session payload; 403 code 103 `phone_required` |
-| POST | `/api/auth/refresh` | public | `{refresh_token}` | New `{access_token, refresh_token}` |
-| POST | `/api/auth/logout` | user | `{refresh_token}` | `{}` |
+| POST | `/api/auth/otp/verify` | public | `{phone, code}` | `{access_token, user}` + sets the refresh cookie; 401 code 102 on any failure |
+| POST | `/api/auth/telegram/webapp` | public | `{init_data}` | `{access_token, user}`, no cookie; 403 code 103 `phone_required` |
+| POST | `/api/auth/refresh` | refresh cookie | header `X-Requested-With: eventopia` | `{access_token}` + rotated cookie (30 s grace); 401 when there is no valid cookie |
+| POST | `/api/auth/logout` | refresh cookie | header `X-Requested-With: eventopia` | `{}`; revokes the session and clears the cookie |
 | GET | `/api/users/me` | user | | Profile: uid, username, names, image_url, gender, birth_date, phone (masked) |
 | GET | `/api/countries/list/` | public | | As today |
 | GET | `/api/categories/` | public | `?is_indoor&is_outdoor&is_online` | |

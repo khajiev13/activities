@@ -170,7 +170,7 @@ frontend/
   - `current_request_id() -> str`
   - In `models/common.py`: `ok(data) -> dict` and `error(code, message, **extra) -> dict`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 ```python
 # tests/test_config.py
@@ -208,14 +208,14 @@ async def test_trailing_slash_is_not_redirected(client):
     assert (await client.get("/api/health/live/")).status_code == 404
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `cd api && uv run pytest tests/test_config.py tests/test_app_basics.py -v` → FAIL (import errors).
-- [ ] **Step 3: Implement the files listed under Interfaces.**
+- [x] **Step 2: Run them and confirm they fail.** `cd api && uv run pytest tests/test_config.py tests/test_app_basics.py -v` → FAIL (import errors).
+- [x] **Step 3: Implement the files listed under Interfaces.**
   - `pyproject.toml`: pytest settings `asyncio_mode = "auto"`, `asyncio_default_fixture_loop_scope = "session"`, `asyncio_default_test_loop_scope = "session"`, `markers = ["integration"]`. ruff on.
   - `main.py`: `app = create_app(build_container(load_config(os.environ.get("EVENTOPIA_CONFIG", "config-local-dev.yaml"))))`.
   - The 500 handler logs the traceback with the request ID.
   - `configure_logging(level: str)` lives in `context/request_id.py`. It installs a `logging.Filter` that sets `record.request_id = current_request_id()` (`"-"` outside a request). The format includes `%(request_id)s`. Add the test `test_log_records_carry_request_id` using `caplog`.
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS. Also run `uv run ruff check .` → clean.
-- [ ] **Step 5: Commit.** `git add api .gitignore && git commit -m "feat(api): scaffold FastAPI service with YAML config, envelope and error handling"`. Check that `git status` does not list `api/config-local-dev.yaml`.
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS. Also run `uv run ruff check .` → clean.
+- [x] **Step 5: Commit.** `git add api .gitignore && git commit -m "feat(api): scaffold FastAPI service with YAML config, envelope and error handling"`. Check that `git status` does not list `api/config-local-dev.yaml`.
 
 ### Task 2: Neo4j connector, constraints, dev databases
 

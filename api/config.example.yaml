@@ -1,0 +1,38 @@
+app:
+  public_base_url: http://localhost:5173
+  cors_origins: []
+  log_level: INFO
+neo4j:
+  uri: bolt://neo4j:7687
+  user: neo4j
+  password: replace-with-neo4j-password
+  database: neo4j
+sqlite:
+  path: /data/auth/eventopia.sqlite3
+auth:
+  jwt_secret: replace-with-random-32-byte-secret
+  access_ttl_seconds: 900
+  refresh_ttl_days: 30
+  refresh_reuse_grace_seconds: 30
+  refresh_cookie_name: eventopia_refresh
+  cookie_secure: false
+  otp_pepper: replace-with-random-32-byte-secret
+  otp_ttl_seconds: 300
+  otp_max_attempts: 5
+  otp_resend_seconds: 60
+  otp_max_per_phone_per_hour: 5
+  otp_max_per_ip_per_hour: 20
+  webapp_init_data_max_age_seconds: 86400
+  default_phone_region: UZ
+telegram:
+  bot_token: replace-with-telegram-bot-token
+  bot_username: eventopiarobot
+  poll_timeout_seconds: 50
+s3:
+  endpoint_url: http://silo:9000
+  access_key: replace-with-s3-access-key
+  secret_key: replace-with-s3-secret-key
+  bucket: media
+  region: us-east-1
+  public_prefix: public
+  max_upload_bytes: 5242880

@@ -9,3 +9,13 @@ package-lock.json
 config-*.yaml
 !config.example.yaml
 .env
+
+# FastAPI environment, state, and private configuration
+/api/config*.yaml
+!/api/config.example.yaml
+/api/.data/
+.env.dev
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/

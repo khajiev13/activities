@@ -8,13 +8,15 @@ from eventopia.context.neo4j import Neo4jConnector
 from eventopia.context.request_id import configure_logging
 from eventopia.context.sqlite import SqliteConnector
 from eventopia.services.account import AccountService
+from eventopia.services.otp import OtpService
 from eventopia.services.session import SessionService
+from eventopia.telegram.gateway import TelegramGateway
+from eventopia.telegram.http_gateway import HttpTelegramGateway
 from eventopia.views.base import ApiView
 from eventopia.views.health import HealthView
 
 if TYPE_CHECKING:
     from eventopia.storage.base import ObjectStorage
-    from eventopia.telegram.base import TelegramGateway
 
 
 @dataclass
@@ -24,6 +26,9 @@ class Container:
     sqlite: SqliteConnector | None = None
     account_service: AccountService | None = None
     session_service: SessionService | None = None
+    otp_service: OtpService | None = None
+    telegram: TelegramGateway | None = None
+    _owns_telegram: bool = False
 
     async def close(self) -> None:
         """Release owned resources when the application shuts down."""
@@ -31,8 +36,12 @@ class Container:
             if self.neo4j is not None:
                 await self.neo4j.close()
         finally:
-            if self.sqlite is not None:
-                await self.sqlite.close()
+            try:
+                if self.sqlite is not None:
+                    await self.sqlite.close()
+            finally:
+                if self._owns_telegram and self.telegram is not None:
+                    await self.telegram.close()
 
 
 def build_container(
@@ -45,10 +54,16 @@ def build_container(
     neo4j = Neo4jConnector(config["neo4j"])
     sqlite = SqliteConnector(config["sqlite"])
     account_service = AccountService(neo4j, sqlite, config["auth"])
+    gateway = (
+        telegram if telegram is not None else HttpTelegramGateway(config["telegram"])
+    )
     return Container(
         views=[HealthView(neo4j, sqlite)],
         neo4j=neo4j,
         sqlite=sqlite,
         account_service=account_service,
         session_service=SessionService(sqlite, config["auth"]),
+        otp_service=OtpService(sqlite, gateway, account_service, config["auth"]),
+        telegram=gateway,
+        _owns_telegram=telegram is None,
     )

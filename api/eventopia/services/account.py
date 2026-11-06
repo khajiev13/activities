@@ -8,6 +8,7 @@ from time import monotonic
 from uuid import uuid4
 
 from neo4j.exceptions import ConstraintError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from eventopia.config import AuthSection
 from eventopia.context.neo4j import Neo4jConnector
@@ -144,10 +145,13 @@ class AccountService:
             return await telegram.select_identity_by_telegram_id(s, tg_id)
 
     async def get_active_identity_by_phone(
-        self, phone_e164: str
+        self, phone_e164: str, *, session: AsyncSession | None = None
     ) -> TelegramIdentityRecord | None:
-        async with self._sqlite.session() as s:
-            identity = await telegram.select_identity_by_phone(s, phone_e164)
+        if session is None:
+            async with self._sqlite.session() as s:
+                identity = await telegram.select_identity_by_phone(s, phone_e164)
+        else:
+            identity = await telegram.select_identity_by_phone(session, phone_e164)
         if (
             identity is not None
             and identity.chat_active

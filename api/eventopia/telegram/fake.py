@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from eventopia.telegram.gateway import (
     TelegramApiError,
@@ -12,7 +12,7 @@ from eventopia.telegram.gateway import (
 @dataclass
 class SentMessage:
     chat_id: int
-    text: str
+    text: str = field(repr=False)
     reply_markup: dict | None
     protect_content: bool
 

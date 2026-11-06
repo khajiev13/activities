@@ -101,3 +101,44 @@ async def latest_created_for_phone(s: AsyncSession, phone: str) -> datetime | No
             )
         )
     ).scalar_one()
+
+
+async def nth_latest_created_for_phone(
+    s: AsyncSession, phone: str, n: int
+) -> datetime | None:
+    return (
+        await s.execute(
+            select(challenges.c.created_at)
+            .where(challenges.c.phone_e164 == phone)
+            .order_by(challenges.c.created_at.desc(), challenges.c.id.desc())
+            .offset(n - 1)
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+
+
+async def nth_latest_created_for_ip(
+    s: AsyncSession, ip: str, n: int
+) -> datetime | None:
+    return (
+        await s.execute(
+            select(challenges.c.created_at)
+            .where(challenges.c.requester_ip == ip)
+            .order_by(challenges.c.created_at.desc(), challenges.c.id.desc())
+            .offset(n - 1)
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+
+
+async def mark_delivered(s: AsyncSession, id: str, now: datetime) -> None:
+    await s.execute(
+        update(challenges)
+        .where(
+            challenges.c.id == id,
+            challenges.c.consumed_at.is_(None),
+            challenges.c.superseded_at.is_(None),
+            challenges.c.expires_at > now,
+        )
+        .values(delivered=True)
+    )

@@ -498,7 +498,7 @@ async def test_revoke_then_rotate_fails(session_service):        # revoke_refres
   - `texts.pick_language(language_code: str | None) -> Literal["uz", "ru", "en"]`
   - `texts.otp_message(lang, code: str, ttl_minutes: int) -> str`. Every language includes the code, "5", and a do-not-share warning.
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 ```python
 async def test_registered_phone_gets_code_via_bot(otp, fake_telegram, registered):  # registered: tg 7, +998901234567, lang "ru"
@@ -535,12 +535,12 @@ async def test_new_request_supersedes_old_code(otp, registered, clock): # old co
 async def test_unknown_phone_verify_same_error(otp):                  # InvalidCodeError, message identical to the wrong-code case
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_otp_service.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_otp_service.py -v` → FAIL.
+- [x] **Step 3: Implement.**
   - The rate-limit checks run **before** the identity lookup, so unknown and known phones are limited the same way.
   - Record a challenge row even for unknown phones, with `account_uid=None` and `delivered=False`, so the limits count them.
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): OtpService delivering login codes through the bot with rate limits"`
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): OtpService delivering login codes through the bot with rate limits"`
 
 ### Task 8: Auth and users endpoints
 

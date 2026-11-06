@@ -69,3 +69,26 @@ async def revoke_all_for_account(s: AsyncSession, uid: str, now: datetime) -> No
         )
         .values(revoked_at=now)
     )
+
+
+async def has_live_family(s: AsyncSession, family_id: str, now: datetime) -> bool:
+    return (
+        await s.execute(
+            select(sessions.c.id)
+            .where(
+                sessions.c.family_id == family_id,
+                sessions.c.revoked_at.is_(None),
+                sessions.c.expires_at > now,
+            )
+            .limit(1)
+        )
+    ).scalar_one_or_none() is not None
+
+
+async def logout_session(s: AsyncSession, id: str, now: datetime) -> None:
+    # Explicit logout removes grace even when this cookie was already rotated.
+    await s.execute(
+        update(sessions)
+        .where(sessions.c.id == id)
+        .values(revoked_at=now, replaced_by=None)
+    )

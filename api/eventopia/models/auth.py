@@ -86,3 +86,15 @@ class UserProfile:
     image_url: str | None
     gender: str | None
     birth_date: str | None
+
+
+@dataclass
+class AccessClaims:
+    uid: str
+    username: str
+
+
+@dataclass
+class RotateOutcome:
+    uid: str
+    new_refresh_token: str | None = field(repr=False)

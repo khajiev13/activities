@@ -448,7 +448,7 @@ async def test_ensure_profile_repairs_missing_user_node(account_service, neo4j_c
   - `rotate_refresh(raw: str) -> RotateOutcome`
   - `revoke_refresh(raw: str | None) -> None`. Does nothing for an unknown or None token.
 
-- [ ] **Step 1: Write failing tests** (use an injected `clock`)
+- [x] **Step 1: Write failing tests** (use an injected `clock`)
 
 ```python
 def test_access_token_roundtrip_and_expiry(session_service, clock):
@@ -477,10 +477,10 @@ async def test_expired_refresh_rejected(session_service, clock):  # advance 30 d
 async def test_revoke_then_rotate_fails(session_service):        # revoke_refresh(raw) → rotate raises AuthError
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_session_service.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): SessionService with short JWTs and rotating refresh tokens with reuse detection"`
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_session_service.py -v` → FAIL.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): SessionService with short JWTs and rotating refresh tokens with reuse detection"`
 
 ### Task 7: OtpService
 

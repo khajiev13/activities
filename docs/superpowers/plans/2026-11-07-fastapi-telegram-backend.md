@@ -391,7 +391,7 @@ def test_init_data_missing_hash():  # → AuthError
     - `username_taken(tx, username) -> bool`
   - Module function `username_candidates(telegram_username: str | None, first_name: str, rng: Random) -> Iterator[str]`. It yields the lowercased Telegram username first if it matches `^[a-z0-9_]{3,32}$`, then `slug(first_name)[:24] + 4 random digits`, forever.
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 ```python
 async def test_new_contact_creates_account_identity_and_user(account_service, neo4j_connector):
@@ -425,12 +425,12 @@ async def test_ensure_profile_repairs_missing_user_node(account_service, neo4j_c
     p = await account_service.ensure_profile(r.uid); assert p.uid == r.uid
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_account_service.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_account_service.py -v` → FAIL.
+- [x] **Step 3: Implement.**
   - Do the SQLite work in **one** `session()` block, then `ensure_profile`.
   - The takeover logs `mask_phone(...)` at WARNING.
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): AccountService with contact registration, phone takeover and ensure_profile"`
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): AccountService with contact registration, phone takeover and ensure_profile"`
 
 ### Task 6: SessionService (JWT and refresh rotation)
 

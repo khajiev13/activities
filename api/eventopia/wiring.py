@@ -7,6 +7,7 @@ from eventopia.config import AppConfig
 from eventopia.context.neo4j import Neo4jConnector
 from eventopia.context.request_id import configure_logging
 from eventopia.context.sqlite import SqliteConnector
+from eventopia.services.account import AccountService
 from eventopia.views.base import ApiView
 from eventopia.views.health import HealthView
 
@@ -20,6 +21,7 @@ class Container:
     views: list[ApiView]
     neo4j: Neo4jConnector | None = None
     sqlite: SqliteConnector | None = None
+    account_service: AccountService | None = None
 
     async def close(self) -> None:
         """Release owned resources when the application shuts down."""
@@ -40,4 +42,10 @@ def build_container(
     configure_logging(config["app"]["log_level"])
     neo4j = Neo4jConnector(config["neo4j"])
     sqlite = SqliteConnector(config["sqlite"])
-    return Container(views=[HealthView(neo4j, sqlite)], neo4j=neo4j, sqlite=sqlite)
+    account_service = AccountService(neo4j, sqlite, config["auth"])
+    return Container(
+        views=[HealthView(neo4j, sqlite)],
+        neo4j=neo4j,
+        sqlite=sqlite,
+        account_service=account_service,
+    )

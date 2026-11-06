@@ -52,3 +52,37 @@ class RefreshSessionRecord:
     replaced_by: str | None
     user_agent: str | None
     ip: str
+
+
+@dataclass
+class TelegramUser:
+    id: int
+    username: str | None
+    first_name: str
+    last_name: str | None = None
+    language_code: str | None = None
+
+
+@dataclass
+class SharedContact:
+    user_id: int | None
+    phone_number: str = field(repr=False)
+
+
+@dataclass
+class RegistrationResult:
+    uid: str
+    username: str
+    phone_e164: str = field(repr=False)
+    is_new: bool
+
+
+@dataclass
+class UserProfile:
+    uid: str
+    username: str
+    first_name: str | None
+    last_name: str | None
+    image_url: str | None
+    gender: str | None
+    birth_date: str | None

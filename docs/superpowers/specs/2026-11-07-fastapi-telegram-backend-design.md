@@ -303,7 +303,7 @@ Nothing auth-related is ever written to `localStorage` or `sessionStorage`.
 | Pattern | Notes |
 |---|---|
 | `(USER)-[:IS_MEMBER_OF {joined_at, player_number, name_on_jersey, position, plays_for_division}]->(TEAM)` | `position` ∈ Goalkeeper / Defender / Midfielder / Forward, so a player can have a different position in each team. `plays_for_division` is set by the seed and null for people who join through the app. This replaces the old `(USER)-[:IS]->(ROLE)-[:IN]->(TEAM)` pattern, which couldn't say which position belongs to which team. |
-| `(ACTIVITY)-[:IS_COMPETITION]->(COMPETITION {pk})-[:TEAM_1]->(TEAM)`, `(COMPETITION)-[:TEAM_2]->(TEAM)` | Existing pattern, kept. Activity payloads carry `competition: {team_1, team_2}`, or `null` when the activity isn't a competition. |
+| `(ACTIVITY)-[:IS_COMPETITION]->(COMPETITION {pk})-[:TEAM_1]->(TEAM)`, `(COMPETITION)-[:TEAM_2]->(TEAM)` | Existing pattern, kept. Activity payloads always carry `competition: {team_1: {name, image_url}, team_2: {name, image_url}}`. For a non-competition activity, the names and images are `null`. This is the shape `frontend/src/types/ActivitiesListSchema.ts` already expects, so the frontend needs no change. |
 | `(USER)-[:CREATES]->(ACTIVITY \| ORGANIZATION \| TEAM)` | TEAM is new; it records ownership |
 | `(USER)-[:JOINS]->(ACTIVITY)` | |
 | `(USER)-[:IS_FROM]->(COUNTRY)`, `(USER)-[:BASED_IN]->(LOCATION)`, `(USER)-[:LIKES]->(CATEGORY)` | |
@@ -406,8 +406,8 @@ The fixtures and results files stay unloaded.
 6. **Core flows that must work:**
    - **Team drawer:** fix the crash on open.
    - **Join Team button:** wire it to the join endpoint with a small form: jersey name, number, and position (select from the four positions).
-   - **Team page schema** (`src/types/TeamDetailsSchema.ts`): drop `gender`, allow `plays_for_division` and `image_url` to be null. Without this, the first Telegram user to join a team breaks that team's page.
-   - **Activity cards and detail:** handle `competition: null` (`ListActivityCard.tsx` and `ActivityDetail.tsx` read `competition.team_1.name` with no null check). Creating a competition (team 1 vs team 2) keeps working.
+   - **Team page schema** (`src/types/TeamDetailsSchema.ts`, the only schema checked at runtime): drop the member `gender`; allow member `plays_for_division` and `image_url` to be null. In `TeamsListingSchema.ts`, team `image_url` becomes `z.string().url().nullable()`. Without this, the first Telegram user to join a team, or any team without an image, breaks that team's page.
+   - **Competitions:** creating a competition (team 1 vs team 2) keeps working. The backend always returns the `competition` object (§6.6), so the activity components need no change.
    - **Image fields:** fix the `accept` attribute and the `'link'` fallback.
    - **Chatbot:** hide its entry.
 7. **MapTiler key:** read from `VITE_MAPTILER_KEY`. The committed key gets rotated as part of the credential hygiene; it is not this build's job.
@@ -481,7 +481,7 @@ Python 3.13; uv 0.13.7 (lockfile)
 9. Seeded players keep their real names but lose birthdates. They become unclaimed profiles, and claiming one is a later feature.
 10. No APOC. The new code lives in `api/`, and `backend/` is deleted at the end.
 11. Uploaded images get absolute URLs built from `public_base_url`.
-12. Competition activities (team 1 vs team 2) keep the existing `COMPETITION` node pattern. Non-competition activities return `competition: null`, and the frontend gets null checks.
+12. Competition activities (team 1 vs team 2) keep the existing `COMPETITION` node pattern. Non-competition activities return the `competition` object with null names and images, as the frontend types expect.
 13. Seeded 7-a-side squads are named `"<name> 7s"` (48 teams, not 42 merged ones).
 14. A player's position is stored per team on the membership. Joining asks for jersey name, number and position. Team member lists no longer include gender.
 

@@ -1,0 +1,63 @@
+services:
+  neo4j:
+    image: neo4j:2026.10.1-community-trixie
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-devpassword123}
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 512m
+      NEO4J_server_memory_pagecache_size: 384m
+    ports:
+      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:7687:7687"
+    volumes:
+      - neo4j-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  silo:
+    image: pgsty/silo:RELEASE.2026-10-26T00-00-00Z
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER in .env.dev}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env.dev}
+      GOMEMLIMIT: 600MiB
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - silo-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+
+  silo-init:
+    image: pgsty/silo:RELEASE.2026-10-26T00-00-00Z
+    depends_on:
+      silo:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER in .env.dev}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env.dev}
+      APP_KEY: ${APP_KEY:?Set APP_KEY in .env.dev}
+      APP_SECRET: ${APP_SECRET:?Set APP_SECRET in .env.dev}
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        mcli alias set local http://silo:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD" >/dev/null
+        mcli mb --ignore-existing local/media
+        mcli anonymous set download local/media/public
+        mcli admin user add local "$$APP_KEY" "$$APP_SECRET" >/dev/null
+        mcli admin policy attach local readwrite --user "$$APP_KEY" >/dev/null
+    restart: "no"
+
+volumes:
+  neo4j-data:
+  silo-data:

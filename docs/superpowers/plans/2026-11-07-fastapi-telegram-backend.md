@@ -237,7 +237,7 @@ async def test_trailing_slash_is_not_redirected(client):
   - `POINT INDEX` on `LOCATION.points`
   - All statements use `IF NOT EXISTS`.
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 ```python
 async def test_constraints_apply_twice(neo4j_connector):
@@ -255,17 +255,17 @@ async def test_ready_reports_neo4j(client):
     assert r.status_code == 200 and r.json()["data"]["neo4j"] is True
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_neo4j.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_neo4j.py -v` → FAIL.
+- [x] **Step 3: Implement.**
   - `/api/health/ready` returns 503 (code 500) if any dependency fails `ping()`. It reports `{"neo4j": bool}`, and later also `sqlite`.
   - In `compose.dev.yml`:
     - **neo4j:** `NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-devpassword123}`, `NEO4J_server_memory_heap_initial__size=512m`, `NEO4J_server_memory_heap_max__size=512m`, `NEO4J_server_memory_pagecache_size=384m`. Ports `127.0.0.1:7474` and `127.0.0.1:7687`. Healthcheck `wget -q --spider http://localhost:7474 || exit 1`.
     - **silo:** ports `127.0.0.1:9000` and `127.0.0.1:9001`, `GOMEMLIMIT=600MiB`.
     - **silo-init:** the `mcli` script from §6.2, run with `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `APP_KEY` and `APP_SECRET` from `.env.dev` (git-ignored).
-- [ ] **Step 4: Run tests, then the stack.**
+- [x] **Step 4: Run tests, then the stack.**
   - `uv run pytest tests/test_neo4j.py -v` → PASS.
   - Then `docker compose -f compose.dev.yml up -d neo4j silo silo-init && docker compose -f compose.dev.yml ps` → `neo4j` and `silo` healthy, `silo-init` exited 0.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): Neo4j connector, idempotent constraints, dev compose for neo4j and silo"`
+- [x] **Step 5: Commit.** `git commit -m "feat(api): Neo4j connector, idempotent constraints, dev compose for neo4j and silo"`
 
 ### Task 3: SQLite auth store (migration and data access)
 

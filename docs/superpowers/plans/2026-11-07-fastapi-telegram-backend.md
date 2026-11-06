@@ -566,7 +566,7 @@ async def test_unknown_phone_verify_same_error(otp):                  # InvalidC
     - `set_refresh_cookie(response, raw, auth_config)`, `clear_refresh_cookie(response, auth_config)`
   - `AuthView` and `UsersView` serve the Appendix A auth rows and `/api/users/me`.
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 ```python
 async def test_otp_login_sets_strict_httponly_cookie(client, registered, fake_telegram):
@@ -593,12 +593,12 @@ async def test_disabled_account_rejected(client_logged_in, sqlite_connector):  #
 async def test_otp_request_same_body_for_unknown_and_known(client, registered): # response bodies equal apart from requestId
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_auth_api.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_auth_api.py -v` → FAIL.
+- [x] **Step 3: Implement.**
   - The client IP comes from `request.client.host`. A trusted proxy header is handled in sub-project 2.
   - The user agent comes from the `User-Agent` header.
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): auth endpoints (OTP, Mini App initData, refresh cookie, logout, me)"`
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): auth endpoints (OTP, Mini App initData, refresh cookie, logout, me)"`
 
 ### Task 9: Bot process (dispatcher and poller)
 

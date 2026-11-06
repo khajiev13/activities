@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 
+from pydantic import BaseModel, ConfigDict, Field
+
 
 @dataclass
 class AccountRecord:
@@ -98,3 +100,47 @@ class AccessClaims:
 class RotateOutcome:
     uid: str
     new_refresh_token: str | None = field(repr=False)
+
+
+# Pydantic DTOs for the HTTP boundary; domain records above stay dataclasses.
+
+
+class OtpRequestIn(BaseModel):
+    phone: str = Field(repr=False)
+
+
+class OtpVerifyIn(OtpRequestIn):
+    code: str = Field(repr=False)
+
+
+class WebAppLoginIn(BaseModel):
+    init_data: str = Field(repr=False)
+
+
+class UserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    uid: str
+    username: str
+    first_name: str | None
+    last_name: str | None
+    image_url: str | None
+
+
+class LoginOut(BaseModel):
+    access_token: str = Field(repr=False)
+    user: UserOut
+
+
+class AccessOut(BaseModel):
+    access_token: str = Field(repr=False)
+
+
+class RetryOut(BaseModel):
+    retry_after_seconds: int
+
+
+class MeOut(UserOut):
+    gender: str | None
+    birth_date: str | None
+    phone_masked: str | None = None

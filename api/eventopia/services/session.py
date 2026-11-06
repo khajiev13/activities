@@ -5,12 +5,13 @@ from secrets import token_urlsafe
 from uuid import uuid4
 
 import jwt
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from eventopia.config import AuthSection
 from eventopia.context.sqlite import SqliteConnector
 from eventopia.exceptions import AuthError
 from eventopia.models.auth import AccessClaims, RefreshSessionRecord, RotateOutcome
-from eventopia.sqls import sessions
+from eventopia.sqls import accounts, sessions, telegram
 
 
 def utcnow() -> datetime:
@@ -72,20 +73,45 @@ class SessionService:
         return AccessClaims(uid=claims["sub"], username=claims["username"])
 
     async def create_refresh(
-        self, uid: str, user_agent: str | None, ip: str | None
+        self,
+        uid: str,
+        user_agent: str | None,
+        ip: str | None,
+        *,
+        expected_phone: str | None = None,
     ) -> str:
         raw, record = self._new_refresh(uid, str(uuid4()), user_agent, ip)
         async with self._sqlite.session(write=True) as s:
+            if expected_phone is not None:
+                # Guard the gap between OTP consumption and refresh issuance.
+                identity = await telegram.select_identity_by_phone(s, expected_phone)
+                account = await accounts.select_account(s, uid)
+                if (
+                    identity is None
+                    or identity.account_uid != uid
+                    or identity.phone_verified_at is None
+                    or account is None
+                    or account.status != "active"
+                ):
+                    raise AuthError()
             await sessions.insert_session(s, record)
         return raw
+
+    async def get_refresh_uid(self, raw: str) -> str:
+        """Validate before graph I/O, committing replay revocation if needed."""
+        async with self._sqlite.session(write=True) as s:
+            record = await self._eligible_refresh(s, raw, self._clock())
+        if record is None:
+            raise AuthError()
+        return record.account_uid
 
     async def rotate_refresh(self, raw: str) -> RotateOutcome:
         outcome = None
         async with self._sqlite.session(write=True) as s:
             now = self._clock()
-            record = await sessions.select_session_by_hash(s, _hash(raw))
+            record = await self._eligible_refresh(s, raw, now)
             if record is not None:
-                if record.revoked_at is None and record.expires_at > now:
+                if record.revoked_at is None:
                     new_raw, new_record = self._new_refresh(
                         record.account_uid,
                         record.family_id,
@@ -95,22 +121,35 @@ class SessionService:
                     await sessions.insert_session(s, new_record)
                     await sessions.revoke_session(s, record.id, now, new_record.id)
                     outcome = RotateOutcome(record.account_uid, new_raw)
-                elif record.revoked_at is not None and record.replaced_by is not None:
-                    grace = timedelta(
-                        seconds=self._config["refresh_reuse_grace_seconds"]
-                    )
-                    if (
-                        record.expires_at > now
-                        and now - record.revoked_at <= grace
-                        and await sessions.has_live_family(s, record.family_id, now)
-                    ):
-                        outcome = RotateOutcome(record.account_uid, None)
-                    else:
-                        await sessions.revoke_family(s, record.family_id, now)
+                else:
+                    outcome = RotateOutcome(record.account_uid, None)
         # Revocation must commit before the domain error leaves the transaction.
         if outcome is None:
             raise AuthError()
         return outcome
+
+    async def _eligible_refresh(
+        self, s: AsyncSession, raw: str, now: datetime
+    ) -> RefreshSessionRecord | None:
+        """Shared validation under the write lock, before and after profile I/O."""
+        record = await sessions.select_session_by_hash(s, _hash(raw))
+        if record is None:
+            return None
+        if record.revoked_at is not None and record.replaced_by is not None:
+            grace = timedelta(seconds=self._config["refresh_reuse_grace_seconds"])
+            if not (
+                record.expires_at > now
+                and now - record.revoked_at <= grace
+                and await sessions.has_live_family(s, record.family_id, now)
+            ):
+                await sessions.revoke_family(s, record.family_id, now)
+                return None
+        elif record.revoked_at is not None or record.expires_at <= now:
+            return None
+        account = await accounts.select_account(s, record.account_uid)
+        if account is None or account.status != "active":
+            return None
+        return record
 
     async def revoke_refresh(self, raw: str | None) -> None:
         if raw is None:

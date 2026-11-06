@@ -14,7 +14,12 @@ from eventopia.config import AuthSection
 from eventopia.context.neo4j import Neo4jConnector
 from eventopia.context.sqlite import SqliteConnector
 from eventopia.cyphers import users
-from eventopia.exceptions import ForeignContactError, NotFoundError
+from eventopia.exceptions import (
+    AuthError,
+    ForeignContactError,
+    NotFoundError,
+    PhoneRequiredError,
+)
 from eventopia.models.auth import (
     RegistrationResult,
     SharedContact,
@@ -198,6 +203,31 @@ class AccountService:
                 ):
                     raise
         raise RuntimeError("Username candidates exhausted")
+
+    async def get_telegram_login_uid(self, telegram_user_id: int) -> str:
+        """Read verified identity and active account in one SQLite snapshot."""
+        async with self._sqlite.session() as s:
+            identity = await telegram.select_identity_by_telegram_id(
+                s, telegram_user_id
+            )
+            if (
+                identity is None
+                or identity.phone_e164 is None
+                or identity.phone_verified_at is None
+            ):
+                raise PhoneRequiredError()
+            account = await accounts.select_account(s, identity.account_uid)
+            if account is None or account.status != "active":
+                raise AuthError()
+            return identity.account_uid
+
+    async def get_verified_phone(self, uid: str) -> str | None:
+        """Return a verified phone for the authenticated profile response."""
+        async with self._sqlite.session() as s:
+            identity = await telegram.select_identity_by_account(s, uid)
+        if identity is not None and identity.phone_verified_at is not None:
+            return identity.phone_e164
+        return None
 
     async def is_account_active(self, uid: str) -> bool:
         now = monotonic()

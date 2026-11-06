@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from eventopia.config import AppConfig
 from eventopia.context.neo4j import Neo4jConnector
 from eventopia.context.request_id import configure_logging
+from eventopia.context.sqlite import SqliteConnector
 from eventopia.views.base import ApiView
 from eventopia.views.health import HealthView
 
@@ -18,11 +19,16 @@ if TYPE_CHECKING:
 class Container:
     views: list[ApiView]
     neo4j: Neo4jConnector | None = None
+    sqlite: SqliteConnector | None = None
 
     async def close(self) -> None:
         """Release owned resources when the application shuts down."""
-        if self.neo4j is not None:
-            await self.neo4j.close()
+        try:
+            if self.neo4j is not None:
+                await self.neo4j.close()
+        finally:
+            if self.sqlite is not None:
+                await self.sqlite.close()
 
 
 def build_container(
@@ -33,4 +39,5 @@ def build_container(
 ) -> Container:
     configure_logging(config["app"]["log_level"])
     neo4j = Neo4jConnector(config["neo4j"])
-    return Container(views=[HealthView(neo4j)], neo4j=neo4j)
+    sqlite = SqliteConnector(config["sqlite"])
+    return Container(views=[HealthView(neo4j, sqlite)], neo4j=neo4j, sqlite=sqlite)

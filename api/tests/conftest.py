@@ -12,8 +12,10 @@ API_DIR = Path(__file__).resolve().parents[1]
 
 
 @pytest.fixture
-def config():
-    return load_config(str(API_DIR / "config.example.yaml"))
+def config(tmp_path):
+    config = load_config(str(API_DIR / "config.example.yaml"))
+    config["sqlite"]["path"] = str(tmp_path / "auth.sqlite3")
+    return config
 
 
 @pytest.fixture
@@ -81,3 +83,21 @@ async def neo4j_connector(_neo4j_connector):
 
     await _neo4j_connector.write(clear)
     return _neo4j_connector
+
+
+@pytest.fixture
+async def sqlite_connector(tmp_path):
+    from alembic import command
+    from alembic.config import Config
+
+    from eventopia.context.sqlite import SqliteConnector
+
+    path = tmp_path / "auth.sqlite3"
+    cfg = Config(str(API_DIR / "alembic.ini"))
+    cfg.set_main_option("sqlalchemy.url", "sqlite:///" + str(path))
+    command.upgrade(cfg, "head")
+    connector = SqliteConnector({"path": str(path)})
+    try:
+        yield connector
+    finally:
+        await connector.close()

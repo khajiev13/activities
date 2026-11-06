@@ -121,7 +121,7 @@ async def test_ready_reports_neo4j(config, neo4j_config):
     assert response.json() == {
         "requestId": response.headers["X-Request-ID"],
         "error": 0,
-        "data": {"neo4j": True},
+        "data": {"neo4j": True, "sqlite": True},
     }
 
 
@@ -139,7 +139,7 @@ async def test_ready_reports_unavailable_dependency(config, neo4j_config, monkey
             response = await client.get("/api/health/ready")
         assert response.status_code == 503
         assert response.json()["error"] == 500
-        assert response.json()["data"] == {"neo4j": False}
+        assert response.json()["data"] == {"neo4j": False, "sqlite": True}
         assert response.json()["requestId"] == response.headers["X-Request-ID"]
     finally:
         await container.close()
@@ -175,7 +175,7 @@ async def test_ready_rejects_nonexistent_configured_database(config, neo4j_confi
             response = await client.get("/api/health/ready")
         assert response.status_code == 503
         assert response.json()["error"] == 500
-        assert response.json()["data"] == {"neo4j": False}
+        assert response.json()["data"] == {"neo4j": False, "sqlite": True}
     finally:
         await container.close()
 

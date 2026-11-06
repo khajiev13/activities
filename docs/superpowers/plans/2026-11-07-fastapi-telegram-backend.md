@@ -287,7 +287,7 @@ async def test_ready_reports_neo4j(client):
   - **`sqls/sessions.py`:** `insert_session(s, rec)`, `select_session_by_hash(s, token_hash)`, `revoke_session(s, id, now, replaced_by: str | None = None)`, `revoke_family(s, family_id, now)`, `revoke_all_for_account(s, uid, now)`, `select_session(s, id)`
   - **`sqls/bot_state.py`:** `get_value(s, key) -> str | None`, `set_value(s, key, value)`
 
-- [ ] **Step 1: Write failing tests** (one per module):
+- [x] **Step 1: Write failing tests** (one per module):
 
 ```python
 async def test_wal_and_foreign_keys(sqlite_connector):
@@ -307,10 +307,10 @@ async def test_bot_state_roundtrip(sqlite_connector):
     await set_value(s, "offset", "41"); assert await get_value(s, "offset") == "41"
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_sqls.py -v` → FAIL.
-- [ ] **Step 3: Implement** the migration, connector, tables and functions. The migration columns are exactly as in spec §6.5. Functions return the records, not ORM objects.
-- [ ] **Step 4: Run them and confirm they pass.** `uv run pytest tests/test_sqls.py -v` → PASS. Then `uv run alembic upgrade head` against a temp path → exit 0.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): SQLite auth store with Alembic migration and data-access functions"`
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_sqls.py -v` → FAIL.
+- [x] **Step 3: Implement** the migration, connector, tables and functions. The migration columns are exactly as in spec §6.5. Functions return the records, not ORM objects.
+- [x] **Step 4: Run them and confirm they pass.** `uv run pytest tests/test_sqls.py -v` → PASS. Then `uv run alembic upgrade head` against a temp path → exit 0.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): SQLite auth store with Alembic migration and data-access functions"`
 
 ### Task 4: Phone utils, Telegram gateway, initData validation
 

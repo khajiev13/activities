@@ -334,7 +334,7 @@ async def test_bot_state_roundtrip(sqlite_connector):
   - `WebAppUser(id: int, username: str | None, first_name: str, last_name: str | None, language_code: str | None)`
   - `validate_init_data(init_data: str, bot_token: str, max_age_seconds: int, now: int) -> WebAppUser`. Raises `AuthError`. Algorithm per §6.5: the data-check-string is the sorted `key=value` pairs, excluding `hash`, joined with `\n`; compare with `hmac.compare_digest`.
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 ```python
 @pytest.mark.parametrize("raw", ["+998 90 123-45-67", "(90) 123 45 67", "901234567", "998901234567", "+998901234567"])
@@ -357,10 +357,10 @@ def test_init_data_missing_hash():  # → AuthError
 
 `sign()` is a test helper that implements Telegram's algorithm independently, inside the test file.
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_phone.py tests/test_telegram_gateway.py tests/test_webapp.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): phone normalization, Telegram gateway and Mini App initData validation"`
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_phone.py tests/test_telegram_gateway.py tests/test_webapp.py -v` → FAIL.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): phone normalization, Telegram gateway and Mini App initData validation"`
 
 ### Task 5: AccountService (registration from a contact, ensure_profile, usernames)
 

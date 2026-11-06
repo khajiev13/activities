@@ -4,3 +4,8 @@
 /.vscode
 
 package-lock.json
+
+# Local config with secrets (python-service-patterns YAML config)
+config-*.yaml
+!config.example.yaml
+.env

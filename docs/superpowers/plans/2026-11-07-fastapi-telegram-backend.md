@@ -683,7 +683,7 @@ async def test_handler_exception_does_not_stop_batch(poller, ...):  # a bad upda
     - `upload_image(kind: Literal["teams", "organizations"], data: bytes) -> str`. Returns `f"{public_base_url}/media/{public_prefix}/{kind}/{uuid4}.{ext}"`.
     - `delete_by_url(url: str | None) -> None`. Best effort: it logs and never raises.
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 ```python
 @pytest.mark.parametrize("fixture,ctype", [("tiny.jpg","image/jpeg"),("tiny.png","image/png"),("tiny.webp","image/webp")])
@@ -701,10 +701,10 @@ async def test_s3_roundtrip_against_silo(silo_container):  # put, then anonymous
 
 Add tiny image fixtures under `tests/fixtures/`.
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_media.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run them and confirm they pass.** `uv run pytest tests/test_media.py -v -m "integration or not integration"` → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): S3 media storage for Silo with image type detection"`
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_media.py -v` → FAIL.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run them and confirm they pass.** `uv run pytest tests/test_media.py -v -m "integration or not integration"` → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): S3 media storage for Silo with image type detection"`
 
 ### Task 11: Countries, categories, locations
 

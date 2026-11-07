@@ -33,6 +33,9 @@ def configure_logging(level: str) -> None:
     # Driver DEBUG traces include bound SQL parameters, bypassing SQLAlchemy
     # hide_parameters and exposing phones, codes or tokens. Keep them disabled.
     logging.getLogger("aiosqlite").setLevel(logging.WARNING)
+    # S3 SDK DEBUG traces include signed headers, credentials and object keys.
+    for name in ("boto3", "botocore", "s3transfer", "urllib3"):
+        logging.getLogger(name).setLevel(logging.WARNING)
     for handler in root.handlers:
         handler.setFormatter(logging.Formatter(_LOG_FORMAT))
         if not any(isinstance(item, RequestIdFilter) for item in handler.filters):

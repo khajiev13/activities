@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
 from eventopia.bot.dispatcher import BotDispatcher
 from eventopia.bot.poller import BotPoller
@@ -11,17 +10,17 @@ from eventopia.context.request_id import configure_logging
 from eventopia.context.sqlite import SqliteConnector
 from eventopia.services.account import AccountService
 from eventopia.services.auth import AuthService
+from eventopia.services.media import MediaService
 from eventopia.services.otp import OtpService
 from eventopia.services.session import SessionService
+from eventopia.storage.base import ObjectStorage
+from eventopia.storage.s3 import S3ObjectStorage
 from eventopia.telegram.gateway import TelegramGateway
 from eventopia.telegram.http_gateway import HttpTelegramGateway
 from eventopia.views.auth import AuthView
 from eventopia.views.base import ApiView
 from eventopia.views.health import HealthView
 from eventopia.views.users import UsersView
-
-if TYPE_CHECKING:
-    from eventopia.storage.base import ObjectStorage
 
 
 @dataclass
@@ -35,6 +34,9 @@ class Container:
     auth_service: AuthService | None = None
     telegram: TelegramGateway | None = None
     _owns_telegram: bool = False
+    storage: ObjectStorage | None = None
+    media_service: MediaService | None = None
+    _owns_storage: bool = False
     dispatcher: BotDispatcher | None = None
     poller: BotPoller | None = None
 
@@ -48,8 +50,12 @@ class Container:
                 if self.sqlite is not None:
                     await self.sqlite.close()
             finally:
-                if self._owns_telegram and self.telegram is not None:
-                    await self.telegram.close()
+                try:
+                    if self._owns_telegram and self.telegram is not None:
+                        await self.telegram.close()
+                finally:
+                    if self._owns_storage and self.storage is not None:
+                        await self.storage.close()
 
 
 def build_container(
@@ -74,6 +80,8 @@ def build_container(
         config["telegram"],
         config["auth"],
     )
+    object_storage = storage if storage is not None else S3ObjectStorage(config["s3"])
+    media_service = MediaService(object_storage, config["app"], config["s3"])
     return Container(
         views=[
             HealthView(neo4j, sqlite),
@@ -88,6 +96,9 @@ def build_container(
         auth_service=auth_service,
         telegram=gateway,
         _owns_telegram=telegram is None,
+        storage=object_storage,
+        media_service=media_service,
+        _owns_storage=storage is None,
     )
 
 

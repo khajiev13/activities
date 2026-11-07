@@ -9,6 +9,7 @@ from eventopia.context.neo4j import Neo4jConnector
 from eventopia.context.request_id import configure_logging
 from eventopia.context.sqlite import SqliteConnector
 from eventopia.services.account import AccountService
+from eventopia.services.activity import ActivityService
 from eventopia.services.auth import AuthService
 from eventopia.services.category import CategoryService
 from eventopia.services.geo import GeoService
@@ -20,6 +21,7 @@ from eventopia.storage.base import ObjectStorage
 from eventopia.storage.s3 import S3ObjectStorage
 from eventopia.telegram.gateway import TelegramGateway
 from eventopia.telegram.http_gateway import HttpTelegramGateway
+from eventopia.views.activities import ActivitiesView
 from eventopia.views.auth import AuthView
 from eventopia.views.base import ApiView
 from eventopia.views.categories import CategoriesView
@@ -91,6 +93,7 @@ def build_container(
     geo_service = GeoService(neo4j)
     category_service = CategoryService(neo4j)
     location_service = LocationService(neo4j)
+    activity_service = ActivityService(neo4j)
     return Container(
         views=[
             HealthView(neo4j, sqlite),
@@ -99,6 +102,7 @@ def build_container(
             GeoView(geo_service),
             CategoriesView(category_service, auth_service),
             LocationsView(location_service, auth_service),
+            ActivitiesView(activity_service, auth_service),
         ],
         neo4j=neo4j,
         sqlite=sqlite,

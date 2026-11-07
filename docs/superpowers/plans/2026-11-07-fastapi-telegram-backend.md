@@ -754,7 +754,7 @@ Add tiny image fixtures under `tests/fixtures/`.
 - **Detail** (`GET /api/activities/{pk}`): no trailing slash; 404 code 300 when unknown.
 - **Join and leave** (`POST /api/activities/{pk}/join/`, `/leave/`): user only, idempotent. They return the updated payload.
 
-- [ ] **Step 1: Write failing contract tests**, including these regressions from the audit:
+- [x] **Step 1: Write failing contract tests**, including these regressions from the audit:
 
 ```python
 async def test_people_joined_lists_joiners_not_creator(...)        # creator A, joiners B,C → usernames {B,C}
@@ -766,10 +766,10 @@ async def test_search_city_with_countries_filter(...)
 async def test_join_leave_idempotent_and_requires_auth(...)
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_activities_api.py -v` → FAIL.
-- [ ] **Step 3: Implement.** Port the Cypher from `backend/activities/cypher_queries.py`, using `collect(DISTINCT …)` and §6.6 relationship names.
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): activities search, create, detail, join and leave"`
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_activities_api.py -v` → FAIL.
+- [x] **Step 3: Implement.** Port the Cypher from `backend/activities/cypher_queries.py`, using `collect(DISTINCT …)` and §6.6 relationship names.
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): activities search, create, detail, join and leave"`
 
 ### Task 13: Teams
 

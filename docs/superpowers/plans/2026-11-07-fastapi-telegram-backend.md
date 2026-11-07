@@ -796,7 +796,7 @@ async def test_join_leave_idempotent_and_requires_auth(...)
     - `position` is one of the four.
     - 409 if already a member, or if the number is taken in that team.
 
-- [ ] **Step 1: Write failing contract tests**, including:
+- [x] **Step 1: Write failing contract tests**, including:
 
 ```python
 @pytest.mark.parametrize("name", ["Beijing 炎龙", "Shuòguǒ 硕果 FC", "Añejo FC 7s"])   # Review Focus 3
@@ -812,10 +812,10 @@ async def test_create_requires_auth(...)
 async def test_search_arrays_have_no_duplicates(...)   # team with 2 categories, 4 colors, 3 members → each array has unique entries; search returns the team once
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_teams_api.py -v` → FAIL.
-- [ ] **Step 3: Implement.** Port the Cypher from `backend/teams/cypher_queries.py` and `services.py` with `DISTINCT`. `MediaService.upload_image("teams", …)` is called before the Neo4j write. If the write fails, call `delete_by_url`.
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): teams search, create with image, detail with members, join with position"`
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_teams_api.py -v` → FAIL.
+- [x] **Step 3: Implement.** Port the Cypher from `backend/teams/cypher_queries.py` and `services.py` with `DISTINCT`. `MediaService.upload_image("teams", …)` is called before the Neo4j write. If the write fails, call `delete_by_url`.
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): teams search, create with image, detail with members, join with position"`
 
 ### Task 14: Organizations
 

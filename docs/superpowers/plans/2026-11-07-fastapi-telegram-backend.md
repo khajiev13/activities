@@ -830,11 +830,11 @@ async def test_search_arrays_have_no_duplicates(...)   # team with 2 categories,
 - **`GET /api/organizations/list/`:** returns `[{pk, name}]`.
 - **`POST /api/organizations/`** (user): multipart. The fields are what `NewOrganizationDrawer.tsx` sends, plus an optional `image`. It writes `(USER)-[:CREATES]->(o)`, `LOCATED_AT`, geo. A duplicate name returns 409.
 
-- [ ] **Step 1: Write failing contract tests**, including `test_state_search_filters` (orgs in two states → only the requested state's are returned) and the counts.
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_organizations_api.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): organizations search, list and create"`
+- [x] **Step 1: Write failing contract tests**, including `test_state_search_filters` (orgs in two states → only the requested state's are returned) and the counts.
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_organizations_api.py -v` → FAIL.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): organizations search, list and create"`
 
 ### Task 15: Seed data
 

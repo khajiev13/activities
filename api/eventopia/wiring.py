@@ -15,6 +15,7 @@ from eventopia.services.category import CategoryService
 from eventopia.services.geo import GeoService
 from eventopia.services.location import LocationService
 from eventopia.services.media import MediaService
+from eventopia.services.organization import OrganizationService
 from eventopia.services.otp import OtpService
 from eventopia.services.session import SessionService
 from eventopia.services.team import TeamService
@@ -29,6 +30,7 @@ from eventopia.views.categories import CategoriesView
 from eventopia.views.geo import GeoView
 from eventopia.views.health import HealthView
 from eventopia.views.locations import LocationsView
+from eventopia.views.organizations import OrganizationsView
 from eventopia.views.teams import TeamsView
 from eventopia.views.users import UsersView
 
@@ -97,6 +99,7 @@ def build_container(
     location_service = LocationService(neo4j)
     activity_service = ActivityService(neo4j)
     team_service = TeamService(neo4j, media_service)
+    organization_service = OrganizationService(neo4j, media_service)
     return Container(
         views=[
             HealthView(neo4j, sqlite),
@@ -107,6 +110,7 @@ def build_container(
             LocationsView(location_service, auth_service),
             ActivitiesView(activity_service, auth_service),
             TeamsView(team_service, auth_service),
+            OrganizationsView(organization_service, auth_service),
         ],
         neo4j=neo4j,
         sqlite=sqlite,

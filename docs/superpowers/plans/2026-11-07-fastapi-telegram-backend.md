@@ -1014,14 +1014,14 @@ Run all commands in `frontend/`. Keep React 18, Vite 5 and Tailwind 3. Add devDe
   - **Keep** `frontend/dockerfiles/` only if used. Otherwise delete it too.
 - Modify: `README.md`, which describes the new architecture, the dev stack, seeding and the bot.
 
-- [ ] **Step 1: Run the full checks.**
+- [x] **Step 1: Run the full checks.**
   - `cd api && uv run pytest -m "integration or not integration" -q` → all pass.
   - `uv run ruff check .` → clean.
   - `cd ../frontend && yarn test && yarn build` → pass.
-- [ ] **Step 2: Do the end-to-end checks on the dev stack, from a clean start.** Start with `docker compose -f compose.dev.yml down -v && … up -d --build && … exec api python -m eventopia.seed`.
+- [x] **Step 2: Do the end-to-end checks on the dev stack, from a clean start.** Start with `docker compose -f compose.dev.yml down -v && … up -d --build && … exec api python -m eventopia.seed`.
   - Telegram sign-up with a real phone.
   - Website OTP login.
   - Every flow from Task 20 Step 4.
   - The bot restarts without replaying old updates: `docker compose restart bot`, then send `/start` once and get exactly one reply.
-- [ ] **Step 3: Confirm nothing secret is tracked.** `git grep -nE "AAH|sk-[0-9a-f]{8}|BEGIN PRIVATE KEY|gZuSG7" -- . ':!docs'` → no matches.
-- [ ] **Step 4: Commit.** `git commit -m "chore: remove Django backend and Azure leftovers; document the new stack"`
+- [x] **Step 3: Confirm nothing secret is tracked.** `git grep -nE "AAH|sk-[0-9a-f]{8}|BEGIN PRIVATE KEY|gZuSG7" -- . ':!docs'` → no matches.
+- [x] **Step 4: Commit.** `git commit -m "chore: remove Django backend and Azure leftovers; document the new stack"`

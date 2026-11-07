@@ -80,7 +80,7 @@ const NewOrganizationDrawer: React.FC<NewOrganizationDrawerProps> = ({
       formData.append('image', data.image[0]);
     }
     axiosInstance
-      .post('api/organizations/', formData, {
+      .post('/api/organizations/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -30,7 +30,7 @@ export default function UserNav() {
   const user_logout = async () => {
     try {
       const response = await axiosInstance.post(
-        'api/users/token/logout-blacklist/',
+        '/api/users/token/logout-blacklist/',
         {
           refresh_token: localStorage.getItem('refresh_token'),
         }

@@ -108,7 +108,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     });
 
     axiosInstance
-      .post('api/users/', data, {
+      .post('/api/users/', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -117,7 +117,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         console.log(response, 'Registration response');
         // User registration was successful, get the tokens
         axiosInstance
-          .post('api/users/token/get/', {
+          .post('/api/users/token/get/', {
             username: formData.username,
             password: formData.password,
           })

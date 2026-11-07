@@ -194,7 +194,7 @@ const NewTeamDrawer: React.FC<NewTeamDrawerProps> = ({ setProgressBar }) => {
     }
 
     axiosInstance
-      .post('api/teams/', formData, {
+      .post('/api/teams/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

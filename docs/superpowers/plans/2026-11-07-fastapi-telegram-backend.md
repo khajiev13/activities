@@ -922,16 +922,16 @@ Run all commands in `frontend/`. Keep React 18, Vite 5 and Tailwind 3. Add devDe
     - `logout()`
     - `isInTelegram(): boolean`, true when `window.Telegram?.WebApp?.initData` is non-empty
 
-- [ ] **Step 1: Write failing vitest tests.** Use a custom axios `adapter` as the fake transport.
+- [x] **Step 1: Write failing vitest tests.** Use a custom axios `adapter` as the fake transport.
   - Three parallel requests get 401 → exactly **one** refresh call → all three retried with the new token.
   - The refresh fails → the token is cleared, and the original error is rejected.
   - An envelope `{error:0,data:{x:1}}` → `response.data` equals `{x:1}`.
   - Every refresh request carries `X-Requested-With: eventopia`.
   - Nothing is written to `localStorage` (spy on `Storage.prototype.setItem`).
-- [ ] **Step 2: Run them and confirm they fail.** `yarn test` → FAIL.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run them and confirm they pass.** `yarn test` → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(web): API client with envelope unwrap, in-memory token and single-flight refresh"`
+- [x] **Step 2: Run them and confirm they fail.** `yarn test` → FAIL.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run them and confirm they pass.** `yarn test` → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(web): API client with envelope unwrap, in-memory token and single-flight refresh"`
 
 ### Task 18: Login, Telegram sign-up screen, auth context, route guard
 

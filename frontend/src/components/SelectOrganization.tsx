@@ -49,7 +49,7 @@ const SelectOrganization: React.FC<Props> = ({ onSelect }) => {
   useEffect(() => {
     setLoading(true);
     axiosInstance
-      .get('api/organizations/list/')
+      .get('/api/organizations/list/')
       .then((response) => {
         setOrganizations(response.data);
         setLoading(false);

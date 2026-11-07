@@ -14,7 +14,7 @@ export const ActivitiesDetail = () => {
   const { activity_pk } = useParams<{ activity_pk: string }>();
   useEffect(() => {
     axiosInstance
-      .get(`api/activities/${activity_pk}`)
+      .get(`/api/activities/${activity_pk}`)
       .then((response) => {
         // handle the response
         console.log(response.data);

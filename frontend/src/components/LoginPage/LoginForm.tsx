@@ -48,7 +48,7 @@ export function LoginForm() {
     try {
       event.preventDefault();
       setIsLoading(true);
-      const credentials = await axiosInstance.post('api/users/token/get/', {
+      const credentials = await axiosInstance.post('/api/users/token/get/', {
         username: formData.username,
         password: formData.password,
       });

@@ -42,7 +42,7 @@ const useFetchLocationData = () => {
 
   useEffect(() => {
     axiosInstance
-      .get('api/countries/list/')
+      .get('/api/countries/list/')
       .then((response) => {
         const data = response.data;
         console.log(data)

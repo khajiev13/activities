@@ -25,16 +25,12 @@ export default defineConfig(({ mode }) => {
     },
     base: '/',
     build: {
-      //add this property for react devtools
-      sourcemap: true,
+      sourcemap: false,
     },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
       },
-    },
-    define: {
-      'process.env': {},
     },
     optimizeDeps: {
       include: ['react', 'react-dom'],

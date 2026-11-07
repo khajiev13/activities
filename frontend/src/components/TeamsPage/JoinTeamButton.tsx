@@ -38,7 +38,7 @@ const JoinLeaveTeamButton = ({ team_name }: props) => {
   const JoinTeam = () => {
     setLoading(true);
     axiosInstance
-      .post(`api/teams/${team_name}/join/`, {
+      .post(`/api/teams/${team_name}/join/`, {
         team_name,
       })
       .then((response) => {

@@ -22,7 +22,7 @@ const TeamDetails = () => {
 
         const fetchTeam = async () => {
             try {
-                const response = await axiosInstance.get(`api/teams/${team_name}/`);
+                const response = await axiosInstance.get(`/api/teams/${team_name}/`);
                 // Validate and parse the response
                 const parsedData = TeamDetailsSchema.parse(response.data);
                 setTeam(parsedData);

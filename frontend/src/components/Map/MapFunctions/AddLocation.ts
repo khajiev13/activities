@@ -38,9 +38,7 @@ async function fetchLocationDetails(
 
     // Return the values, encapsulating them in an object of lore
     return { country, state, city, country_code, sunrise, sunset, timezone };
-  } catch (error) {
-    // Alas! If the quest encounters a storm (error), log the misfortune
-    console.error('Yarr, there be errors in the sea:', error);
+  } catch {
     return null; // Return a beacon of null, signaling an incomplete quest
   }
 }
@@ -72,8 +70,8 @@ export async function AddLocation(name: string, lng: number, lat: number) {
         location_pk: null,
       };
     }
-  } catch (error) {
-    console.error('Alas! An error did occur:', error);
+  } catch {
+
     return 'An error occurred while fetching location details.';
   }
 }

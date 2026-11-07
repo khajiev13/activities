@@ -8,21 +8,19 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
-import Link from 'next/link';
-import Image from 'next/image';
 import menuSvg from '@/assets/svgs/menu.svg';
 
 const MobileNavbar = () => {
-  const navigate = useNavigate();
-  const { isLoggedIn } = useContext(AuthContext);
+  const { status } = useContext(AuthContext);
+  const isLoggedIn = status === 'authenticated';
   return (
     <div className="lg:hidden">
       <Sheet key="left">
         <SheetTrigger asChild>
           <Button className="lg:hidden p-0" variant="outline">
-            <Image
+            <img
               className="w-7 h-7 red p-0"
               src={menuSvg}
               alt="Menu icon"
@@ -52,41 +50,37 @@ const MobileNavbar = () => {
                 </div>
               </NavigationMenuItem>
 
-              <NavigationMenuItem onClick={() => navigate('/activities')}>
-                <Link href="activities/" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link to="/activities" className={navigationMenuTriggerStyle()}>
                     Activities
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink asChild>
+                  <Link to="/" className={navigationMenuTriggerStyle()}>
                     Home
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
               {isLoggedIn ? (
                 <NavigationMenuItem></NavigationMenuItem>
               ) : (
                 <>
                   <NavigationMenuItem>
-                    <Link href="/register" legacyBehavior passHref>
-                      <NavigationMenuLink
-                        className={navigationMenuTriggerStyle()}
-                      >
+                    <NavigationMenuLink asChild>
+                      <Link to="/register" className={navigationMenuTriggerStyle()}>
                         Signup
-                      </NavigationMenuLink>
-                    </Link>
+                      </Link>
+                    </NavigationMenuLink>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <Link href="/login" legacyBehavior passHref>
-                      <NavigationMenuLink
-                        className={navigationMenuTriggerStyle()}
-                      >
+                    <NavigationMenuLink asChild>
+                      <Link to="/login" className={navigationMenuTriggerStyle()}>
                         Login
-                      </NavigationMenuLink>
-                    </Link>
+                      </Link>
+                    </NavigationMenuLink>
                   </NavigationMenuItem>
                 </>
               )}

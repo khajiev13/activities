@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import { Highlight } from '../ui/hero-highlight';
 import { Button } from '../ui/button';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 export function LeftHeader() {
   return (
     <div className="flex flex-col items-center justify-center h-[40rem] ">
@@ -30,10 +30,10 @@ export function LeftHeader() {
       </motion.h1>
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4 mt-10">
         <Button>
-          <Link href={'activities'}>Find activities</Link>
+          <Link to='/activities'>Find activities</Link>
         </Button>
         <Button variant={'outline'}>
-          <Link href={'teams'}>Find teams</Link>
+          <Link to='/teams'>Find teams</Link>
         </Button>
       </div>
     </div>

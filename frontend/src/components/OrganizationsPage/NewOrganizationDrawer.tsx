@@ -86,14 +86,12 @@ const NewOrganizationDrawer: React.FC<NewOrganizationDrawerProps> = ({
         },
       })
       .then((response) => {
-        console.log(response);
         toast('Success!', {
           description: 'Organization has been created successfully!',
         });
         navigate(`/organizations/${response.data.pk}`);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
         toast('Error', {
           description:
             'Something went wrong while creating an organization. You cannot have 2 organizations with the same name.',

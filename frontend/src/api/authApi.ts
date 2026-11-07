@@ -31,10 +31,18 @@ export async function requestOtp(phone: string): Promise<{ retry_after_seconds: 
   return response.data;
 }
 
-export async function verifyOtp(phone: string, code: string): Promise<LoginResult> {
-  const response = await client.post<LoginResult>('/api/auth/otp/verify', { phone, code });
-  setAccessToken(response.data.access_token);
-  return response.data;
+const verifyFlights = new Set<Promise<LoginResult>>();
+
+export function verifyOtp(phone: string, code: string): Promise<LoginResult> {
+  if (logoutFlight) return Promise.reject(new Error('Logout is in progress'));
+  const version = sessionVersion;
+  const flight = (async () => {
+    const response = await client.post<LoginResult>('/api/auth/otp/verify', { phone, code });
+    if (version === sessionVersion && !logoutFlight) setAccessToken(response.data.access_token);
+    return response.data;
+  })().finally(() => { verifyFlights.delete(flight); });
+  verifyFlights.add(flight);
+  return flight;
 }
 
 let sessionVersion = 0;
@@ -83,12 +91,14 @@ export function logout(): Promise<void> {
   sessionVersion++;
   setAccessToken(null);
   const pendingRefresh = refreshFlight;
+  const pendingVerifications = [...verifyFlights];
   const telegram = isInTelegram();
   logoutFlight = (async () => {
     try {
       if (!telegram) {
-        // Let any refresh cookie rotation finish before revoking that session.
+        // Let cookie-issuing requests finish before revoking the browser session.
         if (pendingRefresh) await pendingRefresh;
+        await Promise.allSettled(pendingVerifications);
         await client.post('/api/auth/logout', undefined, {
           headers: { 'X-Requested-With': 'eventopia' },
         });

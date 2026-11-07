@@ -17,12 +17,11 @@ export const ActivitiesDetail = () => {
       .get(`/api/activities/${activity_pk}`)
       .then((response) => {
         // handle the response
-        console.log(response.data);
+
         setActivity(response.data);
       })
-      .catch((error) => {
-        // handle the error
-        console.error(error);
+      .catch(() => {
+        // Keep failed requests out of the console.
       });
   }, []);
 

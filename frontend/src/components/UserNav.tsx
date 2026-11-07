@@ -11,9 +11,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useContext } from 'react';
+import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
-import axiosInstance from '@/axios';
 import {
   Bookmark,
   CircleUserRound,
@@ -23,30 +23,22 @@ import {
 } from 'lucide-react';
 
 export default function UserNav() {
-  const { firstName, lastName, username, imageUrl } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
+  const firstName = user?.first_name;
+  const lastName = user?.last_name;
+  const username = user?.username;
+  const imageUrl = user?.image_url;
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
-
   const user_logout = async () => {
     try {
-      const response = await axiosInstance.post(
-        '/api/users/token/logout-blacklist/',
-        {
-          refresh_token: localStorage.getItem('refresh_token'),
-        }
-      );
-      console.log(response);
-      localStorage.clear();
-      axiosInstance.defaults.headers['Authorization'] = null;
-      // Delete the values inside the Context
-      logout();
-      // Navigate the user to login page
+      await logout();
       navigate('/login');
-    } catch (err) {
-      console.log(err);
-      // Delete the values inside the Context
-      logout();
-      navigate('/login');
+    } catch {
+      toast.error('Unable to end the server session', {
+        description: 'You are signed out on this page, but the server session may still be active. Retry before leaving this device.',
+        duration: Infinity,
+        action: { label: 'Retry logout', onClick: () => { void user_logout(); } },
+      });
     }
   };
 
@@ -58,7 +50,7 @@ export default function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+        <Button aria-label="User menu" variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage
               className=""

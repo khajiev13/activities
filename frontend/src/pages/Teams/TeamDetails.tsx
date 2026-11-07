@@ -1,3 +1,4 @@
+import { RequireAuth } from '@/auth/RequireAuth';
 import axiosInstance from '@/axios';
 import JoinLeaveTeamButton from '@/components/TeamsPage/JoinTeamButton';
 import { useEffect, useState } from 'react';
@@ -27,8 +28,7 @@ const TeamDetails = () => {
                 const parsedData = TeamDetailsSchema.parse(response.data);
                 setTeam(parsedData);
                 setError(null);
-            } catch (err) {
-                console.error("Error fetching or validating team:", err);
+            } catch {
                 setError('Failed to load team data');
                 setTeam(null);
             }
@@ -51,7 +51,7 @@ const TeamDetails = () => {
 
     return (
         <>
-            <JoinLeaveTeamButton team_name={team_name} />
+            <RequireAuth action="Join"><JoinLeaveTeamButton team_name={team_name} /></RequireAuth>
             <TeamCard
                 setUniformColors={(name: string, color: string) => {
                     console.log(`Received name: ${name}, color: ${color}`);

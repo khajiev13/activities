@@ -946,16 +946,16 @@ Run all commands in `frontend/`. Keep React 18, Vite 5 and Tailwind 3. Add devDe
   - **`UserNav.tsx`:** logout via `authApi.logout()`, and no `localStorage.clear()`.
   - **`App.tsx`:** wrap create and join actions and the routes that need a user in `RequireAuth`. Remove the leftover `localStorage` reads of profile and tokens everywhere (`grep -rn localStorage src`); only the theme key stays.
 
-- [ ] **Step 1: Write a failing vitest test** for the display-formatting helper `formatUzPhone("+998901234567") === "+998 90 123 45 67"`.
-- [ ] **Step 2: Run it and confirm it fails.** `yarn test` → FAIL.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run tests and check by hand.**
+- [x] **Step 1: Write a failing vitest test** for the display-formatting helper `formatUzPhone("+998901234567") === "+998 90 123 45 67"`.
+- [x] **Step 2: Run it and confirm it fails.** `yarn test` → FAIL.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run tests and check by hand.**
   - `yarn test` → PASS.
   - With the Task 16 stack and the real bot: log in with your phone, receive the code in Telegram, enter it, and land logged in.
   - Reload the page: you stay logged in (refresh cookie).
   - Log out: a reload shows you as anonymous.
   - DevTools → Application → Local Storage contains no tokens.
-- [ ] **Step 5: Commit.** `git commit -m "feat(web): Telegram OTP login, Telegram sign-up screen, cookie-based session restore"`
+- [x] **Step 5: Commit.** `git commit -m "feat(web): Telegram OTP login, Telegram sign-up screen, cookie-based session restore"`
 
 ### Task 19: Make the build pass
 

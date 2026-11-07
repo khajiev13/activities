@@ -54,8 +54,7 @@ const SelectOrganization: React.FC<Props> = ({ onSelect }) => {
         setOrganizations(response.data);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error('There was an error fetching the organizations:', error);
+      .catch(() => {
       });
   }, []);
 

@@ -48,8 +48,7 @@ const useFetchLocationData = () => {
         console.log(data)
         setCountries(data);
       })
-      .catch((error) => {
-        console.error('Error fetching location data:', error);
+      .catch(() => {
       });
   }, []);
 
@@ -91,8 +90,6 @@ const SearchNavbar = ({
           },
         })
         .then((response) => {
-          console.log(response.data);
-
           if (setTeams) {
             setTeams(response.data);
           } else if (setActivities) {
@@ -120,8 +117,6 @@ const SearchNavbar = ({
           },
         })
         .then((response) => {
-          console.log(response.data);
-
           if (setTeams) {
             setTeams(response.data);
           } else if (setActivities) {
@@ -150,8 +145,6 @@ const SearchNavbar = ({
           },
         })
         .then((response) => {
-          console.log(response.data);
-
           if (setTeams) {
             setTeams(response.data);
           } else if (setActivities) {

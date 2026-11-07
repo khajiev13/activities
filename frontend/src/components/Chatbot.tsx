@@ -27,8 +27,7 @@ export function Chatbot() {
         setReply(response.data.reply);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
         setLoading(false);
       });
   };

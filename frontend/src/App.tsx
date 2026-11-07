@@ -4,7 +4,7 @@ import Login from './pages/Login/Login';
 import HomePage from './pages/HomePage/HomePage';
 import Register from '../src/pages/Register/Register';
 import Navbar from './components/Navbar';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './auth/AuthContext';
 import Activities from './pages/Activities/Activities';
 import Teams from './pages/Teams/Teams';
 import CornerButtons from './components/CornerButtons';

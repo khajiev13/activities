@@ -31,8 +31,7 @@ const useFetchCategories = (
           setFetchedCategories(newCategories);
           setLoading(false);
         })
-        .catch((error) => {
-          console.error('Error fetching categories:', error);
+        .catch(() => {
         });
     }
   }, [isIndoor, isOutdoor, isOnline]);

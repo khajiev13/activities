@@ -386,3 +386,24 @@ describe('logout and Telegram transport regressions', () => {
     expect(requests[0].url).toBe('http://synthetic.invalid/api/auth/telegram/webapp');
   });
 });
+
+it('waits for a delayed OTP cookie before logout and never installs its token', async () => {
+  let finishVerify!: (value: ReturnType<typeof success>) => void;
+  const requests: string[] = [];
+  transport(async (config) => {
+    requests.push(config.url!);
+    if (config.url === '/api/auth/otp/verify') {
+      return new Promise((resolve) => { finishVerify = resolve; });
+    }
+    return success(config, {});
+  });
+  const pending = auth.verifyOtp('+998901234567', '012345');
+  while (!finishVerify) await Promise.resolve();
+  const loggingOut = auth.logout();
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  expect(requests).toEqual(['/api/auth/otp/verify']);
+  finishVerify(success({ headers: new AxiosHeaders() } as InternalAxiosRequestConfig, { access_token: 'late-otp', user }));
+  await Promise.all([pending, loggingOut]);
+  expect(requests).toEqual(['/api/auth/otp/verify', '/api/auth/logout']);
+  expect(tokens.getAccessToken()).toBeNull();
+});

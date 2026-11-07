@@ -180,9 +180,6 @@ const NewTeamDrawer: React.FC<NewTeamDrawerProps> = ({ setProgressBar }) => {
           description: "Please choose the kit colors for your team's kit",
           style: { borderColor: 'red' },
         });
-      } else {
-        // Handle any other errors
-        console.error(error);
       }
     }
 
@@ -200,14 +197,12 @@ const NewTeamDrawer: React.FC<NewTeamDrawerProps> = ({ setProgressBar }) => {
         },
       })
       .then((response) => {
-        console.log(response);
         toast('Success!', {
           description: 'Team has been created successfully!',
         });
         navigate(`/teams/${response.data.name}`);
       })
       .catch((error) => {
-        console.error(error);
         if (error.response && error.response.status === 400) {
           toast('Error', {
             description: error.response.data.message,

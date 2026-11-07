@@ -40,6 +40,7 @@ import { ConfirmationAlertModal } from '../ConfirmationAlertModel';
 import axiosInstance from '@/axios';
 import { useContext } from 'react';
 import { AuthContext } from '@/context/AuthContext';
+import { RequireAuth } from '@/auth/RequireAuth';
 import { toast } from 'sonner';
 
 type ExtendedActivityCardPropsType = ActivityCardPropsType & {
@@ -49,10 +50,14 @@ type ExtendedActivityCardPropsType = ActivityCardPropsType & {
 export const ListActivityCard: React.FC<ExtendedActivityCardPropsType> = (
   props
 ) => {
-  const { username } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+  const username = user?.username;
   const [justJoined, setJustJoined] = React.useState(
     props.people_joined.some((person) => person.username === username)
   );
+  React.useEffect(() => {
+    setJustJoined(props.people_joined.some((person) => person.username === username));
+  }, [username, props.people_joined]);
   const shortDescription =
     props.description.length > 100
       ? `${props.description.substring(0, 97)}...`
@@ -136,6 +141,7 @@ export const ListActivityCard: React.FC<ExtendedActivityCardPropsType> = (
         <div className="flex items-start p-0">
           <div>
             {/* Other components */}
+            <RequireAuth action="Join Now">
             {justJoined ? (
               <ConfirmationAlertModal
                 title="Are you sure you want to quit?"
@@ -163,6 +169,7 @@ export const ListActivityCard: React.FC<ExtendedActivityCardPropsType> = (
               ></ConfirmationAlertModal>
             )}
 
+            </RequireAuth>
             {/* Other components */}
           </div>
 

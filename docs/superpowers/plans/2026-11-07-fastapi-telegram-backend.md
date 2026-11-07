@@ -619,7 +619,7 @@ async def test_otp_request_same_body_for_unknown_and_known(client, registered): 
     - Share button: `{"keyboard": [[{"text": <label>, "request_contact": True}]], "one_time_keyboard": True, "resize_keyboard": True}`
     - Remove keyboard: `{"remove_keyboard": True}`
 
-- [ ] **Step 1: Write failing tests** (updates are plain dicts shaped like the Telegram Bot API)
+- [x] **Step 1: Write failing tests** (updates are plain dicts shaped like the Telegram Bot API)
 
 ```python
 async def test_start_unregistered_shows_share_button(dispatcher, fake_telegram):
@@ -653,16 +653,16 @@ async def test_poller_survives_network_errors(poller, fake_telegram, sleeps):   
 async def test_handler_exception_does_not_stop_batch(poller, ...):  # a bad update is logged, the next one still handled, offset advances past both
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_bot.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_bot.py -v` → FAIL.
+- [x] **Step 3: Implement.**
   - `allowed_updates=["message", "my_chat_member"]`, `timeout=poll_timeout_seconds`.
   - Backoff is 1, 2, 4, … capped at 30 s, and resets after a success.
   - **Main loop of `bot_main.py`:** `load_config` → `build_bot_container` → `BotPoller.run_forever()`, with graceful shutdown on SIGTERM.
   - **On startup** it calls `deleteWebhook` if one is set. Add `delete_webhook()` to the gateway ABC; the fake records the call.
-- [ ] **Step 4: Run tests, then a live check.**
+- [x] **Step 4: Run tests, then a live check.**
   - `uv run pytest tests/test_bot.py -v` → PASS.
   - Manual check: `uv run python bot_main.py` with the real token, then send `/start` to @eventopiarobot from a phone. The share button appears, and sharing the contact gives the confirmation.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): Telegram bot poller with contact-based sign-up"`
+- [x] **Step 5: Commit.** `git commit -m "feat(api): Telegram bot poller with contact-based sign-up"`
 
 ### Task 10: Media storage
 

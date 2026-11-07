@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from eventopia.bot.dispatcher import BotDispatcher
+from eventopia.bot.poller import BotPoller
 from eventopia.config import AppConfig
 from eventopia.context.neo4j import Neo4jConnector
 from eventopia.context.request_id import configure_logging
@@ -33,6 +35,8 @@ class Container:
     auth_service: AuthService | None = None
     telegram: TelegramGateway | None = None
     _owns_telegram: bool = False
+    dispatcher: BotDispatcher | None = None
+    poller: BotPoller | None = None
 
     async def close(self) -> None:
         """Release owned resources when the application shuts down."""
@@ -84,4 +88,24 @@ def build_container(
         auth_service=auth_service,
         telegram=gateway,
         _owns_telegram=telegram is None,
+    )
+
+
+def build_bot_container(config: AppConfig) -> Container:
+    configure_logging(config["app"]["log_level"])
+    neo4j = Neo4jConnector(config["neo4j"])
+    sqlite = SqliteConnector(config["sqlite"])
+    account_service = AccountService(neo4j, sqlite, config["auth"])
+    gateway = HttpTelegramGateway(config["telegram"])
+    dispatcher = BotDispatcher(account_service, gateway, config["app"])
+    poller = BotPoller(dispatcher, gateway, sqlite, config["telegram"])
+    return Container(
+        views=[],
+        neo4j=neo4j,
+        sqlite=sqlite,
+        account_service=account_service,
+        telegram=gateway,
+        _owns_telegram=True,
+        dispatcher=dispatcher,
+        poller=poller,
     )

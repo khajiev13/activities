@@ -32,5 +32,9 @@ class TelegramGateway(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    async def delete_webhook(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def close(self) -> None:
         raise NotImplementedError

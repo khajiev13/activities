@@ -84,6 +84,11 @@ class HttpTelegramGateway(TelegramGateway):
             raise TelegramApiError("Invalid Telegram updates response")
         return result
 
+    async def delete_webhook(self) -> None:
+        result = await self._request("deleteWebhook", {})
+        if result is not True:
+            raise TelegramApiError("Invalid Telegram webhook response")
+
     async def _request(
         self,
         method: str,

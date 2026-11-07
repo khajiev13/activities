@@ -30,6 +30,9 @@ def configure_logging(level: str) -> None:
     logging.basicConfig(level=level, format=_LOG_FORMAT)
     root = logging.getLogger()
     root.setLevel(level)
+    # Driver DEBUG traces include bound SQL parameters, bypassing SQLAlchemy
+    # hide_parameters and exposing phones, codes or tokens. Keep them disabled.
+    logging.getLogger("aiosqlite").setLevel(logging.WARNING)
     for handler in root.handlers:
         handler.setFormatter(logging.Formatter(_LOG_FORMAT))
         if not any(isinstance(item, RequestIdFilter) for item in handler.filters):

@@ -19,6 +19,7 @@ class SentMessage:
 
 class FakeTelegramGateway(TelegramGateway):
     def __init__(self) -> None:
+        self.webhook_deleted = False
         self.sent: list[SentMessage] = []
         self.forbidden_chat_ids: set[int] = set()
         self.updates: list[dict] = []
@@ -60,6 +61,9 @@ class FakeTelegramGateway(TelegramGateway):
                 and any(kind in update for kind in allowed_updates)
             ]
         )
+
+    async def delete_webhook(self) -> None:
+        self.webhook_deleted = True
 
     async def close(self) -> None:
         pass

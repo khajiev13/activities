@@ -10,7 +10,7 @@ import ActivityDetail from '@/components/ActivitiesPage/ActivityDetail';
 
 
 export const ActivitiesDetail = () => {
-  const [activity, setActivity] = useState<ActivityDetailsType>();
+  const [, setActivity] = useState<ActivityDetailsType>();
   const { activity_pk } = useParams<{ activity_pk: string }>();
   useEffect(() => {
     axiosInstance

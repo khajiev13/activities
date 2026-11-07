@@ -971,10 +971,10 @@ Run all commands in `frontend/`. Keep React 18, Vite 5 and Tailwind 3. Add devDe
 - `BaseMap.tsx`: use `import.meta.env.VITE_MAPTILER_KEY`. Add `frontend/.env.example` with `VITE_MAPTILER_KEY=` and `VITE_API_BASE_URL=/`.
 - `ActivitiesDetail.tsx:13`: fix the unused-variable error.
 
-- [ ] **Step 1: Confirm the build fails today.** `yarn build` → FAIL (TS errors).
-- [ ] **Step 2: Make the changes.**
-- [ ] **Step 3: Confirm it passes.** `yarn build` → exit 0 with 0 TypeScript errors. `ls dist/assets/*.map` → no files.
-- [ ] **Step 4: Commit.** `git commit -m "fix(web): build passes (React 18 types, no Next.js imports, env MapTiler key, no public sourcemaps)"`
+- [x] **Step 1: Confirm the build fails today.** `yarn build` → FAIL (TS errors).
+- [x] **Step 2: Make the changes.**
+- [x] **Step 3: Confirm it passes.** `yarn build` → exit 0 with 0 TypeScript errors. `ls dist/assets/*.map` → no files.
+- [x] **Step 4: Commit.** `git commit -m "fix(web): build passes (React 18 types, no Next.js imports, env MapTiler key, no public sourcemaps)"`
 
 ### Task 20: Core flows
 

@@ -16,7 +16,7 @@ const BaseMap: React.FC<BaseMapProps> = ({ onMapLoad }) => {
   const map = useRef<maptilersdk.Map | null>(null);
   const beijing = { lat: 39.9042, lng: 116.4074 };
   const [zoom] = useState(14);
-  maptilersdk.config.apiKey = 'gZuSG7vpf1He1WQkjERt';
+  maptilersdk.config.apiKey = import.meta.env.VITE_MAPTILER_KEY;
   console.log(theme);
 
   useEffect(() => {

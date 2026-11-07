@@ -858,7 +858,7 @@ async def test_search_arrays_have_no_duplicates(...)   # team with 2 categories,
   - **The China → Beijing chain** (COUNTRY China ← STATE Beijing ← CITY Beijing).
   - Every write is a `MERGE`, so a second run changes nothing.
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 ```python
 async def test_seed_counts_and_idempotency(neo4j_connector):
@@ -871,10 +871,10 @@ async def test_usernames_unique_and_same_person_merged(neo4j_connector)
 async def test_positions_on_membership(neo4j_connector):     # every IS_MEMBER_OF.position in the 4 values
 ```
 
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_seed.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): idempotent seed of Beijing league data without personal fields"`
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_seed.py -v` → FAIL.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): idempotent seed of Beijing league data without personal fields"`
 
 ### Task 16: Full dev stack
 

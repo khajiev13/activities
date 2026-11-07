@@ -49,29 +49,51 @@
   - Provides a simple and intuitive API for creating, retrieving, updating, and deleting nodes and relationships.
   - Supports Neo4j’s powerful graph querying language, Cypher, allowing you to perform complex queries and operations on your graph data.
 
-# Running the docker container
+# Run locally
 
-To run the docker container, you need to have Docker installed on your machine. If you don't have Docker installed, you can download it from the official website: https://www.docker.com/products/docker-desktop
+Use Docker Compose v2. The local stack runs Neo4j, Silo, the FastAPI API,
+the Telegram bot and Vite at [localhost:5173](http://localhost:5173).
 
-Once you have Docker installed, you can run the following command to build and run the container where docker-compose.yml is located:
+1. Copy `.env.dev.example` to `.env.dev` and `api/config.example.yaml` to
+   `api/config-dev.yaml`. Run `chmod 600 .env.dev api/config-dev.yaml`.
+2. Fill the private files with your existing credentials. Set `APP_UID` in
+   `.env.dev` to `id -u`, so the non-root API and bot can read the private YAML.
+   Match the Neo4j password and S3 app credentials across both files. Keep
+   `bolt://neo4j:7687`, `http://silo:9000`, `/data/auth/eventopia.sqlite3`,
+   `app.public_base_url: http://localhost:5173` and `auth.cookie_secure: false`
+   in the container YAML. Set the existing Telegram bot token, JWT secret and
+   OTP pepper there; never commit these private files.
+3. Stop any host bot process for the same token before starting Compose.
+   Exactly one poller may run. If moving an existing signup database into
+   `auth-data`, first stop its writers, take a consistent SQLite backup,
+   inspect the target volume, and preserve that backup before starting API/bot.
+
+Run from the repository root. Use the existing `eventopia-task2` project name
+to retain the development Neo4j/Silo volumes:
 
 ```bash
-docker-compose up --build
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml up -d --build
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml exec api python -m eventopia.seed
+curl -fsS http://localhost:5173/api/health/ready
+curl -fsS http://localhost:5173/api/teams/search/Rockets/
 ```
 
-This command will build the Docker container and run it in the foreground. If you want to run the container in the background, you can add the `-d` flag:
+The API entrypoint runs SQLite migrations and Neo4j schema constraints before
+starting the server. The seed is safe to rerun and reports `teams=48`.
+Dependencies use `uv sync --frozen` and `yarn install --frozen-lockfile`.
+Linux Python dependencies live in `/opt/venv`, and Linux Node dependencies in
+`web-node-modules`; host `.venv` and `node_modules` stay isolated. API and bot
+share the persistent `auth-data` SQLite volume.
+
+Readiness should return `error: 0` and `data: {neo4j: true, sqlite: true}`;
+Rockets search should include both Beijing Rockets teams. This verifies the
+Vite API proxy. Frontend auth/client updates follow in the next tasks.
+
+To stop services while keeping their data:
 
 ```bash
-docker-compose up --build -d
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml stop
 ```
-
-To stop the container, you can run the following command:
-
-```bash
-docker-compose down
-```
-
-
 
 # Contributing
 

@@ -58,6 +58,68 @@ services:
         mcli admin policy attach local readwrite --user "$$APP_KEY" >/dev/null
     restart: "no"
 
+  api:
+    build:
+      context: ./api
+      args:
+        APP_UID: ${APP_UID:-1000}
+    image: eventopia-api:dev
+    environment:
+      EVENTOPIA_CONFIG: config-dev.yaml
+    volumes:
+      - ./api:/app
+      - auth-data:/data/auth
+    ports:
+      - "127.0.0.1:8000:8000"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      silo-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health/ready', timeout=4)"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+  bot:
+    image: eventopia-api:dev
+    environment:
+      EVENTOPIA_CONFIG: config-dev.yaml
+    volumes:
+      - ./api:/app
+      - auth-data:/data/auth
+    command: python bot_main.py
+    depends_on:
+      api:
+        condition: service_healthy
+
+  web:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - web-node-modules:/app/node_modules
+    ports:
+      - "127.0.0.1:5173:5173"
+    environment:
+      VITE_PROXY_API: http://api:8000
+      VITE_PROXY_MEDIA: http://silo:9000
+    command: sh -c "yarn install --frozen-lockfile && yarn dev --host"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:5173/api/health/ready').then(r => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
 volumes:
   neo4j-data:
   silo-data:
+  auth-data:
+  web-node-modules:

@@ -886,10 +886,10 @@ async def test_positions_on_membership(neo4j_connector):     # every IS_MEMBER_O
   - **`web`:** `node:22-alpine`, `yarn install --frozen-lockfile && yarn dev --host`, port 5173, env `VITE_PROXY_API=http://api:8000`, `VITE_PROXY_MEDIA=http://silo:9000`.
 - Also: `api/config-dev.yaml` (git-ignored; container hostnames), `README.md` "Run locally" section (replace the Docker section)
 
-- [ ] **Step 1: Bring the stack up.** Run `docker compose -f compose.dev.yml up -d --build`, then `docker compose -f compose.dev.yml exec api python -m eventopia.seed`.
+- [x] **Step 1: Bring the stack up.** Run `docker compose -f compose.dev.yml up -d --build`, then `docker compose -f compose.dev.yml exec api python -m eventopia.seed`.
   - Expected: all services healthy, and the seed prints `teams=48`.
-- [ ] **Step 2: Smoke check.** `curl -s localhost:5173/api/health/ready` → `{"requestId":…,"error":0,"data":{"neo4j":true,"sqlite":true}}`. `curl -s "localhost:5173/api/teams/search/Rockets/"` lists "Beijing Rockets" and "Beijing Rockets 7s".
-- [ ] **Step 3: Commit.** `git commit -m "chore: full dev stack in compose (api, bot, web, neo4j, silo)"`
+- [x] **Step 2: Smoke check.** `curl -s localhost:5173/api/health/ready` → `{"requestId":…,"error":0,"data":{"neo4j":true,"sqlite":true}}`. `curl -s "localhost:5173/api/teams/search/Rockets/"` lists "Beijing Rockets" and "Beijing Rockets 7s".
+- [x] **Step 3: Commit.** `git commit -m "chore: full dev stack in compose (api, bot, web, neo4j, silo)"`
 
 ---
 

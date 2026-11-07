@@ -211,3 +211,52 @@ async def test_existing_log_handler_emits_request_id(client, app):
     finally:
         root.removeHandler(handler)
         handler.close()
+
+
+async def test_lifespan_finishes_delivery_before_closing_its_dependencies():
+    events = []
+    entered, release = asyncio.Event(), asyncio.Event()
+
+    class Delivery:
+        async def close(self):
+            events.append("delivery-start")
+            entered.set()
+            await release.wait()
+            events.append("delivery-finished")
+
+    class Resource:
+        async def close(self):
+            assert events[-1] == "delivery-finished"
+            events.append("resource")
+
+    app = create_app(Container(views=[], otp_service=Delivery(), sqlite=Resource()))
+
+    async def run_lifespan():
+        async with app.router.lifespan_context(app):
+            pass
+
+    shutdown = asyncio.create_task(run_lifespan())
+    try:
+        await asyncio.wait_for(entered.wait(), timeout=2)
+        assert events == ["delivery-start"]
+    finally:
+        release.set()
+        await shutdown
+    assert events == ["delivery-start", "delivery-finished", "resource"]
+
+
+async def test_other_resources_close_even_if_delivery_shutdown_fails():
+    closed = []
+
+    class Delivery:
+        async def close(self):
+            raise RuntimeError("synthetic shutdown failure")
+
+    class Resource:
+        async def close(self):
+            closed.append(True)
+
+    container = Container(views=[], otp_service=Delivery(), sqlite=Resource())
+    with pytest.raises(RuntimeError):
+        await container.close()
+    assert closed == [True]

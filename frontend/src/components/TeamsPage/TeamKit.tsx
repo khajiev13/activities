@@ -72,13 +72,9 @@ const TeamKit = ({
     const filteredData = itemsWithoutSelected.filter(
       (item) => item.color !== ''
     );
-    if (filteredData.length === 4) {
-      filteredData.forEach((item) => {
-        if (setUniformColors) {
-          setUniformColors(item.name, item.color);
-        }
-      });
-    }
+    filteredData.forEach((item) => {
+      setUniformColors?.(item.name, item.color);
+    });
   }, [clothes]);
 
   return (

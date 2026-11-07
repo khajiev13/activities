@@ -87,7 +87,7 @@ export const displayTeams = (
     },
   });
   // inspect a cluster on click
-  map.on('click', 'teams_clusters', function (e) {
+  const onClusterClick = (e: maptilersdk.MapMouseEvent) => {
     var features = map.queryRenderedFeatures(e.point, {
       layers: ['teams_clusters'],
     });
@@ -108,7 +108,8 @@ export const displayTeams = (
         });
       }
     });
-  });
+  };
+  map.on('click', 'teams_clusters', onClusterClick);
 
   // Add a new layer for the team markers
   map.addLayer({
@@ -123,7 +124,7 @@ export const displayTeams = (
   });
 
   // Setup click handler to open a popup or details pane
-  map.on('click', 'teams', function (e) {
+  const onMarkerClick = (e: maptilersdk.MapMouseEvent) => {
     const features = map.queryRenderedFeatures(e.point, { layers: ['teams'] });
     if (!features.length) return;
 
@@ -134,9 +135,12 @@ export const displayTeams = (
       setSelectedTeam(team);
       setOpen(true);
     }
-  });
+  };
+  map.on('click', 'teams', onMarkerClick);
 
   return () => {
+    map.off('click', 'teams_clusters', onClusterClick);
+    map.off('click', 'teams', onMarkerClick);
     if (map.getLayer('teams')) map.removeLayer('teams');
     if (map.getLayer('teams_clusters')) map.removeLayer('teams_clusters');
     if (map.getLayer('teams_cluster_count'))

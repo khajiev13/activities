@@ -53,7 +53,8 @@ Fill these private files before starting the stack:
    - `s3.endpoint_url`: `http://silo:9000`
    - `sqlite.path`: `/data/auth/eventopia.sqlite3`
    - `app.public_base_url`: `http://localhost:5173`
-   - `app.cors_origins`: include `http://localhost:5173`
+   - `app.cors_origins`: keep `[]`; the app uses the same-origin Vite proxy.
+     This setting does not enable cross-origin API access (no CORS middleware).
    - `auth.cookie_secure`: `false` for local HTTP
 3. Set the Telegram bot token and bot username, plus independently generated JWT
    secret and OTP pepper, in that YAML. Keep the example's auth limits and other

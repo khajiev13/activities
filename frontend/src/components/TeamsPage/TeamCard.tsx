@@ -85,13 +85,13 @@ const TeamCard: React.FC<TeamCardProps> = ({
               <ResizablePanel defaultSize={75} onClick={() => { if (!setTeamName) navigate(`../teams/${encodeURIComponent(name)}`); }}>
                 <div className="flex h-full items-center justify-center p-6">
                   <div>
-                    <img
+                    {(imageUrl || image_url) && <img
                       src={imageUrl ? imageUrl : image_url ?? undefined}
                       alt="Team picture"
                       height="100"
                       width="100"
                       className="object-contain"
-                    />
+                    />}
                     <h3 className="text-base sm:text-sm text-black mt-4 mb-2 dark:text-neutral-200">
                       {name}
                     </h3>

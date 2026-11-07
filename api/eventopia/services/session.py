@@ -157,7 +157,7 @@ class SessionService:
         async with self._sqlite.session(write=True) as s:
             record = await sessions.select_session_by_hash(s, _hash(raw))
             if record is not None:
-                await sessions.logout_session(s, record.id, self._clock())
+                await sessions.revoke_family(s, record.family_id, self._clock())
 
     def _new_refresh(
         self, uid: str, family_id: str, user_agent: str | None, ip: str | None

@@ -103,7 +103,7 @@ export const displayActivities = (
     },
   });
   // inspect a cluster on click
-  map.on('click', 'clusters', function (e) {
+  const onClusterClick = (e: maptilersdk.MapMouseEvent) => {
     var features = map.queryRenderedFeatures(e.point, {
       layers: ['clusters'],
     });
@@ -124,9 +124,10 @@ export const displayActivities = (
         });
       }
     });
-  });
+  };
+  map.on('click', 'clusters', onClusterClick);
 
-  map.on('click', 'unclustered-point', function (e: maptilersdk.MapMouseEvent) {
+  const onMarkerClick = (e: maptilersdk.MapMouseEvent) => {
     const features = map.queryRenderedFeatures(e.point);
     if (features.length > 0) {
       const pk = features[0].properties.pk;
@@ -136,9 +137,12 @@ export const displayActivities = (
         setOpen(true);
       }
     }
-  });
+  };
+  map.on('click', 'unclustered-point', onMarkerClick);
 
   return () => {
+    map.off('click', 'clusters', onClusterClick);
+    map.off('click', 'unclustered-point', onMarkerClick);
     if (map.getLayer('clusters')) {
       map.removeLayer('clusters');
     }

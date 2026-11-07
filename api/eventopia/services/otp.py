@@ -1,3 +1,5 @@
+import asyncio
+import logging
 from collections.abc import Callable
 from datetime import datetime, timedelta
 from hashlib import sha256
@@ -10,7 +12,7 @@ from uuid import uuid4
 from eventopia.config import AuthSection
 from eventopia.context.sqlite import SqliteConnector
 from eventopia.exceptions import InvalidCodeError, RateLimitedError, ValidationError
-from eventopia.models.auth import OtpChallengeRecord
+from eventopia.models.auth import OtpChallengeRecord, TelegramIdentityRecord
 from eventopia.phone import normalize_phone
 from eventopia.services.account import AccountService
 from eventopia.services.session import utcnow
@@ -21,6 +23,11 @@ from eventopia.telegram.gateway import (
     TelegramGateway,
 )
 from eventopia.telegram.texts import otp_message, pick_language
+
+_logger = logging.getLogger(__name__)
+_MAX_PENDING_DELIVERIES = 64
+_DELIVERY_TIMEOUT_SECONDS = 60
+_SHUTDOWN_GRACE_SECONDS = 5
 
 
 def _random_6_digits() -> str:
@@ -43,6 +50,8 @@ class OtpService:
         self._config = auth_config
         self._clock = clock
         self._code_factory = code_factory
+        self._deliveries: set[asyncio.Task[None]] = set()
+        self._closed = False
 
     async def request_code(self, phone_raw: str, ip: str | None) -> int:
         phone = normalize_phone(phone_raw, self._config["default_phone_region"])
@@ -96,29 +105,61 @@ class OtpService:
                 ),
             )
 
-        # Never hold SQLite's cross-process write reservation across Telegram I/O.
-        if identity is not None:
-            try:
-                await self._telegram.send_message(
-                    identity.chat_id,
-                    otp_message(
-                        pick_language(identity.language_code),
-                        code,
-                        ceil(self._config["otp_ttl_seconds"] / 60),
-                    ),
-                    protect_content=True,
-                )
-            except TelegramForbiddenError:
-                await self._account_service.set_chat_active(
-                    identity.telegram_user_id, False
-                )
-            except TelegramApiError:
-                # Delivery failures must have the same public response as unknowns.
-                pass
-            else:
-                async with self._sqlite.session(write=True) as s:
-                    await otp.mark_delivered(s, challenge_id, self._clock())
+        # Both known and unknown phones leave the request through the same path.
+        # Saturation or shutdown drops delivery without changing the generic result;
+        # the reserved quota remains consumed and the challenge stays undelivered.
+        if not self._closed and len(self._deliveries) < _MAX_PENDING_DELIVERIES:
+            task = asyncio.create_task(self._deliver_code(identity, challenge_id, code))
+            self._deliveries.add(task)
+            task.add_done_callback(self._deliveries.discard)
         return self._config["otp_resend_seconds"]
+
+    async def _deliver_code(
+        self, identity: TelegramIdentityRecord | None, challenge_id: str, code: str
+    ) -> None:
+        if identity is None:
+            return
+        try:
+            # SQLite's write reservation is released before external I/O. The
+            # service deadline also bounds injected gateways and bookkeeping work.
+            async with asyncio.timeout(_DELIVERY_TIMEOUT_SECONDS):
+                try:
+                    await self._telegram.send_message(
+                        identity.chat_id,
+                        otp_message(
+                            pick_language(identity.language_code),
+                            code,
+                            ceil(self._config["otp_ttl_seconds"] / 60),
+                        ),
+                        protect_content=True,
+                    )
+                except TelegramForbiddenError:
+                    await self._account_service.set_chat_active(
+                        identity.telegram_user_id, False
+                    )
+                except TelegramApiError:
+                    pass
+                else:
+                    async with self._sqlite.session(write=True) as s:
+                        await otp.mark_delivered(s, challenge_id, self._clock())
+        except Exception:
+            # Exception messages/tracebacks can contain codes or gateway URLs.
+            # Cancellation remains visible to the shutdown owner, never detached.
+            _logger.warning("OTP delivery failed")
+
+    async def close(self) -> None:
+        """Stop admission, drain briefly, then cancel and await remaining work."""
+        self._closed = True
+        tasks = tuple(self._deliveries)
+        if not tasks:
+            return
+        try:
+            await asyncio.wait(tasks, timeout=_SHUTDOWN_GRACE_SECONDS)
+        finally:
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
 
     async def verify_code(self, phone_raw: str, code: str) -> str:
         try:

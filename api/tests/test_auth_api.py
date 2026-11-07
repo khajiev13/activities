@@ -10,6 +10,7 @@ from uuid import UUID
 
 import httpx
 import pytest
+from otp_helpers import wait_for_delivery
 from sqlalchemy import func, select, update
 
 from eventopia import create_app
@@ -64,11 +65,12 @@ def signed(config, uid=7):
 
 
 async def login(env):
-    _, client, gateway, registered, _ = env
+    container, client, gateway, registered, _ = env
     response = await client.post(
         "/api/auth/otp/request", json={"phone": registered.phone_e164}
     )
     check(response.status_code == 200, "OTP request failed")
+    await wait_for_delivery(container.otp_service)
     code = re.search(r"\b[0-9]{6}\b", gateway.sent[-1].text).group()
     response = await client.post(
         "/api/auth/otp/verify", json={"phone": registered.phone_e164, "code": code}
@@ -368,6 +370,7 @@ async def test_otp_request_indistinguishable(env, monkeypatch):
         responses.append(
             await client.post("/api/auth/otp/request", json={"phone": phone})
         )
+    await wait_for_delivery(container.otp_service)
     container.otp_service._clock = lambda: datetime.now(UTC) + timedelta(seconds=61)
 
     async def failure(*args, **kwargs):
@@ -445,6 +448,7 @@ async def test_no_redirects(env, path, method):
 async def test_takeover_after_verification_cannot_issue_refresh(env, monkeypatch):
     container, client, gateway, registered, _ = env
     await client.post("/api/auth/otp/request", json={"phone": registered.phone_e164})
+    await wait_for_delivery(container.otp_service)
     code = re.search(r"\b[0-9]{6}\b", gateway.sent[-1].text).group()
     original = container.account_service.ensure_profile
 
@@ -614,3 +618,66 @@ async def test_logout_while_refresh_waits_for_profile_cannot_recreate_session(
     check(await count(container) == 1, "Auth API contract mismatch (line 483)")
     response = await client.post("/api/auth/refresh", headers=headers)
     check(response.status_code == 401, "Auth API contract mismatch (line 485)")
+
+
+async def test_late_rotated_cookie_cannot_restore_logout_but_other_family_survives(env):
+    container, client, _, registered, config = env
+    await login(env)
+    independent = await container.session_service.create_refresh(
+        registered.uid, None, None
+    )
+    cookie_name = config["auth"]["refresh_cookie_name"]
+    predecessor = client.cookies.get(cookie_name)
+    rotated, release = asyncio.Event(), asyncio.Event()
+    app = create_app(container)
+
+    async def hold_refresh_response(scope, receive, send):
+        async def delayed_send(message):
+            if (
+                scope["path"] == "/api/auth/refresh"
+                and message["type"] == "http.response.start"
+                and message["status"] == 200
+            ):
+                rotated.set()
+                await release.wait()
+            await send(message)
+
+        await app(scope, receive, delayed_send)
+
+    headers = {"X-Requested-With": "eventopia"}
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=hold_refresh_response),
+        base_url="http://test",
+    ) as browser:
+        # One cookie jar models two tabs: the refresh response has not arrived yet.
+        browser.cookies.update(client.cookies)
+        pending = asyncio.create_task(
+            browser.post("/api/auth/refresh", headers=headers)
+        )
+        try:
+            await asyncio.wait_for(rotated.wait(), timeout=2)
+            check(not pending.done(), "refresh response was not delayed")
+            logout = await browser.post("/api/auth/logout", headers=headers)
+            check(logout.status_code == 200, "concurrent logout failed")
+            check(not browser.cookies.get(cookie_name), "logout did not clear cookie")
+        finally:
+            release.set()
+            late_response = await pending
+        check(late_response.status_code == 200, "rotated response did not complete")
+        check(bool(browser.cookies.get(cookie_name)), "late cookie was not installed")
+        rejected = await browser.post("/api/auth/refresh", headers=headers)
+        check(
+            rejected.status_code == 401, "late successor restored the logged-out login"
+        )
+        rejected_old = await browser.post(
+            "/api/auth/refresh",
+            headers={**headers, "Cookie": cookie_name + "=" + predecessor},
+        )
+        check(rejected_old.status_code == 401, "predecessor retained logout grace")
+        unrelated = await browser.post(
+            "/api/auth/refresh",
+            headers={**headers, "Cookie": cookie_name + "=" + independent},
+        )
+        check(
+            unrelated.status_code == 200, "logout revoked an independent login family"
+        )

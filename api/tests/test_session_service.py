@@ -307,13 +307,16 @@ async def test_wiring_exposes_session_service(config):
         await container.close()
 
 
-async def test_logout_stale_cookie_invalidates_only_that_token(session_service):
+async def test_logout_stale_cookie_revokes_only_its_refresh_family(session_service):
     raw = await session_service.create_refresh("u1", None, None)
+    other = await session_service.create_refresh("u1", None, None)
     new = (await session_service.rotate_refresh(raw)).new_refresh_token
+    newest = (await session_service.rotate_refresh(new)).new_refresh_token
     await session_service.revoke_refresh(raw)
-    with pytest.raises(AuthError):
-        await session_service.rotate_refresh(raw)
-    assert (await session_service.rotate_refresh(new)).uid == "u1"
+    for credential in (raw, new, newest):
+        with pytest.raises(AuthError):
+            await session_service.rotate_refresh(credential)
+    assert (await session_service.rotate_refresh(other)).uid == "u1"
 
 
 async def test_expired_predecessor_reuse_still_revokes_live_family(

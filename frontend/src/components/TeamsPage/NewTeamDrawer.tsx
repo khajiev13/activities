@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
@@ -84,6 +84,7 @@ const formSchema = z.object({
 
 const NewTeamDrawer: React.FC<NewTeamDrawerProps> = ({ setProgressBar }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const submitting = useRef(false);
   const [sponsorCount, setSponsorCount] = useState<number>(1);
 
   const navigate = useNavigate();
@@ -131,90 +132,58 @@ const NewTeamDrawer: React.FC<NewTeamDrawerProps> = ({ setProgressBar }) => {
   }, [form.formState.errors]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
+    if (submitting.current) return;
+    submitting.current = true;
     setLoading(true);
-    console.log('Submitting');
-    console.log(form.formState.isValid);
-    console.log(form.formState.errors);
-    console.log(values);
-
-    const formData = new FormData();
-
-    // Append simple fields directly
-    formData.append('name', values.name);
-    formData.append('men_team', values.men_team.toString());
-    formData.append('founded_at', values.founded_at.toISOString());
-    formData.append('belongs_to_organization', values.belongs_to_organization);
-    formData.append('public_team', values.public_team.toString());
-    formData.append('country_name', values.country.toString() || '');
-    formData.append('state_name', values.state.toString());
-    formData.append('city_name', values.city.toString());
-    formData.append('location', values.pk_for_location.toString());
-
-    // For arrays and objects, JSON.stringify might be needed
-    formData.append('categories', JSON.stringify(values.categories));
-    console.log('values.uniform_colors', values.uniform_colors);
     try {
-      formData.append(
-        'tshirt_color',
-        values.uniform_colors[0].color.toString()
-      );
-      formData.append(
-        'shorts_color',
-        values.uniform_colors[1].color.toString()
-      );
-      formData.append('socks_color', values.uniform_colors[2].color.toString());
-      formData.append(
-        'away_tshirt_color',
-        values.uniform_colors[3].color.toString()
-      );
-      // rest of your code...
-    } catch (error) {
-      if (
-        error instanceof TypeError &&
-        error.message.includes('Cannot read properties of undefined')
-      ) {
-        toast('Error', {
-          description: "Please choose the kit colors for your team's kit",
-          style: { borderColor: 'red' },
-        });
-      }
-    }
+      const formData = new FormData();
 
-    formData.append('sponsors', JSON.stringify(values.sponsors));
+      // Append simple fields directly
+      formData.append('name', values.name);
+      formData.append('men_team', values.men_team.toString());
+      formData.append('founded_at', values.founded_at.toISOString());
+      formData.append('belongs_to_organization', values.belongs_to_organization);
+      formData.append('public_team', values.public_team.toString());
+      formData.append('country_name', values.country.toString() || '');
+      formData.append('state_name', values.state.toString());
+      formData.append('city_name', values.city.toString());
+      formData.append('location', values.pk_for_location.toString());
 
-    // Handling the image
-    if (values.image && values.image.length > 0) {
-      formData.append('image', values.image[0]);
-    }
-
-    axiosInstance
-      .post('/api/teams/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then((response) => {
-        toast('Success!', {
-          description: 'Team has been created successfully!',
-        });
-        navigate(`/teams/${response.data.name}`);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 400) {
-          toast('Error', {
-            description: error.response.data.message,
-            style: { borderColor: 'red' },
-          });
-        } else {
-          toast('Error', {
-            description:
-              'Something went wrong while creating a team. Probably the picture exists in the database',
-            style: { borderColor: 'red' },
-          });
-        }
+      // For arrays and objects, JSON.stringify might be needed
+      formData.append('categories', JSON.stringify(values.categories));
+      const colorFields: Record<string, string> = {
+        tshirt: 'tshirt_color',
+        shorts: 'shorts_color',
+        socks: 'socks_color',
+        awaytshirt: 'away_tshirt_color',
+      };
+      values.uniform_colors.forEach(({ name, color }) => {
+        if (color && colorFields[name]) formData.append(colorFields[name], color);
       });
+
+      formData.append('sponsors', JSON.stringify(values.sponsors));
+
+      // Handling the image
+      if (values.image && values.image.length > 0) {
+        formData.append('image', values.image[0]);
+      }
+
+      const response = await axiosInstance.post('/api/teams/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      toast('Success!', {
+        description: 'Team has been created successfully!',
+      });
+      navigate(`/teams/${encodeURIComponent(response.data.name)}`);
+    } catch {
+      toast('Error', {
+        description: 'Unable to create the team. Check the details and try again.',
+        style: { borderColor: 'red' },
+      });
+    } finally {
+      submitting.current = false;
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -480,7 +449,7 @@ const NewTeamDrawer: React.FC<NewTeamDrawerProps> = ({ setProgressBar }) => {
 
             {loading ? (
               <>
-                <Button className="w-full">
+                <Button className="w-full" disabled>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
                 </Button>

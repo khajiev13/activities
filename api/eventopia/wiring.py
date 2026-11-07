@@ -53,7 +53,14 @@ class Container:
     poller: BotPoller | None = None
 
     async def close(self) -> None:
-        """Release owned resources when the application shuts down."""
+        """Finish OTP delivery before releasing the connectors and gateway it uses."""
+        try:
+            if self.otp_service is not None:
+                await self.otp_service.close()
+        finally:
+            await self._close_resources()
+
+    async def _close_resources(self) -> None:
         try:
             if self.neo4j is not None:
                 await self.neo4j.close()
@@ -109,8 +116,10 @@ def build_container(
             CategoriesView(category_service, auth_service),
             LocationsView(location_service, auth_service),
             ActivitiesView(activity_service, auth_service),
-            TeamsView(team_service, auth_service),
-            OrganizationsView(organization_service, auth_service),
+            TeamsView(team_service, auth_service, config["s3"]["max_upload_bytes"]),
+            OrganizationsView(
+                organization_service, auth_service, config["s3"]["max_upload_bytes"]
+            ),
         ],
         neo4j=neo4j,
         sqlite=sqlite,

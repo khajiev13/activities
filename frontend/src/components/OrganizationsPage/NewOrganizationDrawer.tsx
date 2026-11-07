@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import SelectLocation from '../SelectLocation';
 import { LocationDetails } from '../Map/MapFunctions/AddLocation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SelectedLocation from '../ActivitiesPage/NewActivityDrawer/SelectedLocation';
 import axiosInstance from '@/axios';
 import { Loader2 } from 'lucide-react';
@@ -59,6 +59,7 @@ const NewOrganizationDrawer: React.FC<NewOrganizationDrawerProps> = ({
 }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
+  const submitting = useRef(false);
   const [LocationDetails, setLocationDetails] =
     useState<LocationDetails | null>(null);
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -70,38 +71,39 @@ const NewOrganizationDrawer: React.FC<NewOrganizationDrawerProps> = ({
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (submitting.current) return;
+    submitting.current = true;
     setLoading(true);
-    const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('pk_for_location', data.pk_for_location || '');
-    formData.append('country', LocationDetails?.country || '');
-    formData.append('state', LocationDetails?.state || '');
-    formData.append('city', LocationDetails?.city || '');
-    if (data.image.length > 0) {
-      formData.append('image', data.image[0]);
-    }
-    axiosInstance
-      .post('/api/organizations/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then((response) => {
-        toast('Success!', {
-          description: 'Organization has been created successfully!',
-        });
-        navigate('/organizations', { state: { createdOrganization: response.data } });
-        onCreated?.();
-      })
-      .catch(() => {
-        toast('Error', {
-          description:
-            'Something went wrong while creating an organization. You cannot have 2 organizations with the same name.',
-          style: { borderColor: 'red' },
-        });
+    try {
+      const formData = new FormData();
+      formData.append('name', data.name);
+      formData.append('pk_for_location', data.pk_for_location || '');
+      formData.append('country', LocationDetails?.country || '');
+      formData.append('state', LocationDetails?.state || '');
+      formData.append('city', LocationDetails?.city || '');
+      if (data.image.length > 0) {
+        formData.append('image', data.image[0]);
+      }
+      const response = await axiosInstance.post('/api/organizations/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
+      toast('Success!', {
+        description: 'Organization has been created successfully!',
+      });
+      navigate('/organizations', { state: { createdOrganization: response.data } });
+      onCreated?.();
+    } catch {
+      toast('Error', {
+        description: 'Unable to create the organization. Check the details and try again.',
+        style: { borderColor: 'red' },
+      });
+    } finally {
+      submitting.current = false;
+      setLoading(false);
+    }
   }
+
   useEffect(() => {
     setProgressBar(+30);
     console.log('location', LocationDetails);

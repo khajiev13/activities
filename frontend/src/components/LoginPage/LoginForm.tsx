@@ -86,7 +86,7 @@ export function LoginForm() {
             <Button type="button" variant="ghost" disabled={busy} onClick={() => { setCodeStep(false); setCode(''); setError(null); }}>Change phone number</Button>
           </> : <>
             <Label htmlFor="phone">Phone number</Label>
-            <Input id="phone" name="phone" disabled={busy} type="tel" inputMode="tel" autoComplete="tel" pattern="\+998[0-9]{9}" required value={phone} onChange={event => setPhone(event.target.value)} />
+            <Input id="phone" name="phone" disabled={busy} type="tel" inputMode="tel" autoComplete="tel" required value={phone} onChange={event => setPhone(event.target.value)} />
           </>}
           {error && <AlertDestructive title="Unable to log in" description={error} />}
         </CardContent>

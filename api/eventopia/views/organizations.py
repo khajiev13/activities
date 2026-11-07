@@ -17,7 +17,10 @@ class OrganizationForm(OrganizationIn):
 
 class OrganizationsView(ApiView):
     def __init__(
-        self, organization_service: OrganizationService, auth_service: AuthService
+        self,
+        organization_service: OrganizationService,
+        auth_service: AuthService,
+        max_upload_bytes: int,
     ) -> None:
         super().__init__()
         self._organization_service = organization_service
@@ -44,7 +47,9 @@ class OrganizationsView(ApiView):
             claims: AccessClaims = Depends(current_user),
         ) -> dict:
             created = await self._organization_service.create_organization(
-                claims.uid, body, await body.image.read() if body.image else None
+                claims.uid,
+                body,
+                await body.image.read(max_upload_bytes + 1) if body.image else None,
             )
             return ok(created.model_dump())
 

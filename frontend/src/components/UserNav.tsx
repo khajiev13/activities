@@ -54,11 +54,11 @@ export default function UserNav() {
           <Avatar className="h-8 w-8">
             <AvatarImage
               className=""
-              src={imageUrl ? imageUrl : 'link'}
-              alt="@shadcn"
+              src={imageUrl || undefined}
+              alt={username || 'User'}
             />
             <AvatarFallback>
-              {firstName && lastName ? firstName[0] + lastName[0] : 'ES'}
+              {((firstName?.[0] || '') + (lastName?.[0] || '') || username?.slice(0, 2) || 'ES').toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </Button>

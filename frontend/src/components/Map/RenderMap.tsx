@@ -11,6 +11,9 @@ import { TeamType } from '@/pages/Teams/Teams';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { displayTeams } from './MapFunctions/DisplayTeams';
 import TeamCard from '../TeamsPage/TeamCard';
+import type { OrganizationListingType } from '@/types/OrganizationsListingSchema';
+import { OrganizationListingCard } from '../OrganizationsPage/OrganizationListingCard';
+import { displayOrganizations } from './MapFunctions/DisplayOrganizations';
 // Create a page with other components and display them full screen on the map
 const RenderMap: React.FC = () => {
   //Toggle when the user clicks people,activities,organizations or teams
@@ -27,6 +30,8 @@ const RenderMap: React.FC = () => {
     undefined
   );
   const [teams, setTeams] = React.useState<TeamType[]>([]);
+  const [organizations, setOrganizations] = React.useState<OrganizationListingType[]>([]);
+  const [selectedOrganization, setSelectedOrganization] = React.useState<OrganizationListingType>();
 
   //Handle the map load
   const handleMapLoad = (map: maptilersdk.Map) => {
@@ -34,31 +39,29 @@ const RenderMap: React.FC = () => {
   };
   React.useEffect(() => {
     if (!map) return;
-    // Call displayActivities and store the cleanup function
-    console.log(searchFor, activities, teams);
-    if (searchFor === 'activities' && activities) {
-      setSelectedTeam(undefined);
-      const activities_cleanup = displayActivities(
-        activities,
-        map,
-        setSelectedActivity,
-        setOpen
-      );
-      return () => {
-        activities_cleanup();
-      };
-    }
-    // Call displayTeams and store the cleanup function
-    else if (searchFor === 'teams' && teams) {
+    let cleanup: (() => void) | undefined;
+    const displayResults = () => {
+      if (!map.isStyleLoaded()) {
+        map.once('idle', displayResults);
+        return;
+      }
       setSelectedActivity(undefined);
-      const teams_cleanup = displayTeams(teams, map, setSelectedTeam, setOpen);
-      return () => {
-        teams_cleanup();
-      };
-    }
-
-    // Use the cleanup function for cleanup
-  }, [searchFor, activities, teams]);
+      setSelectedTeam(undefined);
+      setSelectedOrganization(undefined);
+      if (searchFor === 'activities') {
+        cleanup = displayActivities(activities, map, setSelectedActivity, setOpen);
+      } else if (searchFor === 'teams') {
+        cleanup = displayTeams(teams, map, setSelectedTeam, setOpen);
+      } else if (searchFor === 'organizations') {
+        cleanup = displayOrganizations(organizations, map, setSelectedOrganization, setOpen);
+      }
+    };
+    displayResults();
+    return () => {
+      map.off('idle', displayResults);
+      cleanup?.();
+    };
+  }, [searchFor, activities, teams, organizations, map]);
 
   return (
     <>
@@ -66,6 +69,7 @@ const RenderMap: React.FC = () => {
         <SearchNavbar
           setActivities={searchFor === 'activities' ? setActivities : undefined}
           setTeams={searchFor === 'teams' ? setTeams : undefined}
+          setOrganizations={searchFor === 'organizations' ? setOrganizations : undefined}
           search_for={searchFor}
         />
       </div>
@@ -84,16 +88,17 @@ const RenderMap: React.FC = () => {
               {...selectedActivity}
             />
           )}
+          {selectedOrganization && <div className="w-full max-w-xl p-4"><OrganizationListingCard organization={selectedOrganization} /></div>}
           {/* Display the selected team */}
           {selectedTeam && (
             <TeamCard
               name={selectedTeam.name}
               image_url={selectedTeam.image_url}
               location_name={selectedTeam.city_name}
-              tshirt_color={selectedTeam.tshirt_color[0].name}
-              shorts_color={selectedTeam.shorts_color[0].name}
-              socks_color={selectedTeam.socks_color[0].name}
-              away_tshirt_color={selectedTeam.away_tshirt_color[0].name}
+              tshirt_color={selectedTeam.tshirt_color[0]?.name}
+              shorts_color={selectedTeam.shorts_color[0]?.name}
+              socks_color={selectedTeam.socks_color[0]?.name}
+              away_tshirt_color={selectedTeam.away_tshirt_color[0]?.name}
               color_picker_needed={false}
             />
           )}

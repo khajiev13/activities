@@ -1,36 +1,28 @@
 import axiosInstance from '@/axios';
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
-// import { WobbleCard } from '@/components/ui/wobble-card';
-import { ActivityDetailsType } from '@/types/ActivitiesListSchema.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ActivityDetailsType } from '@/types/ActivitiesListSchema';
 import ActivityDetail from '@/components/ActivitiesPage/ActivityDetail';
 
-
-
-
 export const ActivitiesDetail = () => {
-  const [, setActivity] = useState<ActivityDetailsType>();
   const { activity_pk } = useParams<{ activity_pk: string }>();
+  const [activity, setActivity] = useState<ActivityDetailsType | null>(null);
+  const [error, setError] = useState(false);
+
   useEffect(() => {
-    axiosInstance
-      .get(`/api/activities/${activity_pk}`)
+    let active = true;
+    setActivity(null);
+    setError(false);
+    axiosInstance.get(`/api/activities/${encodeURIComponent(activity_pk || '')}`)
       .then((response) => {
-        // handle the response
-
-        setActivity(response.data);
+        const parsed = ActivityDetailsType.parse(response.data);
+        if (active) setActivity(parsed);
       })
-      .catch(() => {
-        // Keep failed requests out of the console.
-      });
-  }, []);
+      .catch(() => { if (active) setError(true); });
+    return () => { active = false; };
+  }, [activity_pk]);
 
-  return (
-    <>
-    <div className='w-screen h-screen overflow-scroll'>      
-      <ActivityDetail />
-    </div>
-      
-    </>
-  );
+  if (error) return <p role="alert">Unable to load activity. Please try again.</p>;
+  if (!activity) return <p role="status">Loading activity…</p>;
+  return <div className="w-screen h-screen overflow-scroll"><ActivityDetail activity={activity} /></div>;
 };

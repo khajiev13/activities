@@ -25,6 +25,7 @@ import { Label } from '../ui/label';
 
 type NewOrganizationDrawerProps = {
   setProgressBar: (value: number) => void;
+  onCreated?: () => void;
 };
 
 export const MAX_FILE_SIZE = 1024 * 1024 * 5;
@@ -54,6 +55,7 @@ const FormSchema = z.object({
 
 const NewOrganizationDrawer: React.FC<NewOrganizationDrawerProps> = ({
   setProgressBar,
+  onCreated,
 }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
@@ -89,7 +91,8 @@ const NewOrganizationDrawer: React.FC<NewOrganizationDrawerProps> = ({
         toast('Success!', {
           description: 'Organization has been created successfully!',
         });
-        navigate(`/organizations/${response.data.pk}`);
+        navigate('/organizations', { state: { createdOrganization: response.data } });
+        onCreated?.();
       })
       .catch(() => {
         toast('Error', {
@@ -174,7 +177,7 @@ const NewOrganizationDrawer: React.FC<NewOrganizationDrawerProps> = ({
                     type="file"
                     onBlur={field.onBlur}
                     name={field.name}
-                    accept={ACCEPTED_IMAGE_TYPES.join(',')}
+                    accept="image/jpeg,image/png,image/webp"
                   />
                 </FormControl>
 

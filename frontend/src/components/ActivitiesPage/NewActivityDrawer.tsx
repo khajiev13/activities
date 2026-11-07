@@ -156,6 +156,7 @@ const NewActivityDrawer: React.FC<NewActivityDrawerProps> = ({
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (loading) return;
     setLoading(true);
     // Check if competition and both teams are selected and show a toast if not
     if (
@@ -386,7 +387,7 @@ const NewActivityDrawer: React.FC<NewActivityDrawerProps> = ({
               onClick={() => {
                 console.log(form.formState.errors);
               }}
-              disabled={!form.formState.isValid}
+              disabled={loading}
             >
               Create
             </Button>

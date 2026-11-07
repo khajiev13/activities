@@ -12,11 +12,10 @@ const MemberSchema = z.object({
     username: z.string(),
     first_name: z.string(),
     last_name: z.string(),
-    image_url: z.string().optional(),
+    image_url: z.string().nullable().optional(),
     name_on_jersey: z.string(),
     role: RoleEnum,
-    plays_for_division: z.number(),
-    gender: z.string(),
+    plays_for_division: z.number().nullable().optional(),
     player_number: z.number()
 });
 

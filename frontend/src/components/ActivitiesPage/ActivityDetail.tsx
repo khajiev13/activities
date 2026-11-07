@@ -2,39 +2,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react"
-import People from "../People"
-// This is a mock activity for demonstration purposes
-const activity = {
-  title: "Weekend Hike at Mount Rainier",
-  description: "Join us for a beautiful hike at Mount Rainier National Park. We'll explore the Skyline Trail and enjoy breathtaking views of the mountain and surrounding wilderness.",
-  date_time: "2024-07-15T09:00:00Z",
-  duration_in_minutes: 240,
-  public: true,
-  pk: "123456",
-  city: { name: "Ashford" },
-  country: { name: "United States" },
-  state: { name: "Washington" },
-  location: { name: "Mount Rainier National Park" },
-  categories: [{ name: "Hiking" }, { name: "Nature" }, { name: "Outdoors" }],
-  creator: {
-    first_name: "John",
-    last_name: "Doe",
-    username: "johndoe",
-    image_url: "https://example.com/johndoe.jpg"
-  },
-  people_joined: [
-    { first_name: "Alice", last_name: "Smith", username: "alicesmith", image_url: "https://example.com/alice.jpg" },
-    { first_name: "Bob", last_name: "Johnson", username: "bobjohnson", image_url: "https://example.com/bob.jpg" }
-  ],
-  number_of_people_joined: 2,
-  competition: {
-    team_1: { name: null, image_url: null },
-    team_2: { name: null, image_url: null }
-  }
-}
+import type { ActivityDetailsType } from '@/types/ActivitiesListSchema';
 
-
-export default function ActivityDetail() {
+export default function ActivityDetail({ activity }: { activity: ActivityDetailsType }) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })
@@ -57,10 +27,6 @@ export default function ActivityDetail() {
                 <Badge key={index} variant="secondary">{category.name}</Badge>
               ))}
             </div>
-          </div>
-
-          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-            <span className="text-muted-foreground">Image Placeholder</span>
           </div>
 
           <Card>
@@ -123,8 +89,8 @@ export default function ActivityDetail() {
               <h2 className="text-xl font-semibold">Organizer</h2>
               <div className="flex items-center gap-4">
                 <Avatar>
-                  <AvatarImage src={activity.creator.image_url} alt={`${activity.creator.first_name} ${activity.creator.last_name}`} />
-                  <AvatarFallback>{activity.creator.first_name[0]}{activity.creator.last_name[0]}</AvatarFallback>
+                  <AvatarImage src={activity.creator.image_url || undefined} alt={`${activity.creator.first_name} ${activity.creator.last_name}`} />
+                  <AvatarFallback>{activity.creator.first_name?.[0]}{activity.creator.last_name?.[0]}</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-medium">{`${activity.creator.first_name} ${activity.creator.last_name}`}</p>
@@ -138,7 +104,18 @@ export default function ActivityDetail() {
             <CardContent className="p-6 space-y-4">
               <h2 className="text-xl font-semibold">Attendees</h2>
               <div className="flex flex-wrap gap-2">
-                <People />
+                {activity.people_joined.length === 0 ? <p>No attendees yet.</p> : activity.people_joined.map((person, index) => {
+                  const name = [person.first_name, person.last_name].filter(Boolean).join(' ') || person.username || 'Participant';
+                  return (
+                    <div key={person.username || index} className="flex items-center gap-2">
+                      <Avatar>
+                        <AvatarImage src={person.image_url || undefined} alt={name} />
+                        <AvatarFallback>{name[0]}</AvatarFallback>
+                      </Avatar>
+                      <span>{name}</span>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

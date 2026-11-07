@@ -7,8 +7,8 @@ import { Team } from './ActivitiesPage/NewActivityDrawer/IsCompetition';
 
 type Props = {
   league_name?: string;
-  team1?: { name: string; image_url: string; score?: number };
-  team2?: { name: string; image_url: string; score?: number };
+  team1?: Team;
+  team2?: Team;
   setTeam1Prop?: (team: Team) => void;
   setTeam2Prop?: (team: Team) => void;
 };
@@ -40,7 +40,7 @@ export function CompetitionDisplay({
               {team1 ? (
                 <div className="flex flex-col h-full items-center justify-center p-6 m-0">
                   <img
-                    src={team1.image_url}
+                    src={team1.image_url ?? undefined}
                     alt="Team picture"
                     height="100"
                     width="100"
@@ -68,7 +68,7 @@ export function CompetitionDisplay({
               {team2 ? (
                 <div className="flex flex-col h-full items-center justify-center p-6 m-0">
                   <img
-                    src={team2.image_url}
+                    src={team2.image_url ?? undefined}
                     alt="Team picture"
                     height="100"
                     width="100"

@@ -1,9 +1,11 @@
+import path from 'path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
   test: {
     environment: 'node',
-    include: ['src/api/__tests__/**/*.test.ts', 'src/auth/__tests__/**/*.test.ts'],
+    include: ['src/**/__tests__/**/*.test.ts'],
     restoreMocks: true,
   },
 });

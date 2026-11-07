@@ -13,7 +13,7 @@ type TeamCardProps = {
   setTeamName?: (name: string) => void;
   name: string;
   image?: File;
-  image_url?: string;
+  image_url?: string | null;
   location_name?: string;
   tshirt_color?: string;
   shorts_color?: string;
@@ -82,11 +82,11 @@ const TeamCard: React.FC<TeamCardProps> = ({
                 </div>
               </ResizablePanel>
               <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={75} onClick={() => navigate(`../teams/${name}`)}>
+              <ResizablePanel defaultSize={75} onClick={() => { if (!setTeamName) navigate(`../teams/${encodeURIComponent(name)}`); }}>
                 <div className="flex h-full items-center justify-center p-6">
                   <div>
                     <img
-                      src={imageUrl ? imageUrl : image_url}
+                      src={imageUrl ? imageUrl : image_url ?? undefined}
                       alt="Team picture"
                       height="100"
                       width="100"

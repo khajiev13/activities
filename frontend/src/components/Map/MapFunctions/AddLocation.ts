@@ -60,7 +60,10 @@ export async function AddLocation(name: string, lng: number, lat: number) {
       });
       const additionalData = { sunrise, sunset, timezone, country_code };
 
-      return { ...response.data, ...additionalData };
+      return {
+        ...response.data, ...additionalData, country, state, city,
+        location_pk: response.data.pk, location_name: response.data.name,
+      };
     } else {
       return {
         country: null,

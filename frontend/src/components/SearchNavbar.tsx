@@ -86,7 +86,6 @@ const SearchNavbar = ({
       axiosInstance
         .get(`/api/${search_for}/country/${countriesArray}/`, {
           params: {
-            search_by: searchBy,
           },
         })
         .then((response) => {
@@ -112,7 +111,6 @@ const SearchNavbar = ({
       axiosInstance
         .get(`/api/${search_for}/state/${statesArray}/`, {
           params: {
-            search_by: searchBy,
             countries: countriesArray,
           },
         })
@@ -139,7 +137,6 @@ const SearchNavbar = ({
       axiosInstance
         .get(`/api/${search_for}/city/${citiesArray}/`, {
           params: {
-            search_by: searchBy,
             countries: countriesArray,
             states: statesArray,
           },

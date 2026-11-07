@@ -19,7 +19,6 @@ import TeamCard from './TeamCard';
 import {
   MAX_FILE_SIZE,
   ACCEPTED_IMAGE_MIME_TYPES,
-  ACCEPTED_IMAGE_TYPES,
 } from '@/components/OrganizationsPage/NewOrganizationDrawer';
 import SelectCategories, {
   CategoryItem,
@@ -54,10 +53,10 @@ const formSchema = z.object({
   image: z
     .any()
     .refine((files) => {
-      return files?.[0]?.size <= MAX_FILE_SIZE;
+      return !files?.length || files[0].size <= MAX_FILE_SIZE;
     }, `Max image size is 5MB.`)
     .refine(
-      (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
+      (files) => !files?.length || ACCEPTED_IMAGE_MIME_TYPES.includes(files[0].type),
       'Only .jpg, .jpeg, .png and .webp formats are supported.'
     ),
   categories: z.array(
@@ -224,7 +223,7 @@ const NewTeamDrawer: React.FC<NewTeamDrawerProps> = ({ setProgressBar }) => {
     }
     let progress = 0;
     if (form.getValues('name')) progress += 20;
-    if (form.getValues('image').length > 0) progress += 20;
+    if ((form.getValues('image')?.length ?? 0) > 0) progress += 20;
     if (form.getValues('categories').length > 0) progress += 20;
     if (form.getValues('founded_at')) progress += 20;
     if (form.getValues('men_team')) progress += 20;
@@ -298,7 +297,7 @@ const NewTeamDrawer: React.FC<NewTeamDrawerProps> = ({ setProgressBar }) => {
                       type="file"
                       onBlur={field.onBlur}
                       name={field.name}
-                      accept={ACCEPTED_IMAGE_TYPES.join(',')}
+                      accept="image/jpeg,image/png,image/webp"
                     />
                   </FormControl>
 

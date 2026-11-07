@@ -20,10 +20,11 @@ import NewTeamDrawer from './TeamsPage/NewTeamDrawer';
 export function Create() {
   const location = useLocation();
 
+  const [open, setOpen] = useState(false);
   const [progressBar, setProgressBar] = useState<number>(0);
 
   return (
-    <Drawer shouldScaleBackground dismissible={false}>
+    <Drawer open={open} onOpenChange={setOpen} shouldScaleBackground dismissible={false}>
       <DrawerTrigger asChild>
         <Button variant="outline">
           <Plus className="h-8 w-8" />
@@ -64,7 +65,7 @@ export function Create() {
               ) ? (
               <>
                 <Progress value={progressBar} />
-                <NewOrganizationDrawer setProgressBar={setProgressBar} />
+                <NewOrganizationDrawer setProgressBar={setProgressBar} onCreated={() => setOpen(false)} />
               </>
             ) : null}
           </div>

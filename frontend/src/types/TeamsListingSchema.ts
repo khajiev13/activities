@@ -17,8 +17,8 @@ const TeamSchema = z.object({
   ),
   city_name: z.string(),
   country_name: z.string(),
-  founded_at: z.string(),
-  image_url: z.string().url(),
+  founded_at: z.string().nullable(),
+  image_url: z.string().url().nullable(),
   location: z.array(
     z.object({
       name: z.string(),

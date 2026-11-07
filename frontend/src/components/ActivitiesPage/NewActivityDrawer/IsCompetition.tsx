@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 export type Team = {
   name: string;
-  image_url: string;
+  image_url: string | null;
   score?: number;
 };
 

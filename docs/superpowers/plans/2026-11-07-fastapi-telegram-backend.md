@@ -988,10 +988,10 @@ Run all commands in `frontend/`. Keep React 18, Vite 5 and Tailwind 3. Add devDe
   - `UserNav.tsx:65`: remove the `'link'` fallback in favour of initials.
 - Test: `src/types/__tests__/teamSchema.test.ts`
 
-- [ ] **Step 1: Write a failing vitest test.** `TeamDetailSchema.parse(fixture)` must succeed for a team that has `image_url: null` and a member with `image_url: null`, `plays_for_division: null` and no `gender`.
-- [ ] **Step 2: Run it and confirm it fails.** `yarn test` → FAIL.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run tests and walk through the flows by hand.**
+- [x] **Step 1: Write a failing vitest test.** `TeamDetailSchema.parse(fixture)` must succeed for a team that has `image_url: null` and a member with `image_url: null`, `plays_for_division: null` and no `gender`.
+- [x] **Step 2: Run it and confirm it fails.** `yarn test` → FAIL.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run tests and walk through the flows by hand.**
   - `yarn test` and `yarn build` → PASS.
   - On the dev stack, logged in:
     - create an organization with an image (the image shows)
@@ -1002,7 +1002,7 @@ Run all commands in `frontend/`. Keep React 18, Vite 5 and Tailwind 3. Add devDe
     - create a competition activity between two teams
     - join and then leave an activity
     - search activities, teams and organizations by country, state and city on `/activities` and `/map`
-- [ ] **Step 5: Commit.** `git commit -m "fix(web): team page schema, team drawer crash, join team with position, image inputs"`
+- [x] **Step 5: Commit.** `git commit -m "fix(web): team page schema, team drawer crash, join team with position, image inputs"`
 
 ### Task 21: Remove Django and verify the whole thing
 

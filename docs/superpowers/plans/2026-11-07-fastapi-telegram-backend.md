@@ -727,11 +727,11 @@ Add tiny image fixtures under `tests/fixtures/`.
   - `MERGE`s the `COUNTRY` → `STATE` → `CITY` `IS_IN` chain, then creates `LOCATION {pk: randomUUID(), name, points: point(...)}` with `-[:IS_IN]->(CITY)`.
   - Returns 201 `{pk, name, points: {latitude, longitude}}`.
 
-- [ ] **Step 1: Write failing contract tests** covering every contract above, plus 401 without a token on both POSTs.
-- [ ] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_geo_api.py -v` → FAIL.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run them and confirm they pass.** Same command → PASS.
-- [ ] **Step 5: Commit.** `git commit -m "feat(api): countries, categories and locations endpoints"`
+- [x] **Step 1: Write failing contract tests** covering every contract above, plus 401 without a token on both POSTs.
+- [x] **Step 2: Run them and confirm they fail.** `uv run pytest tests/test_geo_api.py -v` → FAIL.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run them and confirm they pass.** Same command → PASS.
+- [x] **Step 5: Commit.** `git commit -m "feat(api): countries, categories and locations endpoints"`
 
 ### Task 12: Activities
 

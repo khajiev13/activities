@@ -40,6 +40,7 @@ async def test_constraints_apply_twice(neo4j_connector):
         ("ORGANIZATION", "pk"),
         ("LOCATION", "pk"),
         ("CATEGORY", "pk"),
+        ("CATEGORY", "name_key"),
         ("CITY", "name"),
         ("STATE", "name"),
         ("COUNTRY", "name"),

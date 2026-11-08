@@ -9,7 +9,7 @@ type AuthContextValue = AuthState & {
   login: (phone: string, code: string) => Promise<boolean>;
   logout: () => Promise<void>;
   retryTelegramLogin: () => Promise<boolean>;
-  shareTelegramContact: () => Promise<'cancelled' | 'authenticated' | 'pending' | 'stale'>;
+  shareTelegramContact: () => Promise<'cancelled' | 'authenticated' | 'pending' | 'failed' | 'stale'>;
 };
 
 export const AuthContext = createContext<AuthContextValue>({
@@ -103,7 +103,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const shared = await authApi.requestTelegramContact();
     if (version !== generation.current) return 'stale' as const;
     if (!shared) return 'cancelled' as const;
-    return await authenticateTelegram(version, true) ? 'authenticated' as const : 'pending' as const;
+    const authenticated = await authenticateTelegram(version, true);
+    if (version !== generation.current) return 'stale' as const;
+    if (authenticated) return 'authenticated' as const;
+    return authApi.getTelegramLoginIssue() === 'phone_required' ? 'pending' as const : 'failed' as const;
   }, [authenticateTelegram]);
 
   const logout = useCallback(async () => {

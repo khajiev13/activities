@@ -14,7 +14,7 @@ async function until(fn, message = 'Expected rendered state') {
   const start = Date.now(); while (Date.now() - start < 20000) { if (await fn()) return; await new Promise(resolve => setTimeout(resolve, 40)); } throw new Error(message);
 }
 async function settle(page) { await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))); }
-async function shot(page, name) { await page.screenshot({ path: path.join(OUT, name + '.png'), animations: 'disabled', fullPage: false }); }
+async function shot(page, name) { return page.screenshot({ path: path.join(OUT, name + '.png'), animations: 'disabled', fullPage: false }); }
 async function setup(options = {}) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', ...options.context });
   const model = await data.install(context, options);
@@ -253,7 +253,10 @@ async function accessibility() {
     await fit(page); await targets(page); await page.getByRole('button', { name: 'Create', exact: true }).click(); const drawer = page.getByRole('dialog'); await drawer.getByLabel('Name', { exact: true }).waitFor();
     equal(await page.evaluate(() => getComputedStyle(document.documentElement).fontSize), size.text, 'Text scale persists in the actual opened form');
     await until(() => drawer.evaluate(el => el.dataset.short === String(el.getBoundingClientRect().height <= 400)), 'Create observes actual portaled sheet height'); checks++;
-    for (const label of ['Name', 'Founded date', 'Logo of the team (optional)', 'Venue name']) await fieldReachable(page, drawer.getByLabel(label, { exact: true }));
+    for (const label of ['Name', 'Founded date', 'Logo of the team (optional)', 'Venue name']) {
+      await fieldReachable(page, drawer.getByLabel(label, { exact: true }));
+      if (size.width === 667 && label === 'Name') await shot(page, 'landscape-focused-field-667');
+    }
     await fieldReachable(page, drawer.getByLabel('Socks', { exact: true }));
     await fieldReachable(page, drawer.getByRole('button', { name: 'Create', exact: true })); await fieldReachable(page, drawer.getByRole('button', { name: 'Close', exact: true }));
     await shot(page, 'larger-text-form-' + size.width); await discard(page, drawer);
@@ -412,9 +415,34 @@ async function mapFailure() {
   await page.getByText(/Map unavailable/).waitFor(); await until(() => page.locator('[data-result-id]').count());
   check(await page.getByRole('link', { name: data.activity.title, exact: true }).count(), 'Map failure keeps usable list alternative'); await fit(page); await shot(page, 'map-failure-list-390'); await clean(run);
 }
+// Pixels outside the synthetic pin must contain painted basemap detail, not a flat canvas.
+async function basemapTexture(page, screenshot) {
+  const region = await page.evaluate(() => {
+    const canvas = document.querySelector('.maplibregl-canvas').getBoundingClientRect(), panel = document.querySelector('.discovery-results').getBoundingClientRect();
+    const bottom = panel.left < canvas.right && panel.right > canvas.left ? panel.top : canvas.bottom;
+    return { x: canvas.x, y: canvas.y, width: canvas.width, height: bottom - canvas.y - 32, pinY: (canvas.height + 40 - 240) / 2 };
+  });
+  return page.evaluate(({ png, region }) => new Promise(resolve => {
+    const image = new Image();
+    image.onload = () => {
+      const canvas = document.createElement('canvas'); canvas.width = image.width; canvas.height = image.height;
+      const context = canvas.getContext('2d'); context.drawImage(image, 0, 0);
+      const pixels = context.getImageData(region.x, region.y, region.width, region.height).data, colors = new Set(); let edges = 0;
+      for (let y = 20; y < region.height - 4; y += 4) for (let x = 12; x < region.width - 12; x += 4) {
+        if (Math.abs(x - region.width / 2) < 70 && Math.abs(y - region.pinY) < 70) continue;
+        const index = (y * region.width + x) * 4, next = index + 12;
+        const rgb = [...pixels.slice(index, index + 3)]; colors.add(rgb.map(value => Math.floor(value / 16)).join(','));
+        if (rgb.reduce((sum, value, channel) => sum + Math.abs(value - pixels[next + channel]), 0) > 35) edges++;
+      }
+      resolve({ colors: colors.size, edges });
+    };
+    image.src = 'data:image/png;base64,' + png;
+  }), { png: screenshot.toString('base64'), region });
+}
+
 async function realMap() {
   const run = await setup({ realMap: true }); const { page, model } = run; model.one = true;
-  let tileSuccess = 0, tileFailure = 0, sdkSuccess = 0;
+  let tileSuccess = 0, tileFailure = 0, sdkSuccess = 0; const urbanTextures = [];
   page.on('response', response => {
     const url = new URL(response.url());
     if (url.hostname.endsWith('maptiler.com') && /\.(pbf|webp|png|jpg)/.test(url.pathname)) response.ok() ? tileSuccess++ : tileFailure++;
@@ -450,7 +478,13 @@ async function realMap() {
       if (replacement) { const response = await replacement; check(response.ok(), 'Replacement provider style succeeds'); await response.finished(); }
       await page.waitForLoadState('networkidle'); await settle(page);
       await page.waitForFunction(() => !document.body.textContent.includes('Loading map tiles…'), { timeout: 25000 });
-      await pin(); await settle(page); await shot(page, 'real-map-' + width + '-' + theme);
+      await pin();
+      await page.waitForFunction(() => !document.body.textContent.includes('Loading map tiles…'), { timeout: 25000 });
+      await page.waitForLoadState('networkidle'); await settle(page);
+      const screenshot = await shot(page, 'real-map-' + width + '-' + theme);
+      const texture = await basemapTexture(page, screenshot);
+      urbanTextures.push({ width, theme, ...texture });
+      check(texture.colors > 8 && texture.edges > 20, 'Urban basemap paints varied street texture outside the pin: ' + JSON.stringify(texture));
     }
   }
   await page.setViewportSize({ width: 390, height: 844 }); await settle(page);
@@ -476,7 +510,7 @@ async function realMap() {
   equal(model.resultReads, before, 'Panning map does not change city-scoped results');
   check(tileSuccess > 0, 'Real tile successes recorded'); equal(tileFailure, 0, 'No provider tile failures');
   equal(model.writes.length, 0, 'Real provider case performs no content writes');
-  fs.writeFileSync(path.join(OUT, 'real-provider.json'), JSON.stringify({ tileSuccess, tileFailure, sdkSuccess }, null, 2)); await clean(run);
+  fs.writeFileSync(path.join(OUT, 'real-provider.json'), JSON.stringify({ tileSuccess, tileFailure, sdkSuccess, urbanTextures }, null, 2)); await clean(run);
 }
 
 async function authControls() {

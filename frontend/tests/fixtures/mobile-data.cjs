@@ -29,6 +29,8 @@ function multipart(request) {
   return fields;
 }
 async function install(context, options = {}) {
+  // A public central-London test point makes provider street rendering visible.
+  const resultPlace = options.realMap ? { ...place, points: { latitude: 51.5074, longitude: -0.1278 } } : place;
   const model = { authenticated: Boolean(options.authenticated), joined: false, teamJoined: false, failLeave: false, failTeamJoin: true, failVenue: false,
     failActivity: true, failTeam: true, failOrganization: true, failResults: false, empty: false, one: false, failOrganizations: false,
     requests: [], writes: [], countryReads: 0, resultReads: 0, unknown: [], activityPayload: null, teamPayload: null, organizationPayload: null };
@@ -57,7 +59,7 @@ async function install(context, options = {}) {
       if (model.empty) return ok([]);
       if (path.includes('/teams/')) return ok(Array.from({ length: model.one ? 1 : 25 }, (_, i) => team('Community team ' + String(i).padStart(2, '0'))));
       if (path.includes('/organizations/')) return ok([model.createdOrganization || organization]);
-      return ok(Array.from({ length: model.one ? 1 : 25 }, (_, i) => ({ ...activity, pk: i === 12 || model.one ? 'one' : String(i), title: i === 12 || model.one ? activity.title : 'Local game ' + i })));
+      return ok(Array.from({ length: model.one ? 1 : 25 }, (_, i) => ({ ...activity, location: resultPlace, pk: i === 12 || model.one ? 'one' : String(i), title: i === 12 || model.one ? activity.title : 'Local game ' + i })));
     }
     if (req.method() === 'GET' && path === '/api/categories/') return ok([{ pk: 'category-1', name: 'Ball games' }]);
     if (req.method() === 'GET' && path === '/api/organizations/list/') return model.failOrganizations ? fail() : ok(organizations);

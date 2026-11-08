@@ -45,6 +45,9 @@ describe('responsive shell', () => {
     expect(screen.getByText('/teams?city=Tashkent&q=tennis')).toBeTruthy();
     expect(screen.getByText('Page content')).toBeTruthy();
   });
+  it('labels root Explore as the active destination', () => {
+    shell('/'); expect(screen.getByRole('link', { name: 'Explore' }).getAttribute('aria-current')).toBe('page');
+  });
   it('offers a login that remembers the route and only supported account actions', () => {
     shell('/teams?city=Tashkent'); fireEvent.click(screen.getByRole('button', { name: 'Account' }));
     expect(screen.queryByText(/payments|saved activities|edit profile/i)).toBeNull();

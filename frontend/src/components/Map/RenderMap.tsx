@@ -1,111 +1,49 @@
-// ExtendedMap.tsx
-import React from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type * as maptilersdk from '@maptiler/sdk';
 import BaseMap from './BaseMap';
-import * as maptilersdk from '@maptiler/sdk';
-import SearchNavbar from '../SearchNavbar';
-import { SearchForButtons } from './UI/SearchForButtons';
-import { ActivityCardPropsType } from '../../types/ActivitiesListSchema.ts';
-import ListActivityCard from '../ActivitiesPage/ListActivityCard';
+import { useDiscovery } from '@/discovery/DiscoveryContext';
 import { displayActivities } from './MapFunctions/DisplayActivities';
-import { TeamType } from '@/pages/Teams/Teams';
-import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { displayTeams } from './MapFunctions/DisplayTeams';
-import TeamCard from '../TeamsPage/TeamCard';
-import type { OrganizationListingType } from '@/types/OrganizationsListingSchema';
-import { OrganizationListingCard } from '../OrganizationsPage/OrganizationListingCard';
 import { displayOrganizations } from './MapFunctions/DisplayOrganizations';
-// Create a page with other components and display them full screen on the map
-const RenderMap: React.FC = () => {
-  //Toggle when the user clicks people,activities,organizations or teams
-  const [searchFor, setSearchFor] = React.useState('activities');
-  const [activities, setActivities] = React.useState<ActivityCardPropsType[]>(
-    []
-  );
-  const [map, setMap] = React.useState<maptilersdk.Map>();
-  const [open, setOpen] = React.useState(false);
-  const [selectedActivity, setSelectedActivity] = React.useState<
-    ActivityCardPropsType | undefined
-  >(undefined);
-  const [selectedTeam, setSelectedTeam] = React.useState<TeamType | undefined>(
-    undefined
-  );
-  const [teams, setTeams] = React.useState<TeamType[]>([]);
-  const [organizations, setOrganizations] = React.useState<OrganizationListingType[]>([]);
-  const [selectedOrganization, setSelectedOrganization] = React.useState<OrganizationListingType>();
-
-  //Handle the map load
-  const handleMapLoad = (map: maptilersdk.Map) => {
-    setMap(map);
-  };
-  React.useEffect(() => {
+import type { DiscoveryResults } from '@/discovery/types';
+export default function RenderMap({ onOrganization, onError }: { onOrganization: (item: DiscoveryResults['organizations'][number]) => void; onError: () => void }) {
+  const { state, results } = useDiscovery(); const [map, setMap] = useState<maptilersdk.Map>();
+  const [loading, setLoading] = useState(true); const [selected, setSelected] = useState<string | null>(null);
+  const fitKey = useRef(''); const callbacks = useRef({ onOrganization, onError }); callbacks.current = { onOrganization, onError };
+  const points = useMemo(() => {
+    const locations = state.entity === 'teams' ? results.teams.map(item => item.location[0]) : state.entity === 'activities' ? results.activities.map(item => item.location) : results.organizations.map(item => item.location);
+    return locations.filter(location => location && Number.isFinite(location.points.longitude) && Number.isFinite(location.points.latitude) && Math.abs(location.points.longitude) <= 180 && Math.abs(location.points.latitude) <= 90).map(location => [location.points.longitude, location.points.latitude] as [number, number]);
+  }, [state.entity, results]);
+  const regionKey = JSON.stringify([state.geo, state.entity, points]);
+  useEffect(() => { setSelected(null); }, [regionKey]);
+  useEffect(() => {
+    if (!map) return;
+    const ready = () => setLoading(false);
+    const pending = () => setLoading(true);
+    map.on('load', ready); map.on('idle', ready); map.on('dataloading', pending);
+    if (map.loaded()) ready();
+    const timeout = window.setTimeout(() => { if (!map.loaded()) callbacks.current.onError(); }, 15000);
+    return () => { clearTimeout(timeout); map.off('load', ready); map.off('idle', ready); map.off('dataloading', pending); };
+  }, [map]);
+  useEffect(() => {
     if (!map) return;
     let cleanup: (() => void) | undefined;
-    const displayResults = () => {
-      if (!map.isStyleLoaded()) {
-        map.once('idle', displayResults);
-        return;
-      }
-      setSelectedActivity(undefined);
-      setSelectedTeam(undefined);
-      setSelectedOrganization(undefined);
-      if (searchFor === 'activities') {
-        cleanup = displayActivities(activities, map, setSelectedActivity, setOpen);
-      } else if (searchFor === 'teams') {
-        cleanup = displayTeams(teams, map, setSelectedTeam, setOpen);
-      } else if (searchFor === 'organizations') {
-        cleanup = displayOrganizations(organizations, map, setSelectedOrganization, setOpen);
-      }
-    };
-    displayResults();
-    return () => {
-      map.off('idle', displayResults);
+    const draw = () => {
+      if (!map.isStyleLoaded()) return;
       cleanup?.();
+      if (state.entity === 'activities') cleanup = displayActivities(results.activities, map, item => setSelected(item.pk), () => {});
+      else if (state.entity === 'teams') cleanup = displayTeams(results.teams, map, item => setSelected(item.name), () => {});
+      else cleanup = displayOrganizations(results.organizations, map, item => callbacks.current.onOrganization(item), () => {});
+      if (fitKey.current !== regionKey && points.length) {
+        const lng = points.map(point => point[0]); const lat = points.map(point => point[1]);
+        map.fitBounds([[Math.min(...lng), Math.min(...lat)], [Math.max(...lng), Math.max(...lat)]], { padding: { top: 40, right: 40, bottom: window.innerWidth < 1024 ? 240 : 40, left: 40 }, maxZoom: 13, duration: 0 });
+      }
+      fitKey.current = regionKey;
     };
-  }, [searchFor, activities, teams, organizations, map]);
-
-  return (
-    <>
-      <div className="fixed w-full left-0 top-6 z-1000">
-        <SearchNavbar
-          setActivities={searchFor === 'activities' ? setActivities : undefined}
-          setTeams={searchFor === 'teams' ? setTeams : undefined}
-          setOrganizations={searchFor === 'organizations' ? setOrganizations : undefined}
-          search_for={searchFor}
-        />
-      </div>
-      <div className="fixed left-0 top-20 flex justify-start z-1000">
-        <SearchForButtons setSearchFor={setSearchFor} />
-      </div>
-      <div className="fixed p-0 m-0 top-0 bottom-0 left-0 right-0 h-screen w-screen z-50">
-        <BaseMap onMapLoad={handleMapLoad} />
-      </div>
-      <Drawer shouldScaleBackground open={open} onOpenChange={setOpen}>
-        <DrawerContent className="flex justify-center items-center">
-          {/* Display the selected activity card */}
-          {selectedActivity && (
-            <ListActivityCard
-              className="border-none w-1/2"
-              {...selectedActivity}
-            />
-          )}
-          {selectedOrganization && <div className="w-full max-w-xl p-4"><OrganizationListingCard organization={selectedOrganization} /></div>}
-          {/* Display the selected team */}
-          {selectedTeam && (
-            <TeamCard
-              name={selectedTeam.name}
-              image_url={selectedTeam.image_url}
-              location_name={selectedTeam.city_name}
-              tshirt_color={selectedTeam.tshirt_color[0]?.name}
-              shorts_color={selectedTeam.shorts_color[0]?.name}
-              socks_color={selectedTeam.socks_color[0]?.name}
-              away_tshirt_color={selectedTeam.away_tshirt_color[0]?.name}
-              color_picker_needed={false}
-            />
-          )}
-        </DrawerContent>
-      </Drawer>
-    </>
-  );
-};
-
-export default RenderMap;
+    draw(); map.on('style.load', draw); map.on('load', draw);
+    return () => { map.off('style.load', draw); map.off('load', draw); cleanup?.(); };
+  }, [map, state.entity, results, regionKey, points]);
+  return <><BaseMap onMapLoad={setMap} onMapError={onError} />{loading && <p className="discovery-map-status" role="status">Loading map tiles…</p>}
+    {selected && <div className="discovery-map-selection"><p>{state.entity === 'activities' ? results.activities.find(item => item.pk === selected)?.title : selected}</p><p>Open this result in the list for details.</p><button onClick={() => setSelected(null)}>Close selection</button></div>}
+  </>;
+}

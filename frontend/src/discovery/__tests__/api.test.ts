@@ -54,17 +54,45 @@ describe('discovery API', () => {
     expect(requests).toBe(0);
   });
 
-  it('URL-encodes one city and preserves the existing parent-array and server search convention', async () => {
-    client.defaults.adapter = async (config) => {
-      expect(config.url).toBe('/api/activities/city/S%C3%A3o%20Jos%C3%A9%2F%C3%81rea/');
-      expect(config.params).toEqual({ countries: ['Brasil'], states: ['São Paulo'], search_by: 'café / football' });
-      const url = new URL(client.getUri(config), 'https://example.invalid');
-      expect(url.searchParams.getAll('countries[]')).toEqual(['Brasil']);
-      expect(url.searchParams.getAll('states[]')).toEqual(['São Paulo']);
-      expect(url.searchParams.get('search_by')).toBe('café / football');
+  it.each(['activities', 'teams', 'organizations'] as const)('falls back to country for slash city and filters exact parents for %s', async (entity) => {
+    const geo = { level: 'city', country: 'United Kingdom', state: 'England', city: 'Cambridge/Area' } as const;
+    const base = entity === 'activities' ? activity : entity === 'teams' ? team : organization;
+    const located = (country: string, region: string, city: string) => entity === 'teams'
+      ? { ...base, country_name: country, state_name: region, city_name: city }
+      : { ...base, country: { name: country }, state: { name: region }, city: { name: city } };
+    client.defaults.adapter = async config => {
+      expect(config.url).toBe(`/api/${entity}/country/United%20Kingdom/`);
+      expect(config.params).toEqual({ search_by: 'football' });
+      return success(config, [located('United Kingdom', 'England', 'Cambridge/Area'), located('Other', 'England', 'Cambridge/Area'), located('United Kingdom', 'Other', 'Cambridge/Area'), located('United Kingdom', 'England', 'Other')]);
+    };
+    expect((await fetchResults({ ...state, entity, geo }))[entity]).toHaveLength(1);
+  });
+  it('falls back for a comma-containing literal city rather than CSV-splitting it', async () => {
+    client.defaults.adapter = async config => {
+      expect(config.url).toBe('/api/activities/country/United%20Kingdom/');
+      expect(config.params.search_by).toBe('football');
+      return success(config, [{ ...activity, city: { name: 'Cambridge,Area' } }, activity]);
+    };
+    expect((await fetchResults({ ...state, geo: { level: 'city', country: 'United Kingdom', state: 'England', city: 'Cambridge,Area' } })).activities).toHaveLength(1);
+  });
+  it('retains unsafe parent names when only the safe child is in the route path', async () => {
+    client.defaults.adapter = async config => {
+      expect(config.url).toBe('/api/activities/city/Cambridge/');
+      expect(config.params).toEqual({ countries: ['A/B'], states: ['North,South'], search_by: 'football' });
       return success(config, []);
     };
-    await fetchResults({ ...state, geo: { level: 'city', country: 'Brasil', state: 'São Paulo', city: 'São José/Área' }, query: 'café / football' });
+    await fetchResults({ ...state, geo: { level: 'city', country: 'A/B', state: 'North,South', city: 'Cambridge' } });
+  });
+  it('uses exact state filtering when a state contains a slash', async () => {
+    client.defaults.adapter = async config => {
+      expect(config.url).toBe('/api/activities/country/United%20Kingdom/');
+      return success(config, [{ ...activity, state: { name: 'North/South' } }, activity]);
+    };
+    expect((await fetchResults({ ...state, geo: { level: 'state', country: 'United Kingdom', state: 'North/South' } })).activities).toHaveLength(1);
+  });
+  it('rejects slash country with region-choice guidance without transport', async () => {
+    client.defaults.adapter = async () => { throw new Error('must not request'); };
+    await expect(fetchResults({ ...state, geo: { level: 'country', country: 'A/B' } })).rejects.toThrow(/choose another region/i);
   });
 
   it.each([

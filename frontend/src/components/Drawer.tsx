@@ -1,3 +1,4 @@
+import type { DiscoveryEntity } from '@/discovery/types';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,8 +18,9 @@ import { useState } from 'react';
 import NewOrganizationDrawer from '@/components/OrganizationsPage/NewOrganizationDrawer';
 import NewTeamDrawer from './TeamsPage/NewTeamDrawer';
 
-export function Create() {
+export function Create({ entity }: { entity?: DiscoveryEntity }) {
   const location = useLocation();
+  const formPath = entity ? `/${entity}` : location.pathname;
 
   const [open, setOpen] = useState(false);
   const [progressBar, setProgressBar] = useState<number>(0);
@@ -34,34 +36,34 @@ export function Create() {
         <div className="mx-auto w-full max-w-xl">
           <DrawerHeader>
             <DrawerTitle>
-              {location.pathname === '/activities'
+              {formPath === '/activities'
                 ? 'Create a new activity'
-                : location.pathname === '/teams'
+                : formPath === '/teams'
                 ? 'Create a new team'
-                : location.pathname === '/organizations'
+                : formPath === '/organizations'
                 ? 'Create a new organization'
                 : null}
             </DrawerTitle>
             <DrawerDescription>
-              {location.pathname === '/activities'
+              {formPath === '/activities'
                 ? "It's going to take few steps. Swipe right for the next step!"
-                : location.pathname === '/teams'
+                : formPath === '/teams'
                 ? 'Fill in the forms to create a new team! Scroll down as you fill in the forms!'
-                : location.pathname === '/organizations'
+                : formPath === '/organizations'
                 ? 'Fill in the forms to create a new team! Scroll down as you fill in the forms!'
                 : null}
             </DrawerDescription>
           </DrawerHeader>
           <div className="max-h-[700px]">
-            {['/activities', '/activities/'].includes(location.pathname) ? (
+            {['/activities', '/activities/'].includes(formPath) ? (
               <NewActivityDrawer setProgressBar={setProgressBar} />
-            ) : ['/teams', '/teams/'].includes(location.pathname) ? (
+            ) : ['/teams', '/teams/'].includes(formPath) ? (
               <>
                 <Progress className="mb-4" value={progressBar} />
                 <NewTeamDrawer setProgressBar={setProgressBar} />
               </>
             ) : ['/organizations', '/organizations/'].includes(
-                location.pathname
+                formPath
               ) ? (
               <>
                 <Progress value={progressBar} />
@@ -70,13 +72,13 @@ export function Create() {
             ) : null}
           </div>
           {/* If it's activiites page then we would like to display the progress bar at the bottom */}
-          {['/activities', '/activities/'].includes(location.pathname) ? (
+          {['/activities', '/activities/'].includes(formPath) ? (
             <DrawerFooter>
               <Progress
                 className=" sm:w-[300px] md:w-[535px]"
                 value={progressBar}
               />
-              <DrawerClose className="w-full">
+              <DrawerClose asChild className="w-full">
                 <Button variant={'outline'} className="w-full">
                   Close
                 </Button>
@@ -84,7 +86,7 @@ export function Create() {
             </DrawerFooter>
           ) : (
             <DrawerFooter>
-              <DrawerClose className="w-full">
+              <DrawerClose asChild className="w-full">
                 <Button variant={'outline'} className="w-full">
                   Close
                 </Button>

@@ -11,7 +11,7 @@ export const displayOrganizations = (
     type: 'geojson',
     data: {
       type: 'FeatureCollection',
-      features: organizations.map((organization) => ({
+      features: organizations.filter((organization) => { const location = organization.location; return location && Number.isFinite(location.points.longitude) && Number.isFinite(location.points.latitude) && Math.abs(location.points.longitude) <= 180 && Math.abs(location.points.latitude) <= 90; }).map((organization) => ({
         type: 'Feature',
         geometry: {
           type: 'Point',

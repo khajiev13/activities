@@ -8,14 +8,13 @@ export const displayActivities = (
   setSelectedActivity: (activity: ActivityCardPropsType) => void,
   setOpen: (open: boolean) => void
 ): (() => void) => {
+  let active = true;
   //Check if the image is loaded, if not then load
   if (!map.hasImage('evento_pin')) {
     map.loadImage(pin, function (error, image) {
-      if (error) throw error;
+      if (!active || error) return;
       if (image) {
-        map.addImage('evento_pin', image);
-      } else {
-        console.error('Image is not loaded correctly');
+        if (!map.hasImage('evento_pin')) map.addImage('evento_pin', image);
       }
     });
   }
@@ -24,7 +23,7 @@ export const displayActivities = (
 
   const geojson = {
     type: 'FeatureCollection',
-    features: activities.map((activity) => ({
+    features: activities.filter((activity) => { const location = activity.location; return location && Number.isFinite(location.points.longitude) && Number.isFinite(location.points.latitude) && Math.abs(location.points.longitude) <= 180 && Math.abs(location.points.latitude) <= 90; }).map((activity) => ({
       type: 'Feature',
       geometry: {
         type: 'Point',
@@ -104,17 +103,16 @@ export const displayActivities = (
   });
   // inspect a cluster on click
   const onClusterClick = (e: maptilersdk.MapMouseEvent) => {
-    var features = map.queryRenderedFeatures(e.point, {
+    const features = map.queryRenderedFeatures(e.point, {
       layers: ['clusters'],
     });
-    var clusterId = features[0].properties.cluster_id;
-    console.log(clusterId);
-    console.log(features);
+    if (!features.length) return;
+    const clusterId = features[0].properties.cluster_id;
     const source = map.getSource('activities') as maptilersdk.GeoJSONSource;
     source.getClusterExpansionZoom(clusterId, function (err, zoom) {
       //Set the zoom and center to the cluster
 
-      var coordinates = (features[0].geometry as GeoJSON.Point).coordinates;
+      const coordinates = (features[0].geometry as GeoJSON.Point).coordinates;
       if (err || !zoom) return;
       if (Array.isArray(coordinates) && coordinates.length >= 2) {
         const center: [number, number] = [coordinates[0], coordinates[1]];
@@ -141,6 +139,7 @@ export const displayActivities = (
   map.on('click', 'unclustered-point', onMarkerClick);
 
   return () => {
+    active = false;
     map.off('click', 'clusters', onClusterClick);
     map.off('click', 'unclustered-point', onMarkerClick);
     if (map.getLayer('clusters')) {

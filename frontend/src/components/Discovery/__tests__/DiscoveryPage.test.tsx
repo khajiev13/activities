@@ -11,7 +11,7 @@ import { DiscoveryPage } from '../DiscoveryPage';
 import type { DiscoveryResults } from '@/discovery/types';
 vi.mock('@/discovery/api', () => ({ fetchCountries: vi.fn(), fetchResults: vi.fn() }));
 vi.mock('@/components/Drawer', () => ({ Create: ({ entity }: { entity: string }) => <button>Create {entity}</button> }));
-const sdk = vi.hoisted(() => ({ sources: new Map<string, { data: { features: { properties: { pk?: string } }[] } }>(), fits: vi.fn(), listeners: new Map<string, Set<() => void>>() }));
+const sdk = vi.hoisted(() => ({ sources: new Map<string, { data: { features: { properties: { pk?: string } }[] } }>(), fits: vi.fn(), jumps: vi.fn(), listeners: new Map<string, Set<() => void>>() }));
 vi.mock('@maptiler/sdk', () => ({ config: {}, MapStyle: { BASIC: { DARK: 'dark', LIGHT: 'light' } }, Map: class {
   on(name: string, layer: string | (() => void), fn?: () => void) { const cb = typeof layer === 'function' ? layer : fn!; if (!sdk.listeners.has(name)) sdk.listeners.set(name, new Set()); sdk.listeners.get(name)!.add(cb); }
   once(name: string, fn: () => void) { this.on(name, fn); }
@@ -19,7 +19,7 @@ vi.mock('@maptiler/sdk', () => ({ config: {}, MapStyle: { BASIC: { DARK: 'dark',
   isStyleLoaded() { return true; } loaded() { return true; } resize() {} remove() {} setStyle() {}
   addSource(id: string, data: never) { sdk.sources.set(id, data); } getSource(id: string) { return sdk.sources.get(id); } removeSource(id: string) { sdk.sources.delete(id); }
   hasImage() { return true; }
-  addLayer() {} getLayer() { return true; } removeLayer() {} fitBounds = sdk.fits;
+  addLayer() {} getLayer() { return true; } removeLayer() {} fitBounds = sdk.fits; jumpTo = sdk.jumps;
 } }));
 const organization = { pk: 'org-1', name: 'Real Club', created_at: new Date('2026-11-08'), image_url: null, country: { name: 'UK' }, state: { name: 'England' }, city: { name: 'Cambridge' }, location: { name: 'Pitch', pk: 'pitch', points: { latitude: 52, longitude: 0 } }, teams_count: 2, number_of_people_joined: 3, number_of_teams_sponsored: 1, hosting_leagues_count: 0, hosting_activities_count: 4 };
 const results: DiscoveryResults = { activities: [], teams: [], organizations: [organization] };
@@ -50,6 +50,31 @@ it('shows real tile loading while a new viewport loads and clears it on idle', a
 it('keeps invalid coordinates in list while excluding them from map', async () => {
   vi.mocked(fetchResults).mockResolvedValue({ ...results, organizations: [{ ...organization, location: { ...organization.location, points: { latitude: 999, longitude: 0 } } }] });
   mount(); expect(await screen.findByText('Real Club')).toBeTruthy(); await waitFor(() => expect(sdk.sources.get('organizations')?.data.features).toEqual([]));
+});
+it.each(['empty', 'unmappable'] as const)('resets the camera after changing a populated city to an %s city', async kind => {
+  vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }, { name: 'Scotland', cities: [{ name: 'Edinburgh' }] }] }]);
+  const other = { ...organization, pk: 'org-other', name: 'Other Club', state: { name: 'Scotland' }, city: { name: 'Edinburgh' }, location: { ...organization.location, points: { latitude: 999, longitude: 0 } } };
+  vi.mocked(fetchResults).mockImplementation(async state => state.geo?.city === 'Edinburgh'
+    ? { activities: [], teams: [], organizations: kind === 'empty' ? [] : [other] } : results);
+  mount(); await screen.findByText('Real Club'); await waitFor(() => expect(sdk.fits).toHaveBeenCalled());
+  fireEvent.click(screen.getByRole('button', { name: /Cambridge/ }));
+  fireEvent.click(await screen.findByRole('button', { name: 'Edinburgh, Scotland, UK' }));
+  await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+  if (kind === 'empty') await screen.findByText(/No organizations found/); else await screen.findByText('Other Club');
+  expect(await screen.findByText('No mapped locations are available for Edinburgh, Scotland, UK.')).toBeTruthy();
+  expect(sdk.jumps).toHaveBeenCalledWith({ center: [0, 20], zoom: 2, padding: { top: 0, right: 0, bottom: 0, left: 0 } });
+  const fits = sdk.fits.mock.calls.length; const jumps = sdk.jumps.mock.calls.length;
+  fireEvent.click(screen.getByRole('button', { name: 'List' })); fireEvent.click(screen.getByRole('button', { name: 'Map' }));
+  expect(sdk.fits).toHaveBeenCalledTimes(fits); expect(sdk.jumps).toHaveBeenCalledTimes(jumps);
+});
+it('preserves intentional pan when search becomes empty within the same geography', async () => {
+  vi.mocked(fetchResults).mockImplementation(async state => state.query === 'none' ? { activities: [], teams: [], organizations: [] } : results);
+  mount(); await screen.findByText('Real Club'); await waitFor(() => expect(sdk.fits).toHaveBeenCalled());
+  const jumps = sdk.jumps.mock.calls.length;
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'none' } });
+  await screen.findByText(/No organizations found/);
+  expect(sdk.jumps).toHaveBeenCalledTimes(jumps);
+  expect(screen.queryByText(/This map view does not show the selected region/)).toBeNull();
 });
 it('shows usable list after a map failure and an informational organization preview without invented detail or join action', async () => {
   mount(); await screen.findByText('Real Club'); act(() => { for (const fn of sdk.listeners.get('error') ?? []) fn(); });

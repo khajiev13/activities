@@ -150,7 +150,8 @@ input, select, textarea { min-height: 44px; font-size: 16px !important; }
 .discovery-page { display:flex; flex-direction:column; height:100%; min-height:0; position:relative; }
 .discovery-header { padding:12px 16px; background:hsl(var(--background)); display:grid; gap:10px; z-index:2; }
 .discovery-header-top,.discovery-search-row,.discovery-results-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-.discovery-city { text-align:left; font-size:20px; font-weight:700; line-height:1.2; }
+.discovery-header-top > a { flex:none; width:auto; }
+.discovery-city { flex:1; text-align:left; font-size:20px; font-weight:700; line-height:1.2; overflow-wrap:anywhere; }
 .discovery-city span { display:block; font-size:12px; font-weight:400; color:hsl(var(--muted-foreground)); margin-top:4px; }
 .discovery-entities,.discovery-view { display:flex; gap:4px; }
 .discovery-entities button,.discovery-view button { border-radius:22px; padding:0 12px; font-size:12px; font-weight:600; }
@@ -195,6 +196,7 @@ input, select, textarea { min-height: 44px; font-size: 16px !important; }
 }
 .app-content.discovery-content { padding:0; overflow:hidden; }
 .discovery-city strong { display:flex; align-items:center; gap:8px; }
+.discovery-city strong svg { flex-shrink:0; }
 @media(max-width:1023px) {
  .discovery-map .maplibregl-ctrl-bottom-left,.discovery-map .maplibregl-ctrl-bottom-right { bottom:210px; }
 }

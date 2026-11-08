@@ -81,6 +81,33 @@ async function runCase(name, fn) {
   catch (error) { const message = error.message.replace(/https?:\/\/\S+/g, '[URL]').replace(/\+\d{9,15}|\b\d{6}\b|\b[a-f0-9]{32,64}\b/gi, '[synthetic auth value]').slice(0, 2200); results.push({ name, status: 'FAIL', checks: checks - before, message }); console.error('FAIL ' + name + ': ' + message); }
   finally { for (const context of browser.contexts()) await context.close(); }
 }
+async function cityHeader() {
+  for (const authenticated of [false, true]) for (const width of [320, 390]) for (const city of ['Wangfujing', 'Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch']) {
+    const run = await setup({ authenticated, context: { viewport: { width, height: 844 } } }); const { page, model } = run;
+    const query = new URLSearchParams(data.query('activities').slice(1)); query.set('city', city);
+    await page.goto(BASE + '/map?' + query);
+    const header = page.locator('.discovery-header-top');
+    const create = header.getByRole(authenticated ? 'button' : 'link', { name: 'Create', exact: true }); await create.waitFor();
+    const bounds = await header.evaluate(el => {
+      const city = el.querySelector('.discovery-city'), strong = city.querySelector('strong'), create = el.querySelector('a, button:not(.discovery-city)');
+      const range = document.createRange(); range.selectNodeContents(strong.firstChild);
+      const rect = r => ({ left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width, height: r.height });
+      const exposed = element => { const r = element.getBoundingClientRect(), hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return element === hit || element.contains(hit); };
+      return { city: rect(city.getBoundingClientRect()), title: [...range.getClientRects()].map(rect), chevron: rect(strong.querySelector('svg').getBoundingClientRect()), create: rect(create.getBoundingClientRect()), cityExposed: exposed(city), createExposed: exposed(create) };
+    });
+    const name = `${authenticated ? 'member' : 'anonymous'}-${width}-${city === 'Wangfujing' ? 'stored-city' : 'long-city'}`;
+    await shot(page, 'header-' + name);
+    check(bounds.city.right <= bounds.create.left && [...bounds.title, bounds.chevron].every(r => r.left >= bounds.city.left - 1 && r.right <= bounds.city.right + 1 && r.top >= bounds.city.top - 1 && r.bottom <= bounds.city.bottom + 1), 'City title and chevron stay inside their control, clear of Create: ' + name + ' ' + JSON.stringify(bounds));
+    check(bounds.chevron.width > 0, 'City change chevron remains visible: ' + name);
+    check(bounds.city.width >= 44 && bounds.city.height >= 44 && bounds.create.width >= 44 && bounds.create.height >= 44 && bounds.cityExposed && bounds.createExposed, 'City and Create controls remain exposed 44px targets: ' + name);
+    await fit(page);
+    await header.getByRole('button', { name: new RegExp(city) }).click(); await page.getByRole('dialog').getByRole('heading', { name: 'Choose a city', exact: true }).waitFor();
+    await page.getByRole('dialog').getByRole('button', { name: 'Close', exact: true }).click();
+    equal(new URL(page.url()).searchParams.get('city'), city, 'City chooser close preserves selected city');
+    equal(model.writes.length, 0, 'Header checks make no content writes'); await clean(run);
+  }
+}
+
 async function responsive() {
   for (const width of [320, 360, 390, 430, 768, 1280]) for (const theme of ['light', 'dark']) {
     const run = await setup({ context: { viewport: { width, height: width >= 768 ? 960 : 844 }, colorScheme: theme } }); const { page, resources, model } = run;
@@ -703,7 +730,7 @@ async function stalePersistence() {
   fs.mkdirSync(OUT, { recursive: true });
   browser = await chromium.launch({ headless: true, ...(process.env.CHROME_EXECUTABLE ? { executablePath: process.env.CHROME_EXECUTABLE } : {}), args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-webgl'] });
   try {
-    for (const [name, fn] of Object.entries({ copy, responsive, navigation, geography, 'auth-controls': authControls, 'contrast': themeContrast, 'auth-participation': authParticipation, 'team-join': teamJoin, 'join-viewport': joinViewport, 'pin-return': pinReturn, 'venue-timeout': venueTimeout, 'create-focused-resize': createFocusedResize, 'modal-focus': modalFocus, accessibility, 'native-adapter': nativeAdapter, 'activity-form': activityForm, 'team-form': teamForm, 'native-kit': nativeKit, 'organization-form': organizationForm, 'map-failure': mapFailure, 'real-map': realMap, 'import-failure': importFailure, 'entry-loading': entryLoading, 'stale-persistence': stalePersistence })) await runCase(name, fn);
+    for (const [name, fn] of Object.entries({ copy, 'city-header': cityHeader, responsive, navigation, geography, 'auth-controls': authControls, 'contrast': themeContrast, 'auth-participation': authParticipation, 'team-join': teamJoin, 'join-viewport': joinViewport, 'pin-return': pinReturn, 'venue-timeout': venueTimeout, 'create-focused-resize': createFocusedResize, 'modal-focus': modalFocus, accessibility, 'native-adapter': nativeAdapter, 'activity-form': activityForm, 'team-form': teamForm, 'native-kit': nativeKit, 'organization-form': organizationForm, 'map-failure': mapFailure, 'real-map': realMap, 'import-failure': importFailure, 'entry-loading': entryLoading, 'stale-persistence': stalePersistence })) await runCase(name, fn);
   } finally { await browser.close(); }
   fs.writeFileSync(path.join(OUT, 'results.json'), JSON.stringify({ checks, results }, null, 2));
   console.log(`${results.filter(result => result.status === 'PASS').length}/${results.length} cases; ${checks} assertions`);

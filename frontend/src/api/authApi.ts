@@ -1,3 +1,4 @@
+import axios from 'axios';
 import client from './client';
 import { setAccessToken } from './tokenStore';
 
@@ -14,12 +15,47 @@ export interface LoginResult {
   user: AuthUser;
 }
 
-type TelegramWindow = Window & {
-  Telegram?: { WebApp?: { initData?: string } };
+type TelegramWebApp = {
+  initData?: string;
+  ready?: () => void;
+  expand?: () => void;
+  isVersionAtLeast?: (version: string) => boolean;
+  requestContact?: (callback: (shared: boolean) => void) => void;
 };
+type TelegramWindow = Window & { Telegram?: { WebApp?: TelegramWebApp } };
+
+function getWebApp(): TelegramWebApp | undefined {
+  return typeof window === 'undefined' ? undefined : (window as TelegramWindow).Telegram?.WebApp;
+}
+
+export function initializeTelegramWebApp(): void {
+  if (!isInTelegram()) return;
+  const webApp = getWebApp();
+  // Older clients may omit optional methods or reject a native capability.
+  for (const method of ['ready', 'expand'] as const) {
+    try { webApp?.[method]?.(); } catch { /* Authentication remains available. */ }
+  }
+}
+
+export function requestTelegramContact(): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    const webApp = getWebApp();
+    if (!isInTelegram() || !webApp?.requestContact || webApp.isVersionAtLeast?.('6.9') === false) {
+      reject(new Error('Contact sharing is unavailable. Update Telegram and reopen this app.'));
+      return;
+    }
+    try { webApp.requestContact(resolve); } catch { reject(new Error('Unable to open contact sharing. Please try again in Telegram.')); }
+  });
+}
+
+export type TelegramLoginIssue = 'phone_required' | 'expired' | 'network';
+let telegramLoginIssue: TelegramLoginIssue | null = null;
+export function getTelegramLoginIssue(): TelegramLoginIssue | null {
+  return telegramLoginIssue;
+}
 
 function getInitData(): string {
-  return typeof window === 'undefined' ? '' : (window as TelegramWindow).Telegram?.WebApp?.initData ?? '';
+  return getWebApp()?.initData ?? '';
 }
 
 export function isInTelegram(): boolean {
@@ -50,13 +86,25 @@ let logoutFlight: Promise<void> | null = null;
 
 export async function loginWithWebApp(initData: string): Promise<LoginResult> {
   const version = sessionVersion;
-  const response = await client.post<LoginResult>('/api/auth/telegram/webapp', { init_data: initData }, {
-    // XHR still sends same-origin cookies when withCredentials is false.
-    adapter: 'fetch',
-    withCredentials: false,
-  });
-  if (version === sessionVersion && !logoutFlight) setAccessToken(response.data.access_token);
-  return response.data;
+  try {
+    const response = await client.post<LoginResult>('/api/auth/telegram/webapp', { init_data: initData }, {
+      // XHR still sends same-origin cookies when withCredentials is false.
+      adapter: 'fetch',
+      withCredentials: false,
+    });
+    if (version === sessionVersion && !logoutFlight) {
+      telegramLoginIssue = null;
+      setAccessToken(response.data.access_token);
+    }
+    return response.data;
+  } catch (cause) {
+    if (version === sessionVersion && !logoutFlight) {
+      telegramLoginIssue = axios.isAxiosError(cause) && cause.response?.data?.error === 103
+        ? 'phone_required'
+        : axios.isAxiosError(cause) && cause.response?.status === 401 ? 'expired' : 'network';
+    }
+    throw cause;
+  }
 }
 
 let refreshFlight: Promise<string | null> | null = null;

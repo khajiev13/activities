@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AlertDestructive from '@/components/ui/AlertDestructive';
 import { AuthContext } from '@/auth/AuthContext';
-import { requestOtp } from '@/api/authApi';
+import { isInTelegram, requestOtp } from '@/api/authApi';
 import { formatUzPhone } from '@/auth/phone';
 
 export function LoginForm() {
@@ -70,6 +70,8 @@ export function LoginForm() {
     }
   };
 
+  if (isInTelegram()) return <TelegramLoginForm />;
+
   return (
     <form onSubmit={submit}>
       <Card className="dark:bg-black border-none">
@@ -97,4 +99,51 @@ export function LoginForm() {
       </Card>
     </form>
   );
+}
+
+function TelegramLoginForm() {
+  const { status, telegramIssue, retryTelegramLogin, shareTelegramContact } = useContext(AuthContext);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [contactShared, setContactShared] = useState(false);
+
+  const retry = async () => {
+    setBusy(true);
+    setMessage(null);
+    try { await retryTelegramLogin(); }
+    finally { setBusy(false); }
+  };
+  const share = async () => {
+    setBusy(true);
+    setMessage(null);
+    try {
+      const result = await shareTelegramContact();
+      if (result === 'cancelled') setMessage('Contact sharing was cancelled. You can try again when you are ready.');
+      if (result === 'pending') {
+        setContactShared(true);
+        setMessage('Your contact is still being saved. Please try again in a moment.');
+      }
+    } catch (cause) {
+      setMessage(cause instanceof Error ? cause.message : 'Unable to share your contact. Please try again.');
+    } finally { setBusy(false); }
+  };
+
+  const loading = busy || status === 'loading';
+  return <Card className="dark:bg-black border-none">
+    <CardHeader className="space-y-1">
+      <CardTitle className="text-2xl">Login with Telegram</CardTitle>
+      <CardDescription>{telegramIssue === 'phone_required'
+        ? 'Share your phone number with @eventopiarobot to finish signing in. Telegram will ask for your permission.'
+        : telegramIssue === 'expired'
+          ? 'Close this app and reopen it from @eventopiarobot in Telegram to renew your session.'
+          : loading ? 'Signing in with Telegram…' : telegramIssue === 'network' ? 'Unable to connect. Check your connection and try again.' : 'Sign in securely with your Telegram account.'}</CardDescription>
+    </CardHeader>
+    {message && <CardContent><AlertDestructive title="Telegram login" description={message} /></CardContent>}
+    <CardFooter className="flex flex-col gap-3">
+      {telegramIssue === 'phone_required' && !contactShared && <Button className="w-full bg-maincolor hover:bg-orange-700" disabled={loading} onClick={share}>Share phone number</Button>}
+      {(telegramIssue === 'network' || contactShared || (telegramIssue === null && status === 'anonymous')) && telegramIssue !== 'expired' && <Button disabled={loading} onClick={retry}>Try again</Button>}
+      {loading && <p role="status">Please wait…</p>}
+      <a className="text-sm underline" href="https://t.me/eventopiarobot" target="_blank" rel="noreferrer">Open @eventopiarobot</a>
+    </CardFooter>
+  </Card>;
 }

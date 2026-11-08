@@ -407,3 +407,63 @@ it('waits for a delayed OTP cookie before logout and never installs its token', 
   expect(requests).toEqual(['/api/auth/otp/verify', '/api/auth/logout']);
   expect(tokens.getAccessToken()).toBeNull();
 });
+
+describe('Mini App SDK and recoverable login states', () => {
+  it('initializes the native app only when signed initData is present and tolerates omitted capabilities', () => {
+    const events: string[] = [];
+    vi.stubGlobal('window', { Telegram: { WebApp: {
+      initData: '', ready: () => events.push('ready'), expand: () => events.push('expand'),
+    } } });
+    auth.initializeTelegramWebApp();
+    expect(events).toEqual([]);
+    vi.stubGlobal('window', { Telegram: { WebApp: {
+      initData: 'synthetic-init-data', ready: () => events.push('ready'), expand: () => events.push('expand'),
+    } } });
+    auth.initializeTelegramWebApp();
+    expect(events).toEqual(['ready', 'expand']);
+    vi.stubGlobal('window', { Telegram: { WebApp: { initData: 'synthetic-init-data' } } });
+    expect(() => auth.initializeTelegramWebApp()).not.toThrow();
+  });
+
+  it.each([
+    [403, 103, 'phone_required'],
+    [401, 101, 'expired'],
+    [503, 500, 'network'],
+  ] as const)('preserves a recoverable Mini App state for HTTP %s/error %s without cookie refresh', async (status, error, issue) => {
+    vi.stubGlobal('window', { Telegram: { WebApp: { initData: 'synthetic-init-data' } } });
+    const paths: string[] = [];
+    transport(async (config) => {
+      paths.push(config.url!);
+      throw new AxiosError('Synthetic failure', 'ERR_BAD_RESPONSE', config, undefined,
+        response(config, { requestId: 'synthetic', error }, status));
+    });
+    expect(await auth.refreshAccessToken()).toBeNull();
+    expect(auth.getTelegramLoginIssue()).toBe(issue);
+    expect(paths).toEqual(['/api/auth/telegram/webapp']);
+    expect(tokens.getAccessToken()).toBeNull();
+    transport(async config => success(config, { access_token: 'synthetic-retry', user }));
+    expect(await auth.refreshAccessToken()).toBe('synthetic-retry');
+    expect(auth.getTelegramLoginIssue()).toBeNull();
+  });
+
+  it('keeps cancelled native contact consent anonymous and allows another request', async () => {
+    const results = [false, true];
+    let callback: ((shared: boolean) => void) | undefined;
+    vi.stubGlobal('window', { Telegram: { WebApp: {
+      initData: 'synthetic-init-data',
+      requestContact: (next: (shared: boolean) => void) => { callback = next; },
+    } } });
+    for (const expected of results) {
+      const sharing = auth.requestTelegramContact();
+      callback!(expected);
+      expect(await sharing).toBe(expected);
+      expect(tokens.getAccessToken()).toBeNull();
+    }
+  });
+
+  it('offers safe recovery when a native client does not support contact sharing', async () => {
+    vi.stubGlobal('window', { Telegram: { WebApp: { initData: 'synthetic-init-data' } } });
+    await expect(auth.requestTelegramContact()).rejects.toThrow('Update Telegram and reopen');
+    expect(tokens.getAccessToken()).toBeNull();
+  });
+});

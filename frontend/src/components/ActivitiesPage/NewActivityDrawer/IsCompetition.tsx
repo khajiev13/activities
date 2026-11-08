@@ -1,67 +1,14 @@
-import { CompetitionDisplay } from '@/components/CompetitionDisplay';
-import { FormLabel } from '@/components/ui/form';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
+import { SelectTeam } from '@/components/SelectTeam';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export type Team = {
-  name: string;
-  image_url: string | null;
-  score?: number;
-};
-
-type Props = {
-  setTeam1Prop: (team: string) => void;
-  setTeam2Prop: (team: string) => void;
-  setIsCompetition: (isCompetition: boolean) => void;
-};
-
-export const IsCompetition = ({
-  setTeam1Prop,
-  setTeam2Prop,
-  setIsCompetition,
-}: Props) => {
-  const [team1, setTeam1] = useState<Team | undefined>(undefined);
-  const [team2, setTeam2] = useState<Team | undefined>(undefined);
-  return (
-    <Tabs defaultValue="organization" className="w-full">
-      <div className="flex items-center mt-4 w-full p-0 m-0">
-        <FormLabel>Is this activity a competition?</FormLabel>
-        <TabsList className="ml-auto">
-          <TabsTrigger
-            value="yes"
-            className="text-zinc-600 dark:text-zinc-200"
-            onClick={() => {
-              setIsCompetition(true);
-            }}
-          >
-            Yes
-          </TabsTrigger>
-          <TabsTrigger
-            value="no"
-            className="text-zinc-600 dark:text-zinc-200"
-            onClick={() => {
-              setIsCompetition(false);
-            }}
-          >
-            No
-          </TabsTrigger>
-        </TabsList>
-      </div>
-      <TabsContent className="p-0 m-0" value="yes">
-        <CompetitionDisplay
-          team1={team1}
-          team2={team2}
-          league_name="Beijing International Friendly Leaugue"
-          setTeam1Prop={(team: Team) => {
-            setTeam1Prop(team.name);
-            setTeam1(team);
-          }}
-          setTeam2Prop={(team: Team) => {
-            setTeam2Prop(team.name);
-            setTeam2(team);
-          }}
-        />
-      </TabsContent>
-    </Tabs>
-  );
-};
+export type Team = { name: string; image_url: string | null; score?: number };
+type Props = { setTeam1Prop: (team: string) => void; setTeam2Prop: (team: string) => void; setIsCompetition: (isCompetition: boolean) => void };
+export function IsCompetition({ setTeam1Prop, setTeam2Prop, setIsCompetition }: Props) {
+  const [first, setFirst] = useState<Team>(); const [second, setSecond] = useState<Team>();
+  return <Tabs defaultValue="no" onValueChange={value => setIsCompetition(value === 'yes')} className="w-full min-w-0">
+    <p className="text-sm mb-2">Is this activity a competition?</p><TabsList aria-label="Competition"><TabsTrigger value="yes" className="min-h-11">Yes</TabsTrigger><TabsTrigger value="no" className="min-h-11">No</TabsTrigger></TabsList>
+    <TabsContent value="yes" className="space-y-4">{([[first, setFirst, setTeam1Prop], [second, setSecond, setTeam2Prop]] as const).map(([team, setTeam, notify], index) => <div key={index} className="rounded-lg border p-3 space-y-2"><p className="font-medium">Team {index + 1}</p>{team ? <><p>{team.name}</p><Button type="button" variant="outline" className="min-h-11" onClick={() => { setTeam(undefined); notify(''); }}>Change team {index + 1}</Button></> : <SelectTeam setTeamProp={value => { setTeam(value); notify(value.name); }} />}</div>)}</TabsContent>
+  </Tabs>;
+}

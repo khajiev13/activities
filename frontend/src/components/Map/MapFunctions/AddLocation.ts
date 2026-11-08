@@ -1,4 +1,3 @@
-import axios from 'axios'; // Make sure to import axios
 import axiosInstance from '@/axios';
 
 export interface LocationDetails {
@@ -12,69 +11,48 @@ export interface LocationDetails {
   sunrise: string;
   sunset: string;
 }
-
-async function fetchLocationDetails(
-  latitude: number,
-  longitude: number,
-  username: string
-) {
-  const url = `https://secure.geonames.org/findNearbyPlaceNameJSON?lat=${latitude}&lng=${longitude}&username=${username}`;
-  const time_zone_url = `https://secure.geonames.org/timezoneJSON?lat=${latitude}&lng=${longitude}&username=${username}`;
-  try {
-    const response = await axios.get(url); // Use axios.get instead of fetch
-    const data = response.data; // Axios stores the response data in a .data property
-    // Extract the country, state, and city from the data
-    const country = data.geonames[0]?.countryName;
-    const state = data.geonames[0]?.adminName1;
-    const city = data.geonames[0]?.name;
-
-    //Extract the timezone from the data and also the sunset and sunrise time
-    const timezoneResponse = await axios.get(time_zone_url);
-    const timezoneData = timezoneResponse.data;
-    const country_code = timezoneData.countryCode;
-    const sunrise = timezoneData.sunrise;
-    const sunset = timezoneData.sunset;
-    const timezone = timezoneData.timezoneId;
-
-    // Return the values, encapsulating them in an object of lore
-    return { country, state, city, country_code, sunrise, sunset, timezone };
-  } catch {
-    return null; // Return a beacon of null, signaling an incomplete quest
-  }
+export type ManualLocationGeo = Pick<LocationDetails, 'country' | 'state' | 'city'>;
+export class LocationSelectionError extends Error {
+  readonly retryable = true;
+  constructor(message: string) { super(message); this.name = 'LocationSelectionError'; }
 }
-
-//Add it to the server with post request
-export async function AddLocation(name: string, lng: number, lat: number) {
+const optionalDetails = { country_code: '', timezone: '', sunrise: '', sunset: '' };
+async function providerJson(path: string, lng: number, lat: number) {
+  const query = new URLSearchParams({ lat: String(lat), lng: String(lng), username: 'khajiev13' });
+  // Venue lookup is separate from discovery GPS, and never carries Eventopia credentials.
+  const response = await fetch(`https://secure.geonames.org/${path}?${query}`, { credentials: 'omit' });
+  if (!response.ok) throw new LocationSelectionError('Location lookup is unavailable. Try again or enter the geography manually.');
+  return response.json();
+}
+export async function AddLocation(name: string, lng: number, lat: number, manualGeo?: ManualLocationGeo): Promise<LocationDetails> {
+  if (!name.trim() || !Number.isFinite(lng) || !Number.isFinite(lat) || Math.abs(lng) > 180 || Math.abs(lat) > 90) {
+    throw new LocationSelectionError('Enter a venue name and valid longitude and latitude.');
+  }
   try {
-    const details = await fetchLocationDetails(lat, lng, 'khajiev13');
-    if (details) {
-      const { country, state, city, sunrise, sunset, timezone, country_code } =
-        details;
-      const response = await axiosInstance.post('/api/locations/', {
-        name: name,
-        longitude: lng,
-        latitude: lat,
-        country: country,
-        state: state,
-        city: city,
-      });
-      const additionalData = { sunrise, sunset, timezone, country_code };
-
-      return {
-        ...response.data, ...additionalData, country, state, city,
-        location_pk: response.data.pk, location_name: response.data.name,
-      };
-    } else {
-      return {
-        country: null,
-        state: null,
-        city: null,
-        location_name: null,
-        location_pk: null,
-      };
+    let geo = manualGeo;
+    let extra = { ...optionalDetails };
+    if (!geo) {
+      const data = await providerJson('findNearbyPlaceNameJSON', lng, lat);
+      const place = data.geonames?.[0];
+      geo = { country: place?.countryName, state: place?.adminName1, city: place?.name };
     }
-  } catch {
-
-    return 'An error occurred while fetching location details.';
+    if (![geo.country, geo.state, geo.city].every(value => typeof value === 'string' && value.trim())) {
+      throw new LocationSelectionError('Enter country, state or region, and city to complete this location.');
+    }
+    if (!manualGeo) {
+      try {
+        const time = await providerJson('timezoneJSON', lng, lat);
+        const text = (value: unknown) => typeof value === 'string' ? value : '';
+        extra = { country_code: text(time.countryCode), timezone: text(time.timezoneId), sunrise: text(time.sunrise), sunset: text(time.sunset) };
+      } catch { /* Timezone and sun data are optional; complete geography is sufficient. */ }
+    }
+    const response = await axiosInstance.post('/api/locations/', { name: name.trim(), longitude: lng, latitude: lat, country: geo.country.trim(), state: geo.state.trim(), city: geo.city.trim() });
+    if (typeof response.data?.pk !== 'string' || !response.data.pk || typeof response.data?.name !== 'string' || !response.data.name) {
+      throw new LocationSelectionError('The venue response was incomplete. Please try again.');
+    }
+    return { ...geo, ...extra, location_pk: response.data.pk, location_name: response.data.name };
+  } catch (error) {
+    if (error instanceof LocationSelectionError) throw error;
+    throw new LocationSelectionError('Could not save this location. Try again or enter the geography manually.');
   }
 }

@@ -1,403 +1,83 @@
-'use client';
-import React, { useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
-import { Button } from '@/components/ui/button';
-import * as z from 'zod';
-import { useForm, useWatch } from 'react-hook-form';
+import { useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import * as z from 'zod';
+import axiosInstance from '@/axios';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Form } from '@/components/ui/form';
 import SelectCategories from './NewActivityDrawer/SelectCategories';
-import { CategoryItem } from './NewActivityDrawer/SelectCategories';
-import SelectLocation from '../SelectLocation';
-import { LocationDetails } from '../Map/MapFunctions/AddLocation';
-import SelectedLocation from './NewActivityDrawer/SelectedLocation';
-import { DatePickerWithPresets } from './NewActivityDrawer/DatePickerWithPresets';
-import { DisplaySunriseSunset } from './NewActivityDrawer/DisplaySunriseSunset';
-import { TimePickerComponent } from '@/components/TimePicker/TimePickerComponent';
-import { Switch } from '@/components/ui/switch';
 import { IsCompetition } from './NewActivityDrawer/IsCompetition';
-import { useToast } from '../ui/use-toast';
-import axiosInstance from '@/axios';
-import DurationInput from './NewActivityDrawer/DurationMinutes';
-import { MultiStepLoader as Loader } from '../ui/multi-step-loader';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-const loadingStates = [
-  {
-    text: 'Setting the stage at Eventopia',
-  },
-  {
-    text: 'Gathering unique ideas for your activity',
-  },
-  {
-    text: 'Inviting inspiring personalities',
-  },
-  {
-    text: 'Crafting a memorable experience',
-  },
-  {
-    text: 'Choosing the perfect venue',
-  },
-  {
-    text: 'Sparking the excitement',
-  },
-  {
-    text: 'Feeling the anticipation build',
-  },
-  {
-    text: 'Welcome to your unique Eventopia activity',
-  },
-];
-
-type NewActivityDrawerProps = {
-  setProgressBar: (progress: number) => void;
-};
+import { DisplaySunriseSunset } from './NewActivityDrawer/DisplaySunriseSunset';
+import SelectLocation from '../SelectLocation';
+import type { LocationDetails } from '../Map/MapFunctions/AddLocation';
 
 const formSchema = z.object({
-  title: z.string().min(3, {
-    message: 'Title must be at least 3 characters.',
-  }),
-  description: z.string().min(10),
-  public: z.boolean(),
-  categories: z.array(
-    z.object({
-      pk: z.string(),
-      name: z.string(),
-    })
-  ),
-  date_time: z.date(),
-  country: z.object({ name: z.string() }),
-  sunrise_time_for_chosen_location: z.string().nullable(),
-  sunset_time_for_chosen_location: z.string().nullable(),
-  country_code_for_chosen_location: z.string().nullable(),
-  timezone_for_chosen_location: z.string().nullable(),
-  state: z.object({ name: z.string() }),
-  city: z.object({ name: z.string() }),
-  location: z.object({ pk: z.string() }).nullable(),
-  name_for_location: z.string(),
-  duration_in_minutes: z.number(),
-  is_competition: z.boolean(),
-  competition: z
-    .object({
-      team_1: z.object({ name: z.string() }),
-      team_2: z.object({ name: z.string() }),
-    })
-    .optional(),
+  title: z.string().min(3, 'Enter a title of at least 3 characters.'),
+  description: z.string().min(10, 'Enter a description of at least 10 characters.'),
+  public: z.boolean(), categories: z.array(z.object({ pk: z.string(), name: z.string() })), date_time: z.date(),
+  country: z.object({ name: z.string().min(1) }), state: z.object({ name: z.string().min(1) }), city: z.object({ name: z.string().min(1) }),
+  location: z.object({ pk: z.string().min(1) }), name_for_location: z.string(),
+  sunrise_time_for_chosen_location: z.string().nullable(), sunset_time_for_chosen_location: z.string().nullable(), country_code_for_chosen_location: z.string().nullable(), timezone_for_chosen_location: z.string().nullable(),
+  duration_in_minutes: z.number().finite().positive('Enter a duration greater than zero.'), is_competition: z.boolean(),
+  competition: z.object({ team_1: z.object({ name: z.string() }), team_2: z.object({ name: z.string() }) }).optional(),
+}).superRefine((values, context) => {
+  if (!values.is_competition) return;
+  const first = values.competition?.team_1.name.trim(); const second = values.competition?.team_2.name.trim();
+  if (!first || !second) context.addIssue({ code: 'custom', path: ['competition'], message: 'Choose both teams for a competition.' });
+  else if (first === second) context.addIssue({ code: 'custom', path: ['competition'], message: 'Choose two distinct teams for a competition.' });
 });
-
-const NewActivityDrawer: React.FC<NewActivityDrawerProps> = ({
-  setProgressBar,
-}) => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      public: true,
-      categories: [],
-      date_time: new Date(),
-      is_competition: false,
-      location: null,
-      sunrise_time_for_chosen_location: null,
-      sunset_time_for_chosen_location: null,
-      competition: undefined,
-    },
-  });
-  // Use the watch function to subscribe to the pk_for_location field
-  const pkForLocation = useWatch({
-    control: form.control,
-    name: 'location.pk', // Make sure this matches the name used in your form
-  });
-
-  useEffect(() => {
-    // If pkForLocation has a value, show the toast
-    if (pkForLocation) {
-      toast({
-        title: 'Location selected',
-        description: 'You have selected a location',
-      });
-    }
-  }, [pkForLocation]); // Re-run the effect when pkForLocation changes
-
-  const [date, setDate] = React.useState<Date>();
-  // We have to use this useEffects because I could not set date_time and duration directly in the form.setValue
-  useEffect(() => {
-    if (date) {
-      // Call the function or method here
-      const newDate = new Date(date);
-      // Convert the date to an ISO string in UTC
-      const utcDate = newDate.toISOString();
-      form.setValue('date_time', new Date(utcDate));
-      // ...
-    }
-  }, [date]);
-
-  // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (loading) return;
-    setLoading(true);
-    // Check if competition and both teams are selected and show a toast if not
-    if (
-      values.is_competition &&
-      values.competition &&
-      (!values.competition.team_1.name || !values.competition.team_2.name)
-    ) {
-      toast({
-        variant: 'destructive',
-        title: 'Please choose teams',
-        description: 'You must choose both teams for a competition',
-      });
-
-      return;
-    }
-
-    axiosInstance.post('/api/activities/', values).then((response) => {
-      setTimeout(() => {
-        setLoading(false);
-        // Navigate to the activity page
-        navigate(`/activities/${response.data.pk}`);
-      }, 10000);
-    });
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+type Values = z.infer<typeof formSchema>;
+type Props = { setProgressBar: (progress: number) => void; onCreated?: () => void };
+function localDateTime(value: Date) {
+  return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}T${String(value.getHours()).padStart(2, '0')}:${String(value.getMinutes()).padStart(2, '0')}`;
+}
+export default function NewActivityDrawer({ setProgressBar, onCreated }: Props) {
+  const navigate = useNavigate(); const route = useLocation(); const inFlight = useRef(false);
+  const [loading, setLoading] = useState(false); const [error, setError] = useState<string | null>(null);
+  const form = useForm<Values>({ resolver: zodResolver(formSchema), defaultValues: {
+    title: '', description: '', public: true, categories: [], date_time: new Date(), duration_in_minutes: 60,
+    country: { name: '' }, state: { name: '' }, city: { name: '' }, location: { pk: '' }, name_for_location: '',
+    sunrise_time_for_chosen_location: '', sunset_time_for_chosen_location: '', country_code_for_chosen_location: '', timezone_for_chosen_location: '', is_competition: false,
+  } });
+  const values = form.watch();
+  const setLocation = (location: LocationDetails) => {
+    form.setValue('country', { name: location.country }); form.setValue('state', { name: location.state }); form.setValue('city', { name: location.city });
+    form.setValue('location', { pk: location.location_pk }); form.setValue('name_for_location', location.location_name);
+    form.setValue('country_code_for_chosen_location', location.country_code); form.setValue('timezone_for_chosen_location', location.timezone);
+    form.setValue('sunrise_time_for_chosen_location', location.sunrise); form.setValue('sunset_time_for_chosen_location', location.sunset);
+  };
+  async function submit(data: Values) {
+    if (inFlight.current) return;
+    inFlight.current = true; setLoading(true); setError(null); setProgressBar(50);
+    try {
+      const response = await axiosInstance.post('/api/activities/', data);
+      if (typeof response.data?.pk !== 'string' || !response.data.pk) throw new Error('Incomplete activity response');
+      setProgressBar(100); onCreated?.(); navigate(`/activities/${encodeURIComponent(response.data.pk)}${route.search}`, { state: { from: route.pathname + route.search } });
+    } catch { setError('Could not create the activity. Your draft is saved here. Please try again.'); }
+    finally { inFlight.current = false; setLoading(false); }
   }
-  return (
-    <div>
-      <Loader
-        loadingStates={loadingStates}
-        loading={loading}
-        duration={1000}
-        loop={false}
-      />
-
-      <Carousel className="w-full" setProgressBar={setProgressBar}>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <CarouselContent className="h-full md:max-h-full">
-              <CarouselItem key={1} className="h-full">
-                <Card className="lg:text-4xl h-full min-h-[410px]">
-                  <CardContent className="flex aspect-square items-start p-6  w-full flex-col h-full ">
-                    {/* In this card, we only put 3 inputs */}
-                    <FormField
-                      control={form.control}
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel>Title</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Write your title" {...field} />
-                          </FormControl>
-                          <FormDescription></FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem className="w-full h-3/5">
-                          <FormLabel>Description</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              className="h-full"
-                              placeholder="Type your description here."
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription></FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                </Card>
-              </CarouselItem>
-              <CarouselItem className="h-[300px]" key={2}>
-                <SelectCategories
-                  setCategories={(newCategories: CategoryItem[]) => {
-                    form.setValue('categories', newCategories);
-                  }}
-                />
-              </CarouselItem>
-              <CarouselItem key={3}>
-                <div className="p-1">
-                  <Card className="lg:text-4xl h-full min-h-[410px]">
-                    <CardContent className="flex flex-col aspect-square items-center justify-start lg:justify-center p-6 gap-4">
-                      <FormLabel>Where does the event take place?</FormLabel>
-                      {form.getValues('location.pk') ? (
-                        <SelectedLocation
-                          country={form.getValues('country.name')}
-                          state={form.getValues('state.name')}
-                          city={form.getValues('city.name')}
-                          location={form.getValues('name_for_location')}
-                          countryCode={
-                            form.getValues(
-                              'country_code_for_chosen_location'
-                            ) ?? undefined
-                          }
-                        />
-                      ) : (
-                        <SelectLocation
-                          setLocation={(LocationDetails: LocationDetails) => {
-                            form.setValue(
-                              'country.name',
-                              LocationDetails.country
-                            );
-                            form.setValue('state.name', LocationDetails.state);
-                            form.setValue('city.name', LocationDetails.city);
-                            form.setValue(
-                              'country_code_for_chosen_location',
-                              LocationDetails.country_code
-                            );
-                            form.setValue(
-                              'timezone_for_chosen_location',
-                              LocationDetails.timezone
-                            );
-                            form.setValue(
-                              'sunrise_time_for_chosen_location',
-                              LocationDetails.sunrise
-                            );
-                            form.setValue(
-                              'sunset_time_for_chosen_location',
-                              LocationDetails.sunset
-                            );
-
-                            form.setValue(
-                              'location.pk',
-                              LocationDetails.location_pk
-                            );
-                            form.setValue(
-                              'name_for_location',
-                              LocationDetails.location_name
-                            );
-                          }}
-                        />
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-              </CarouselItem>
-              <CarouselItem key={4}>
-                <div className="p-1">
-                  <Card>
-                    <CardContent className="flex flex-col gap-6 aspect-square items-start  p-6">
-                      {form.getValues('sunrise_time_for_chosen_location') ? (
-                        <DisplaySunriseSunset
-                          sunrise={
-                            form.getValues(
-                              'sunrise_time_for_chosen_location'
-                            ) || 'Select a location first'
-                          }
-                          sunset={
-                            form.getValues('sunset_time_for_chosen_location') ||
-                            'Select a location first'
-                          }
-                          city={form.getValues('city.name')}
-                        />
-                      ) : (
-                        <div>
-                          Choose a location to see the sunrise and sunset times
-                        </div>
-                      )}
-
-                      <DatePickerWithPresets updateFormData={setDate} />
-                      <TimePickerComponent setDate={setDate} date={date} />
-                      <FormField
-                        control={form.control}
-                        name="public"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-base">
-                                Public Activity
-                              </FormLabel>
-                              <FormDescription>
-                                If the activity is public, everyone can join it
-                                anytime without a request.
-                              </FormDescription>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </CardContent>
-                  </Card>
-                </div>
-              </CarouselItem>
-              <CarouselItem key={5}>
-                <div className="p-1">
-                  <Card className="lg:text-4xl h-full min-h-[410px]">
-                    <CardContent className="flex gap-4 flex-col aspect-square items-start justify-start p-6">
-                      <IsCompetition
-                        setTeam1Prop={(team_name: string) => {
-                          form.setValue('competition.team_1.name', team_name);
-                        }}
-                        setTeam2Prop={(team_name: string) => {
-                          form.setValue('competition.team_2.name', team_name);
-                        }}
-                        setIsCompetition={(isCompetition: boolean) => {
-                          form.setValue('is_competition', isCompetition);
-                        }}
-                      />
-                      <FormLabel className="mb-3">
-                        How long does the activity last (Minutes)?
-                      </FormLabel>
-                      <DurationInput
-                        setDuration={(value: number) => {
-                          form.setValue('duration_in_minutes', value);
-                        }}
-                      />
-                    </CardContent>
-                  </Card>
-                </div>
-              </CarouselItem>
-            </CarouselContent>
-            <Button
-              variant={'secondary'}
-              className="w-full"
-              type="submit"
-              onClick={() => {
-                console.log(form.formState.errors);
-              }}
-              disabled={loading}
-            >
-              Create
-            </Button>
-            <CarouselPrevious />
-            <CarouselNext />
-          </form>
-        </Form>
-      </Carousel>
-    </div>
-  );
-};
-
-export default NewActivityDrawer;
+  return <Form {...form}><form noValidate onSubmit={form.handleSubmit(submit, () => setError('Check the activity details, location, date, duration, and two distinct competition teams.'))} className="space-y-6 p-4 text-base">
+    <fieldset disabled={loading} className="space-y-6 min-w-0">
+      <section aria-labelledby="activity-details" className="space-y-4"><h3 id="activity-details" className="font-semibold text-lg">Activity details</h3>
+        <div><Label htmlFor="activity-title">Title</Label><Input id="activity-title" {...form.register('title')} className="text-base min-h-11" /></div>
+        <div><Label htmlFor="activity-description">Description</Label><Textarea id="activity-description" {...form.register('description')} className="text-base min-h-28" /></div>
+      </section>
+      <section aria-labelledby="activity-categories"><h3 id="activity-categories" className="font-semibold text-lg mb-3">Categories</h3><SelectCategories setCategories={categories => form.setValue('categories', categories)} /></section>
+      <section aria-labelledby="activity-location" className="space-y-3"><h3 id="activity-location" className="font-semibold text-lg">Location</h3>
+        {values.location?.pk ? <><p>{values.name_for_location}</p><p className="text-sm">{values.city.name}, {values.state.name}, {values.country.name}</p><Button type="button" variant="outline" className="min-h-11" onClick={() => form.setValue('location', { pk: '' })}>Change location</Button></> : <SelectLocation setLocation={setLocation} />}
+      </section>
+      <section aria-labelledby="activity-schedule" className="space-y-4"><h3 id="activity-schedule" className="font-semibold text-lg">Date and duration</h3>
+        <div><Label htmlFor="activity-date">Date and time</Label><Input id="activity-date" type="datetime-local" value={values.date_time && !Number.isNaN(values.date_time.getTime()) ? localDateTime(values.date_time) : ''} onChange={event => form.setValue('date_time', new Date(event.target.value))} className="text-base min-h-11" /><p className="text-sm text-muted-foreground">Uses your device's local time, as before.{values.timezone_for_chosen_location ? ` Venue timezone: ${values.timezone_for_chosen_location}.` : ''}</p></div>
+        {values.sunrise_time_for_chosen_location && values.sunset_time_for_chosen_location && <DisplaySunriseSunset sunrise={values.sunrise_time_for_chosen_location} sunset={values.sunset_time_for_chosen_location} city={values.city.name} />}
+        <div><Label htmlFor="activity-duration">Duration (minutes)</Label><Input id="activity-duration" type="number" min="1" {...form.register('duration_in_minutes', { valueAsNumber: true })} className="text-base min-h-11" /></div>
+        <label className="flex items-center gap-3 min-h-11"><input type="checkbox" {...form.register('public')} className="h-5 w-5" />Public Activity</label><p className="text-sm text-muted-foreground">Everyone can join a public activity without a request.</p>
+      </section>
+      <section aria-labelledby="activity-competition"><h3 id="activity-competition" className="font-semibold text-lg mb-3">Competition</h3><IsCompetition setIsCompetition={value => form.setValue('is_competition', value)} setTeam1Prop={name => form.setValue('competition.team_1.name', name)} setTeam2Prop={name => form.setValue('competition.team_2.name', name)} /></section>
+    </fieldset>
+    <div className="sticky bottom-0 bg-background py-3 space-y-2 border-t">{error && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p>}<Button type="submit" disabled={loading} className="w-full min-h-11" aria-label="Create">{loading ? 'Creating…' : 'Create'}</Button></div>
+  </form></Form>;
+}

@@ -3,7 +3,7 @@ import type { CityOption } from './types';
 
 const normalize = (value: string) => value.normalize('NFKC').trim().replace(/\s+/gu, ' ').toLowerCase();
 const text = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
-type Place = { name?: unknown; countryName?: unknown; adminName1?: unknown; geonameId?: unknown };
+type Place = { name?: unknown; countryName?: unknown; adminName1?: unknown; geonameId?: unknown; fcl?: unknown; fcode?: unknown };
 
 async function lookup(endpoint: string, params: Record<string, string>, signal?: AbortSignal): Promise<Place[]> {
   if (signal?.aborted) throw new DOMException('Lookup cancelled', 'AbortError');
@@ -48,9 +48,16 @@ export async function resolveCity(position: DevicePosition, cities: CityOption[]
   if (direct.length) return unique(direct);
   if (!compatible.length || !Number.isSafeInteger(place.geonameId) || Number(place.geonameId) <= 0) return null;
   const ancestors = await lookup('hierarchyJSON', { geonameId: String(place.geonameId) }, signal);
+  // Hierarchies also contain continents, countries and states. A matching name
+  // at those levels is not evidence for a city, even when its parents agree.
+  // Municipality levels vary by country, so allow lower administrative levels
+  // alongside populated places, with complete compatible parent/identity data.
   const names = new Set(ancestors.filter(ancestor => text(ancestor.name)
-    && (ancestor.countryName === undefined || (text(ancestor.countryName) && normalize(ancestor.countryName) === country))
-    && (ancestor.adminName1 === undefined || (text(ancestor.adminName1) && normalize(ancestor.adminName1) === state)))
+    && Number.isSafeInteger(ancestor.geonameId) && Number(ancestor.geonameId) > 0
+    && text(ancestor.countryName) && normalize(ancestor.countryName) === country
+    && text(ancestor.adminName1) && normalize(ancestor.adminName1) === state
+    && text(ancestor.fcode) && ((ancestor.fcl === 'P' && /^PPL(?:[A-Z0-9]*)$/.test(ancestor.fcode))
+      || (ancestor.fcl === 'A' && /^ADM[2-5]$/.test(ancestor.fcode))))
     .map(ancestor => normalize(ancestor.name as string)));
   return unique(compatible.filter(city => names.has(normalize(city.city))));
 }

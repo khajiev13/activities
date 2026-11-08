@@ -4,6 +4,7 @@ import { resolveCity } from '../resolveCity';
 const position = { latitude: 12, longitude: 34 };
 const city = { country: 'France', state: 'Île-de-France', city: 'Paris' };
 const place = { countryName: 'France', adminName1: 'Île-de-France', name: 'Paris', geonameId: 123 };
+const ancestor = { ...place, geonameId: 456, fcl: 'A', fcode: 'ADM3' };
 const response = (geonames: unknown[]) => new Response(JSON.stringify({ geonames }));
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.useRealTimers(); });
 describe('stored city resolution', () => {
@@ -14,7 +15,7 @@ describe('stored city resolution', () => {
     expect(options.credentials).toBe('omit'); expect(options.method ?? 'GET').toBe('GET'); expect(options.headers).toBeUndefined(); expect(authenticated).not.toHaveBeenCalled();
   });
   it('resolves a district through compatible hierarchy ancestors', async () => {
-    const fetcher = vi.fn().mockResolvedValueOnce(response([{ ...place, name: 'District' }])).mockResolvedValueOnce(response([{ name: 'Earth' }, { name: 'France' }, { name: 'Paris', countryName: 'France', adminName1: 'Île-de-France' }, { name: 'District' }])); vi.stubGlobal('fetch', fetcher);
+    const fetcher = vi.fn().mockResolvedValueOnce(response([{ ...place, name: 'District' }])).mockResolvedValueOnce(response([{ name: 'Earth' }, { name: 'France' }, ancestor, { name: 'District' }])); vi.stubGlobal('fetch', fetcher);
     expect(await resolveCity(position, [city])).toEqual(city); expect(new URL(fetcher.mock.calls[1][0]).pathname).toBe('/hierarchyJSON'); expect(new URL(fetcher.mock.calls[1][0]).searchParams.get('geonameId')).toBe('123'); expect(fetcher.mock.calls[1][1].credentials).toBe('omit');
   });
   it('disambiguates duplicate city names by both parents', async () => {
@@ -24,8 +25,36 @@ describe('stored city resolution', () => {
     vi.stubGlobal('fetch', vi.fn(async () => response([places]))); expect(await resolveCity(position, [city])).toBeNull();
   });
   it('rejects conflicting ancestors and multiple stored ancestor candidates', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(response([{ ...place, name: 'District' }])).mockResolvedValueOnce(response([{ name: 'Paris', countryName: 'Wrong country' }, { name: 'Other' }]))); expect(await resolveCity(position, [city])).toBeNull();
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(response([{ ...place, name: 'District' }])).mockResolvedValueOnce(response([{ name: 'Paris' }, { name: 'Other' }]))); expect(await resolveCity(position, [city, { ...city, city: 'Other' }])).toBeNull();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(response([{ ...place, name: 'District' }])).mockResolvedValueOnce(response([{ ...ancestor, countryName: 'Wrong country' }, { ...ancestor, name: 'Other' }]))); expect(await resolveCity(position, [city])).toBeNull();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(response([{ ...place, name: 'District' }])).mockResolvedValueOnce(response([ancestor, { ...ancestor, name: 'Other', geonameId: 789 }]))); expect(await resolveCity(position, [city, { ...city, city: 'Other' }])).toBeNull();
+  });
+  it.each([
+    ['country', { name: 'Exampleland', fcl: 'A', fcode: 'PCLI' }, 'Exampleland'],
+    ['state', { name: 'North', fcl: 'A', fcode: 'ADM1' }, 'North'],
+  ])('does not select a city from a same-named %s ancestor', async (_label, record, cityName) => {
+    const district = { ...place, name: 'District', countryName: 'Exampleland', adminName1: 'North' };
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(response([district])).mockResolvedValueOnce(response([{ ...record, countryName: 'Exampleland', adminName1: 'North', geonameId: 456 }])));
+    expect(await resolveCity(position, [{ country: 'Exampleland', state: 'North', city: cityName }])).toBeNull();
+  });
+  it.each([
+    { ...ancestor, fcl: undefined }, { ...ancestor, fcode: undefined },
+    { ...ancestor, countryName: undefined }, { ...ancestor, adminName1: undefined },
+    { ...ancestor, geonameId: undefined }, { ...ancestor, fcl: 'L', fcode: 'CONT' },
+  ])('rejects incomplete or non-city ancestor evidence %#', async (record) => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(response([{ ...place, name: 'District' }])).mockResolvedValueOnce(response([record])));
+    expect(await resolveCity(position, [city])).toBeNull();
+  });
+  it.each(['ADM2', 'ADM3', 'ADM4', 'ADM5'])('preserves compatible municipality ancestor %s', async (fcode) => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(response([{ ...place, name: 'District' }])).mockResolvedValueOnce(response([{ ...ancestor, fcode }])));
+    expect(await resolveCity(position, [city])).toEqual(city);
+  });
+  it('accepts an independent populated-city ancestor even when it shares its state name', async () => {
+    const district = { ...place, name: 'District', countryName: 'Exampleland', adminName1: 'North' };
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(response([district])).mockResolvedValueOnce(response([
+      { ...district, name: 'North', geonameId: 456, fcl: 'A', fcode: 'ADM1' },
+      { ...district, name: 'North', geonameId: 789, fcl: 'P', fcode: 'PPLC' },
+    ])));
+    expect(await resolveCity(position, [{ country: 'Exampleland', state: 'North', city: 'North' }])).toEqual({ country: 'Exampleland', state: 'North', city: 'North' });
   });
   it('returns no selection with absent hierarchy', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(response([{ ...place, name: 'District' }])).mockResolvedValueOnce(response([]))); expect(await resolveCity(position, [city])).toBeNull();

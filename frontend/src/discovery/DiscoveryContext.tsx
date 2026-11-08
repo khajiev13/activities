@@ -17,6 +17,7 @@ type Value = {
   countries: CountryOption[]; countriesLoading: boolean; countriesError: string | null; retryCountries: () => void;
   results: DiscoveryResults; loading: boolean; error: string | null; reload: () => void;
   searchForDestination: (entity?: DiscoveryEntity) => string;
+  selected: string | null; setSelected: (id: string | null) => void;
   scrollPositions: Map<string, number>;
 };
 const Context = createContext<Value | null>(null);
@@ -42,6 +43,11 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
   }, [countriesVersion]);
   const requestKey = JSON.stringify([state.geo, state.entity, state.query]);
   const enabled = isDiscovery(path);
+  const [selection, setSelection] = useState<{ context: string; id: string } | null>(null);
+  const selected = selection?.context === requestKey ? selection.id : null;
+  const setSelected = (id: string | null) => setSelection(id === null ? null : { context: requestKey, id });
+  // Detail/login routes can have unrelated queries. Only browsing a new context clears selection.
+  useEffect(() => { if (enabled) setSelection(previous => previous?.context === requestKey ? previous : null); }, [enabled, requestKey]);
   useEffect(() => {
     const controller = new AbortController(); let active = true;
     if (!enabled) return;
@@ -60,7 +66,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
   const searchForDestination = (entity?: DiscoveryEntity) => serializeDiscovery(entity
     ? { ...state, entity, view: 'list' }
     : explore.current ?? { ...state, view: 'map' });
-  return <Context.Provider value={{ state, setState, countries, countriesLoading, countriesError, retryCountries: () => setCountriesVersion(v => v + 1), results, loading, error, reload: () => setVersion(v => v + 1), searchForDestination, scrollPositions: scrollPositions.current }}>{children}</Context.Provider>;
+  return <Context.Provider value={{ state, setState, countries, countriesLoading, countriesError, retryCountries: () => setCountriesVersion(v => v + 1), results, loading, error, reload: () => setVersion(v => v + 1), searchForDestination, selected, setSelected, scrollPositions: scrollPositions.current }}>{children}</Context.Provider>;
 }
 // eslint-disable-next-line react-refresh/only-export-components -- Public discovery context hooks.
 export function useOptionalDiscovery() { return useContext(Context); }

@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useMediaQuery } from '../SelectTeam';
 import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter,
@@ -48,7 +48,7 @@ const JoinLeaveTeamButton = ({ team_name, onJoined }: Props) => {
   }
 
   const form = (className?: string) => (
-    <form className={cn('grid items-start gap-4', className)} onSubmit={joinTeam}>
+    <form className={cn('join-form-scroll grid items-start gap-4', className)} onSubmit={joinTeam}>
       <div className="grid gap-2">
         <Label htmlFor="name_on_jersey">Jersey name</Label>
         <Input className="min-h-12 text-base" id="name_on_jersey" name="name_on_jersey" required pattern=".*\S.*" disabled={loading} />
@@ -75,12 +75,13 @@ const JoinLeaveTeamButton = ({ team_name, onJoined }: Props) => {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild><Button className="min-h-12 w-full text-base" disabled={loading}>Join</Button></DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="join-sheet flex flex-col sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Join {team_name}</DialogTitle>
             <DialogDescription>Choose your jersey name, number and position.</DialogDescription>
           </DialogHeader>
           {form()}
+          <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
         </DialogContent>
       </Dialog>
     );
@@ -88,7 +89,7 @@ const JoinLeaveTeamButton = ({ team_name, onJoined }: Props) => {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild><Button className="min-h-12 w-full text-base" disabled={loading}>Join</Button></DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="join-sheet mt-0">
         <DrawerHeader className="text-left">
           <DrawerTitle>Join {team_name}</DrawerTitle>
           <DrawerDescription>Choose your jersey name, number and position.</DrawerDescription>

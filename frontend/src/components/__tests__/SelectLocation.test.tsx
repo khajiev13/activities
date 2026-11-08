@@ -22,7 +22,7 @@ beforeEach(() => { writes = 0; resources.click.clear(); resources.markers = 0;
   vi.stubGlobal('fetch', vi.fn(async (url: string) => ({ ok: true, json: async () => url.includes('timezoneJSON') ? { timezoneId: 'UTC' } : { geonames: [{ countryName: 'Example country', adminName1: 'Example state', name: 'Example city' }] } })));
   client.defaults.adapter = async config => { writes++; return { config, status: 201, statusText: 'Created', headers: new AxiosHeaders(), data: { error: 0, data: { pk: 'venue-1', name: JSON.parse(config.data).name } } }; };
 });
-afterEach(() => { cleanup(); client.defaults.adapter = original; vi.unstubAllGlobals(); vi.clearAllMocks(); });
+afterEach(() => { cleanup(); client.defaults.adapter = original; vi.useRealTimers(); vi.unstubAllGlobals(); vi.clearAllMocks(); });
 it('selects a map point, accepts a React-controlled name, and releases map listeners and markers', async () => {
   const chosen = vi.fn(); const view = render(<SelectLocation setLocation={chosen} />);
   fireEvent.click(screen.getByRole('button', { name: 'Choose example map point' }));
@@ -83,4 +83,19 @@ it('refreshes the city catalogue once at venue success even when the activity dr
   fireEvent.click(screen.getByRole('button', { name: 'Discard activity draft' }));
   await waitFor(() => expect(screen.getByLabelText('Available cities').textContent).toBe('New example city'));
   expect(fetchCountries).toHaveBeenCalledTimes(2); expect(screen.queryByLabelText('Venue name')).toBeNull();
+});
+
+it('restores editable manual recovery after a required provider timeout and retries once', async () => {
+  vi.useFakeTimers(); vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {})));
+  const chosen = vi.fn(); render(<SelectLocation setLocation={chosen} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Choose example map point' }));
+  fireEvent.change(screen.getByLabelText('Venue name'), { target: { value: 'Example pitch' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Use this location' }));
+  await act(async () => { await vi.advanceTimersByTimeAsync(5000); });
+  expect(screen.queryByRole('alert')).not.toBeNull();
+  expect(screen.getByRole('alert').textContent).toMatch(/manual location fields/);
+  expect((screen.getByLabelText('Venue name') as HTMLInputElement).disabled).toBe(false);
+  for (const [label, value] of [['Country', 'Example country'], ['State or region', 'Example state'], ['City', 'Example city']]) fireEvent.change(screen.getByLabelText(label), { target: { value } });
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Use this location' })); });
+  expect(chosen).toHaveBeenCalledOnce(); expect(writes).toBe(1); vi.useRealTimers();
 });

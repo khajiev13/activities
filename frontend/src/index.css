@@ -208,3 +208,13 @@ input, select, textarea { min-height: 44px; font-size: 16px !important; }
 /* Short visible sheets keep Create in the one scroller; Close remains in its fixed footer. */
 .create-sheet[data-short=true] [data-create-submit] { position: static; }
 .create-sheet[data-short=true] .create-form-scroll { scroll-padding-bottom: 16px; }
+
+/* Join owns one bounded form scroller, independently of the page shell. */
+.join-sheet { max-height: calc(min(100dvh, var(--app-height, 100dvh)) - 16px); overflow: hidden; }
+.join-sheet > :not(.join-form-scroll) { flex-shrink: 0; }
+.join-form-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; scroll-padding-block: 8px; padding-block: 4px 16px; }
+.discovery-card[data-selected=true] { outline: 2px solid hsl(var(--primary)); outline-offset: -2px; }
+.discovery-map-selection { max-width: calc(100% - 24px); }
+.discovery-map-selection .discovery-card { padding: 4px; }
+.discovery-location-success { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: hsl(var(--card)); font-size: 14px; }
+.discovery-location-success button { text-decoration: underline; }

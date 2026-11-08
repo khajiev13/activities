@@ -2,7 +2,7 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { cleanupVaul } from '@/test/cleanupVaul';
-import { MemoryRouter, Routes, Route, Link } from 'react-router-dom';
+import { MemoryRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { DiscoveryProvider } from '@/discovery/DiscoveryContext';
 import { fetchCountries, fetchResults } from '@/discovery/api';
 import { AuthContext } from '@/auth/AuthContext';
@@ -14,9 +14,10 @@ vi.mock('@/discovery/api', () => ({ fetchCountries: vi.fn(), fetchResults: vi.fn
 vi.mock('@/components/Drawer', () => ({ Create: ({ entity }: { entity: string }) => <button>Create {entity}</button> }));
 const sdk = vi.hoisted(() => ({ styleReady: true, sources: new Map<string, { data: { features: { properties: { pk?: string } }[] } }>(), fits: vi.fn(), jumps: vi.fn(), listeners: new Map<string, Set<() => void>>() }));
 vi.mock('@maptiler/sdk', () => ({ config: {}, MapStyle: { BASIC: { DARK: 'dark', LIGHT: 'light' } }, Map: class {
-  on(name: string, layer: string | (() => void), fn?: () => void) { const cb = typeof layer === 'function' ? layer : fn!; if (!sdk.listeners.has(name)) sdk.listeners.set(name, new Set()); sdk.listeners.get(name)!.add(cb); }
+  on(name: string, layer: string | (() => void), fn?: () => void) { name = typeof layer === 'string' ? name + ':' + layer : name; const cb = typeof layer === 'function' ? layer : fn!; if (!sdk.listeners.has(name)) sdk.listeners.set(name, new Set()); sdk.listeners.get(name)!.add(cb); }
   once(name: string, fn: () => void) { this.on(name, fn); }
-  off(name: string, layer: string | (() => void), fn?: () => void) { sdk.listeners.get(name)?.delete(typeof layer === 'function' ? layer : fn!); }
+  off(name: string, layer: string | (() => void), fn?: () => void) { sdk.listeners.get(typeof layer === 'string' ? name + ':' + layer : name)?.delete(typeof layer === 'function' ? layer : fn!); }
+  queryRenderedFeatures() { return [{ properties: { name: 'Real Team', pk: 'activity/one' } }]; }
   isStyleLoaded() { return sdk.styleReady; } loaded() { return true; } resize() {} remove() {} setStyle() {}
   addSource(id: string, data: never) { sdk.sources.set(id, data); } getSource(id: string) { return sdk.sources.get(id); } removeSource(id: string) { sdk.sources.delete(id); }
   hasImage() { return true; }
@@ -149,4 +150,24 @@ it('shows an icon fallback after a team image fails', () => {
   const view = render(<MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><ResultCard entity="teams" item={team} /></MemoryRouter>);
   fireEvent.error(view.container.querySelector('img')!);
   expect(view.container.querySelector('.discovery-card-image svg')).toBeTruthy();
+});
+
+it.each(['teams', 'activities'] as const)('opens an encoded %s pin preview and restores selection through detail/back, clearing on changed search', async entity => {
+  const activity = { pk: 'activity/one', title: 'Real Activity', date_time: '2026-12-01', duration_in_minutes: 90, public: true, description: '', competition: { team_1: { name: null, image_url: null }, team_2: { name: null, image_url: null } }, people_joined: [], creator: { username: 'sample', first_name: 'Sample', last_name: 'Player', image_url: '' }, country: organization.country, state: organization.state, city: organization.city, location: organization.location, categories: [], number_of_people_joined: 0 };
+  vi.mocked(fetchResults).mockResolvedValue({ ...results, teams: [team], activities: [activity] });
+  const path = url.replace('entity=organizations', 'entity=' + entity);
+  function Detail() { const navigate = useNavigate(); return <button onClick={() => navigate(-1)}>Return to results</button>; }
+  render(<MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><Routes><Route path="/map" element={<DiscoveryPage />} /><Route path="/teams/:id" element={<Detail />} /><Route path="/activities/:id" element={<Detail />} /></Routes></DiscoveryProvider></MemoryRouter>);
+  await waitFor(() => expect(sdk.sources.has(entity)).toBe(true));
+  act(() => { for (const fn of sdk.listeners.get(entity === 'teams' ? 'click:teams' : 'click:unclustered-point') ?? []) (fn as (event: unknown) => void)({ point: {} }); });
+  const preview = screen.queryByRole('region', { name: 'Selected result' }); expect(preview).not.toBeNull();
+  const link = preview!.querySelector('a')!; expect(link.getAttribute('href')).toContain(entity === 'teams' ? '/teams/Real%20Team?' : '/activities/activity%2Fone?'); expect(link.getAttribute('href')).toContain('q=sport');
+  fireEvent.click(screen.getByRole('button', { name: 'List' })); fireEvent.click(screen.getByRole('button', { name: 'Map' }));
+  fireEvent.click(screen.getByRole('region', { name: 'Selected result' }).querySelector('a')!);
+  fireEvent.click(screen.getByRole('button', { name: 'Return to results' }));
+  await waitFor(() => expect(screen.queryByRole('region', { name: 'Selected result' })).not.toBeNull());
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'changed' } });
+  expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'sport' } });
+  expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
 });

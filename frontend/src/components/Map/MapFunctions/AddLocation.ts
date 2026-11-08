@@ -19,10 +19,25 @@ export class LocationSelectionError extends Error {
 const optionalDetails = { country_code: '', timezone: '', sunrise: '', sunset: '' };
 async function providerJson(path: string, lng: number, lat: number) {
   const query = new URLSearchParams({ lat: String(lat), lng: String(lng), username: 'khajiev13' });
-  // Venue lookup is separate from discovery GPS, and never carries Eventopia credentials.
-  const response = await fetch(`https://secure.geonames.org/${path}?${query}`, { credentials: 'omit' });
-  if (!response.ok) throw new LocationSelectionError('Location lookup is unavailable. Try again or enter the geography manually.');
-  return response.json();
+  // One five-second deadline covers both headers and body, as in discovery lookups.
+  // Abort is advisory; the race also bounds providers that do not settle on abort.
+  const controller = new AbortController();
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      (async () => {
+        const response = await fetch(`https://secure.geonames.org/${path}?${query}`, { credentials: 'omit', signal: controller.signal });
+        if (controller.signal.aborted || !response.ok) throw new LocationSelectionError('Location lookup is unavailable. Try again or enter the geography manually.');
+        return response.json();
+      })(),
+      new Promise<never>((_resolve, reject) => {
+        timeout = setTimeout(() => {
+          controller.abort();
+          reject(new LocationSelectionError('Location lookup timed out. Try again or enter the geography manually.'));
+        }, 5000);
+      }),
+    ]);
+  } finally { clearTimeout(timeout); }
 }
 export async function AddLocation(name: string, lng: number, lat: number, manualGeo?: ManualLocationGeo): Promise<LocationDetails> {
   if (!name.trim() || !Number.isFinite(lng) || !Number.isFinite(lat) || Math.abs(lng) > 180 || Math.abs(lat) > 90) {

@@ -5,11 +5,12 @@ import { useDiscovery } from '@/discovery/DiscoveryContext';
 import { displayActivities } from './MapFunctions/DisplayActivities';
 import { displayTeams } from './MapFunctions/DisplayTeams';
 import { displayOrganizations } from './MapFunctions/DisplayOrganizations';
+import { ResultCard } from '@/components/Discovery/ResultCard';
 import type { DiscoveryResults } from '@/discovery/types';
 export default function RenderMap({ onOrganization, onError }: { onOrganization: (item: DiscoveryResults['organizations'][number]) => void; onError: () => void }) {
-  const { state, results, loading: resultsLoading } = useDiscovery(); const [map, setMap] = useState<maptilersdk.Map>();
-  const [loading, setLoading] = useState(true); const [selected, setSelected] = useState<string | null>(null);
-  const fitKey = useRef(''); const callbacks = useRef({ onOrganization, onError }); callbacks.current = { onOrganization, onError };
+  const { state, results, selected, setSelected, loading: resultsLoading } = useDiscovery(); const [map, setMap] = useState<maptilersdk.Map>();
+  const [loading, setLoading] = useState(true);
+  const fitKey = useRef(''); const callbacks = useRef({ onOrganization, onError, setSelected }); callbacks.current = { onOrganization, onError, setSelected };
   const points = useMemo(() => {
     const geo = state.geo;
     // A region change can render once before its request clears the previous results.
@@ -26,7 +27,6 @@ export default function RenderMap({ onOrganization, onError }: { onOrganization:
   const geographyKey = JSON.stringify(state.geo);
   const cameraGeography = useRef(geographyKey);
   const regionKey = JSON.stringify([state.geo, state.entity, points]);
-  useEffect(() => { setSelected(null); }, [regionKey]);
   useEffect(() => {
     if (!map) return;
     const ready = () => setLoading(false);
@@ -42,8 +42,8 @@ export default function RenderMap({ onOrganization, onError }: { onOrganization:
     const draw = () => {
       if (!map.isStyleLoaded()) return;
       cleanup?.();
-      if (state.entity === 'activities') cleanup = displayActivities(results.activities, map, item => setSelected(item.pk), () => {});
-      else if (state.entity === 'teams') cleanup = displayTeams(results.teams, map, item => setSelected(item.name), () => {});
+      if (state.entity === 'activities') cleanup = displayActivities(results.activities, map, item => callbacks.current.setSelected(item.pk), () => {});
+      else if (state.entity === 'teams') cleanup = displayTeams(results.teams, map, item => callbacks.current.setSelected(item.name), () => {});
       else cleanup = displayOrganizations(results.organizations, map, item => callbacks.current.onOrganization(item), () => {});
       if (cameraGeography.current !== geographyKey && !points.length) map.jumpTo({ center: [0, 20], zoom: 2, padding: { top: 0, right: 0, bottom: 0, left: 0 } });
       cameraGeography.current = geographyKey;
@@ -59,8 +59,14 @@ export default function RenderMap({ onOrganization, onError }: { onOrganization:
     draw(); map.on('style.load', draw); map.on('load', draw); map.on('idle', restoreMissingResults);
     return () => { map.off('style.load', draw); map.off('load', draw); map.off('idle', restoreMissingResults); cleanup?.(); };
   }, [map, state.entity, results, regionKey, geographyKey, points]);
+  const selectedActivity = state.entity === 'activities' ? results.activities.find(item => item.pk === selected) : undefined;
+  const selectedTeam = state.entity === 'teams' ? results.teams.find(item => item.name === selected) : undefined;
   return <><BaseMap onMapLoad={setMap} onMapError={onError} />{loading && <p className="discovery-map-status" role="status">Loading map tiles…</p>}
     {!loading && !resultsLoading && state.geo && points.length === 0 && <p className="discovery-map-status" style={{ right: 12 }} role="status">No mapped locations are available for {[state.geo.city, state.geo.state, state.geo.country].filter(Boolean).join(', ')}.</p>}
-    {selected && <div className="discovery-map-selection"><p>{state.entity === 'activities' ? results.activities.find(item => item.pk === selected)?.title : selected}</p><p>Open this result in the list for details.</p><button onClick={() => setSelected(null)}>Close selection</button></div>}
+    {(selectedActivity || selectedTeam) && <section className="discovery-map-selection" aria-label="Selected result">
+      {selectedActivity && <ResultCard entity="activities" item={selectedActivity} />}
+      {selectedTeam && <ResultCard entity="teams" item={selectedTeam} />}
+      <button onClick={() => setSelected(null)}>Close selection</button>
+    </section>}
   </>;
 }

@@ -44,3 +44,23 @@ it('treats a trailing-slash directory URL as its canonical entity', async () => 
   mount('/teams/?entity=activities&q=football&view=map');
   expect(await screen.findByText('teams:football:')).toBeTruthy();
 });
+
+it.each(['geography', 'entity', 'search'] as const)('retains selection across view/detail/login and clears it permanently for changed %s', async context => {
+  vi.mocked(fetchCountries).mockResolvedValue([]); vi.mocked(fetchResults).mockResolvedValue({ activities: [], teams: [], organizations: [] });
+  const original = '/map?level=city&country=UK&state=England&city=Cambridge&entity=activities&view=map&q=old';
+  function SelectionProbe() {
+    const d = useDiscovery();
+    return <><output aria-label="Selection">{d.selected ?? 'none'}</output>
+      <button onClick={() => d.setSelected('activity/one')}>Select pin</button>
+      <button onClick={() => d.setState(s => ({ ...s, view: s.view === 'map' ? 'list' : 'map' }))}>Toggle view</button>
+      <button onClick={() => d.setState(s => context === 'search' ? { ...s, query: 'new' } : context === 'entity' ? { ...s, entity: 'teams' } : { ...s, geo: { level: 'city', country: 'UK', state: 'Scotland', city: 'Edinburgh' } })}>Change context</button>
+      <Link to="/activities/activity%2Fone">Detail without query</Link><Link to="/login">Login without query</Link><Link to={original}>Original context</Link></>;
+  }
+  render(<MemoryRouter initialEntries={[original]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><SelectionProbe /></DiscoveryProvider></MemoryRouter>);
+  const selection = () => screen.getByLabelText('Selection').textContent;
+  fireEvent.click(screen.getByText('Select pin')); expect(selection()).toBe('activity/one');
+  fireEvent.click(screen.getByText('Toggle view')); expect(selection()).toBe('activity/one');
+  fireEvent.click(screen.getByText('Detail without query')); fireEvent.click(screen.getByText('Login without query')); fireEvent.click(screen.getByText('Original context')); expect(selection()).toBe('activity/one');
+  fireEvent.click(screen.getByText('Change context')); expect(selection()).toBe('none');
+  fireEvent.click(screen.getByText('Original context')); expect(selection()).toBe('none');
+});

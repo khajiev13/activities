@@ -75,7 +75,7 @@ async function manualVenue(page, drawer, { retry = false, city = data.city } = {
   await drawer.getByRole('button', { name: 'Change location', exact: true }).waitFor();
 }
 async function runCase(name, fn) {
-  if (selected && name !== selected) return;
+  if (selected && !selected.split(',').includes(name)) return;
   const before = checks; const start = Date.now();
   try { await fn(); results.push({ name, status: 'PASS', checks: checks - before, milliseconds: Date.now() - start }); console.log('PASS ' + name + ' (' + (checks - before) + ' checks)'); }
   catch (error) { const message = error.message.replace(/https?:\/\/\S+/g, '[URL]').replace(/\+\d{9,15}|\b\d{6}\b|\b[a-f0-9]{32,64}\b/gi, '[synthetic auth value]').slice(0, 2200); results.push({ name, status: 'FAIL', checks: checks - before, message }); console.error('FAIL ' + name + ': ' + message); }
@@ -143,6 +143,117 @@ async function teamJoin() {
   model.failTeamJoin = false; await page.getByRole('button', { name: 'Join team', exact: true }).click(); await page.getByText('You are a member · Midfielder', { exact: true }).waitFor();
   equal(model.teamJoinPayload, { name_on_jersey: 'PLAYER', player_number: 8, position: 'Midfielder' }, 'Team join payload preserved');
   equal(model.writes.length, 2, 'Exactly failure and retry join requests'); await shot(page, 'team-joined-390'); await clean(run);
+}
+async function joinViewport() {
+  const run = await setup({ authenticated: true }); const { page, context, model } = run;
+  await page.goto(BASE + '/teams/Community%20United' + data.query('teams'));
+  await page.getByRole('button', { name: 'Join', exact: true }).click(); const dialog = page.getByRole('dialog');
+  await dialog.getByLabel('Jersey name').fill('PLAYER'); await dialog.getByLabel('Number', { exact: true }).fill('8'); await dialog.getByLabel('Position', { exact: true }).selectOption('Midfielder');
+  await dialog.getByRole('button', { name: 'Join team', exact: true }).click(); await dialog.getByRole('alert').waitFor();
+  await dialog.getByLabel('Jersey name').focus();
+  for (const viewport of [{ width: 667, height: 320 }, { width: 390, height: 400 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport); await settle(page);
+    await fieldReachable(page, dialog.getByLabel('Jersey name'));
+    equal(await dialog.getByLabel('Jersey name').inputValue(), 'PLAYER', 'Join resize retains jersey draft');
+    equal(await dialog.getByLabel('Number', { exact: true }).inputValue(), '8', 'Join resize retains number');
+    equal(await dialog.getByLabel('Position', { exact: true }).inputValue(), 'Midfielder', 'Join resize retains position');
+    check(await dialog.getByRole('alert').isVisible(), 'Join resize retains error');
+    await shot(page, 'join-focused-' + viewport.width + '-' + viewport.height);
+    await fieldReachable(page, dialog.getByRole('button', { name: 'Join team', exact: true }));
+    await fieldReachable(page, dialog.getByRole('button', { name: 'Cancel', exact: true }));
+  }
+  let release; const gate = new Promise(resolve => { release = resolve; }); let requested = false;
+  await context.route(url => /\/api\/teams\/[^/]+\/join\/$/.test(url.pathname), async route => { requested = true; await gate; await route.fulfill({ status: 503, json: { error: 500, data: null } }); });
+  await dialog.getByRole('button', { name: 'Join team', exact: true }).click(); await until(() => requested);
+  await page.setViewportSize({ width: 667, height: 320 }); await settle(page);
+  check(await dialog.getByRole('button', { name: 'Joining…', exact: true }).isDisabled(), 'Join resize retains pending lock');
+  equal(await dialog.getByLabel('Position', { exact: true }).inputValue(), 'Midfielder', 'Pending resize retains position');
+  await page.setViewportSize({ width: 390, height: 844 }); release(); await dialog.getByRole('alert').waitFor();
+  await dialog.getByRole('button', { name: 'Cancel', exact: true }).click(); await dialog.waitFor({ state: 'hidden' });
+  // A short desktop dialog uses the same bounded form scroll owner.
+  await page.setViewportSize({ width: 1024, height: 320 }); await page.getByRole('button', { name: 'Join', exact: true }).click();
+  await fieldReachable(page, dialog.getByLabel('Jersey name')); await fieldReachable(page, dialog.getByRole('button', { name: 'Join team', exact: true })); await fieldReachable(page, dialog.getByRole('button', { name: 'Cancel', exact: true }));
+  await shot(page, 'join-desktop-short'); await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+  equal(model.writes.length, 1, 'Resize does not send duplicate joins'); await clean(run);
+}
+async function createFocusedResize() {
+  const run = await setup({ authenticated: true }); const { page } = run;
+  const dialog = await openCreate(page, 'teams'); await dialog.getByLabel('Name', { exact: true }).fill('Retained draft');
+  const field = dialog.getByLabel('Founded date', { exact: true }); await field.fill('2020-03-04'); await field.focus();
+  const documentHandle = await page.evaluateHandle(() => document); const before = page.url();
+  for (const height of [350, 844]) {
+    await page.setViewportSize({ width: 390, height }); await settle(page);
+    await until(() => field.evaluate(el => { const r = el.getBoundingClientRect(); const hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2); return document.activeElement === el && (hit === el || el.contains(hit)); }), 'Already-focused Create field remains exposed during resize'); checks++;
+    equal(await dialog.getByLabel('Name', { exact: true }).inputValue(), 'Retained draft', 'Create resize retains draft');
+    equal(await field.inputValue(), '2020-03-04', 'Create resize retains focused date');
+    equal(page.url(), before, 'Focused resize has no navigation');
+    check(await documentHandle.evaluate(doc => doc === document), 'Focused resize retains the same document');
+    await shot(page, 'create-focused-resize-' + height);
+  }
+  await fieldReachable(page, dialog.getByRole('button', { name: 'Create', exact: true })); await fieldReachable(page, dialog.getByRole('button', { name: 'Close', exact: true }));
+  await discard(page, dialog); await clean(run);
+}
+async function pinReturn() {
+  for (const entity of ['activities', 'teams']) {
+    const run = await setup({ realMap: true, pinReturn: true }); const { page, model } = run;
+    // Public tile/SDK loading is retained; every content/auth API remains fixture-only.
+    const title = entity === 'activities' ? data.activity.title : 'Community team 06'; const id = entity === 'activities' ? 'one' : title;
+    const initial = data.query(entity); await page.goto(BASE + '/map' + initial);
+    const panel = page.locator('.discovery-results-scroll'); const card = panel.locator('[data-result-id="' + id + '"]');
+    await card.getByRole('link', { name: title, exact: true }).scrollIntoViewIfNeeded(); const listScroll = await panel.evaluate(el => el.scrollTop); check(listScroll > 0, 'Pin return begins with a scrolled list');
+    await page.getByRole('button', { name: 'Map', exact: true }).click();
+    await page.waitForFunction(() => !document.body.textContent.includes('Loading map tiles…'));
+    const canvas = page.locator('.maplibregl-canvas'); await canvas.waitFor();
+    await until(async () => { const box = await canvas.boundingBox(); await page.mouse.click(box.x + box.width / 2, box.y + (box.height + 40 - 240) / 2); return page.getByRole('region', { name: 'Selected result', exact: true }).isVisible(); }, 'Actual activity/team pin opens detail preview'); checks++;
+    const query = new URL(page.url()).search; const mapScroll = await panel.evaluate(el => el.scrollTop);
+    const preview = page.getByRole('region', { name: 'Selected result', exact: true });
+    equal(await preview.getByRole('link', { name: title, exact: true }).getAttribute('href'), '/' + entity + '/' + encodeURIComponent(id) + query, 'Pin preview uses encoded existing detail route and discovery query');
+    await shot(page, 'pin-preview-' + entity); await preview.getByRole('link', { name: title, exact: true }).click();
+    await page.getByRole('link', { name: entity === 'activities' ? 'Join activity' : 'Join', exact: true }).click();
+    await page.getByLabel('Phone number').fill('+99890' + String(require('node:crypto').randomInt(1000000, 9999999))); await page.getByRole('button', { name: 'Send code', exact: true }).click();
+    await page.getByLabel('6-digit code').fill(String(require('node:crypto').randomInt(100000, 999999))); await page.getByRole('button', { name: 'Login', exact: true }).click();
+    await page.getByRole('button', { name: entity === 'activities' ? 'Join activity' : 'Join', exact: true }).waitFor();
+    equal(new URL(page.url()).pathname, '/' + entity + '/' + encodeURIComponent(id), 'Login returns to selected pin detail'); equal(new URL(page.url()).search, query, 'Login preserves pin discovery context');
+    await page.getByRole('button', { name: 'Back', exact: true }).click(); await preview.waitFor();
+    equal(new URL(page.url()).pathname, '/map', 'Back returns to original Explore'); equal(new URL(page.url()).search, query, 'Back restores map query');
+    await until(async () => await panel.evaluate(el => el.scrollTop) === mapScroll, 'Pin detail/login restores map results position'); checks++;
+    equal(await preview.getByRole('link', { name: title, exact: true }).count(), 1, 'Selected preview survives detail and login');
+    await page.getByRole('button', { name: 'List', exact: true }).click(); await until(async () => await panel.evaluate(el => el.scrollTop) === listScroll, 'Pin list toggle restores prior list position'); checks++;
+    equal(await card.getAttribute('data-selected'), 'true', 'Selected result is highlighted in list');
+    await page.getByRole('button', { name: 'Map', exact: true }).click(); await preview.waitFor();
+    await page.getByRole('searchbox').fill('changed'); await preview.waitFor({ state: 'hidden' }); check(true, 'Changed search clears pin selection');
+    await page.getByRole('searchbox').fill('ball'); await until(() => model.requests.some(request => request.search === 'ball'));
+    equal(await preview.count(), 0, 'Old selection does not reappear on returning to previous search');
+    equal(model.writes.length, 0, 'Pin/login navigation performs no content writes'); await clean(run);
+  }
+}
+async function venueTimeout() {
+  for (const optional of [false, true]) {
+    const run = await setup({ authenticated: true }); const { page, context, model } = run;
+    let release; const gate = new Promise(resolve => { release = resolve; }); let held = false;
+    await context.route(url => url.hostname.endsWith('geonames.org'), async route => {
+      if (optional && route.request().url().includes('findNearbyPlaceNameJSON')) return route.fulfill({ json: { geonames: [{ countryName: data.country, adminName1: data.state, name: data.city }] } });
+      held = true; await gate; await route.fulfill({ json: optional ? { timezoneId: 'Late/Zone' } : { geonames: [{ countryName: data.country, adminName1: data.state, name: data.city }] } }).catch(() => {});
+    });
+    const drawer = await openCreate(page, 'activities'); await drawer.getByLabel('Title', { exact: true }).fill('Retained venue draft');
+    await drawer.getByLabel('Venue name', { exact: true }).fill(data.place.name);
+    if (!await drawer.getByLabel('Longitude', { exact: true }).isVisible()) await drawer.getByRole('button', { name: 'Enter location manually', exact: true }).click();
+    await drawer.getByLabel('Longitude', { exact: true }).fill('10'); await drawer.getByLabel('Latitude', { exact: true }).fill('20');
+    await drawer.getByRole('button', { name: 'Use this location', exact: true }).click(); await until(() => held);
+    check(await drawer.getByLabel('Venue name', { exact: true }).isDisabled(), 'Provider lookup holds one submission lock');
+    if (optional) {
+      await drawer.getByRole('button', { name: 'Change location', exact: true }).waitFor(); equal(model.writes, ['/api/locations/'], 'Optional timeout persists complete geography once');
+    } else {
+      await drawer.getByRole('alert').filter({ hasText: 'Could not save this location' }).waitFor();
+      check(await drawer.getByLabel('Venue name', { exact: true }).isEnabled(), 'Required timeout unlocks manual recovery');
+      equal(model.writes.length, 0, 'Required timeout sends no incomplete venue'); await shot(page, 'venue-timeout-manual');
+      for (const [label, value] of [['Country', data.country], ['State or region', data.state], ['City', data.city]]) await drawer.getByLabel(label, { exact: true }).fill(value);
+      await drawer.getByRole('button', { name: 'Use this location', exact: true }).click(); await drawer.getByRole('button', { name: 'Change location', exact: true }).waitFor();
+    }
+    release(); await settle(page); equal(model.writes, ['/api/locations/'], 'Late provider completion does not duplicate venue POST');
+    equal(await drawer.getByLabel('Title', { exact: true }).inputValue(), 'Retained venue draft', 'Provider timeout retains activity draft');
+    await discard(page, drawer); await clean(run);
+  }
 }
 async function geography() {
   for (const mode of ['allowed', 'denied', 'unmatched', 'provider-failure', 'manual-race']) {
@@ -292,7 +403,7 @@ async function nativeAdapter() {
     equal(await page.evaluate(() => window.__native.calls), 0, 'Native permission waits for explicit action');
     await dialog.getByRole('button', { name: 'Use my location', exact: true }).click();
     if (denied) { await dialog.getByRole('status').filter({ hasText: 'permission denied' }).waitFor(); await dialog.getByRole('button', { name: `${data.city}, ${data.state}, ${data.country}`, exact: true }).click(); }
-    await dialog.waitFor({ state: 'hidden' }); equal(await page.evaluate(() => window.__native.calls), 1, 'Controlled native manager called once'); equal(await page.evaluate(() => window.__native.browserCalls), 0, 'Native denial/success does not prompt browser');
+    await dialog.waitFor({ state: 'hidden' }); if (!denied) { await page.getByRole('status').filter({ hasText: 'City selected from your location: ' + data.city }).waitFor(); check(await page.getByRole('button', { name: 'Change', exact: true }).isVisible(), 'GPS success offers Change'); await shot(page, 'gps-coarse-city-success'); } equal(await page.evaluate(() => window.__native.calls), 1, 'Controlled native manager called once'); equal(await page.evaluate(() => window.__native.browserCalls), 0, 'Native denial/success does not prompt browser');
     check(await page.evaluate(() => document.documentElement.classList.contains('dark')), 'Telegram theme wins over system');
     await page.getByRole('button', { name: 'Account', exact: true }).click(); await page.getByLabel('Appearance').selectOption('light'); await page.keyboard.press('Escape'); await dialog.waitFor({ state: 'hidden' });
     check(await page.evaluate(() => !document.documentElement.classList.contains('dark')), 'Explicit theme wins over Telegram');
@@ -460,7 +571,7 @@ async function realMap() {
       const box = await canvas.boundingBox();
       // fitBounds reserves 40px above and 240px below the one public synthetic point.
       await page.mouse.click(box.x + box.width / 2, box.y + (box.height + 40 - 240) / 2);
-      return page.getByText('Open this result in the list for details.', { exact: true }).isVisible();
+      return page.getByRole('region', { name: 'Selected result', exact: true }).getByRole('link', { name: data.activity.title, exact: true }).isVisible();
     }, 'Actual rendered pin is selectable after style/viewport change'); } catch (error) {
       await shot(page, 'real-map-failure-' + page.viewportSize().width);
       throw new Error(error.message + ': ' + JSON.stringify(await canvas.evaluate(el => ({ internalWidth: el.width, clientWidth: el.clientWidth, box: el.getBoundingClientRect().toJSON() }))));
@@ -592,7 +703,7 @@ async function stalePersistence() {
   fs.mkdirSync(OUT, { recursive: true });
   browser = await chromium.launch({ headless: true, ...(process.env.CHROME_EXECUTABLE ? { executablePath: process.env.CHROME_EXECUTABLE } : {}), args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-webgl'] });
   try {
-    for (const [name, fn] of Object.entries({ copy, responsive, navigation, geography, 'auth-controls': authControls, 'contrast': themeContrast, 'auth-participation': authParticipation, 'team-join': teamJoin, 'modal-focus': modalFocus, accessibility, 'native-adapter': nativeAdapter, 'activity-form': activityForm, 'team-form': teamForm, 'native-kit': nativeKit, 'organization-form': organizationForm, 'map-failure': mapFailure, 'real-map': realMap, 'import-failure': importFailure, 'entry-loading': entryLoading, 'stale-persistence': stalePersistence })) await runCase(name, fn);
+    for (const [name, fn] of Object.entries({ copy, responsive, navigation, geography, 'auth-controls': authControls, 'contrast': themeContrast, 'auth-participation': authParticipation, 'team-join': teamJoin, 'join-viewport': joinViewport, 'pin-return': pinReturn, 'venue-timeout': venueTimeout, 'create-focused-resize': createFocusedResize, 'modal-focus': modalFocus, accessibility, 'native-adapter': nativeAdapter, 'activity-form': activityForm, 'team-form': teamForm, 'native-kit': nativeKit, 'organization-form': organizationForm, 'map-failure': mapFailure, 'real-map': realMap, 'import-failure': importFailure, 'entry-loading': entryLoading, 'stale-persistence': stalePersistence })) await runCase(name, fn);
   } finally { await browser.close(); }
   fs.writeFileSync(path.join(OUT, 'results.json'), JSON.stringify({ checks, results }, null, 2));
   console.log(`${results.filter(result => result.status === 'PASS').length}/${results.length} cases; ${checks} assertions`);

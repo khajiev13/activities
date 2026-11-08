@@ -50,3 +50,17 @@ describe('city picker', () => {
     view.rerender(<CityPicker {...p} open={false} />); await waitFor(() => expect(document.activeElement).toBe(opener)); opener.remove();
   });
 });
+
+it('announces the coarse city after successful detection closes and offers Change', async () => {
+  vi.mocked(requestDeviceLocation).mockResolvedValue({ latitude: 12, longitude: 34 }); vi.mocked(resolveCity).mockResolvedValue(city);
+  const p = props(); const view = render(<CityPicker {...p} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Use my location' }));
+  await waitFor(() => expect(p.onSelect).toHaveBeenCalledWith({ level: 'city', ...city }));
+  view.rerender(<CityPicker {...p} open={false} />);
+  expect(screen.queryByRole('status')).not.toBeNull();
+  expect(screen.getByRole('status').textContent).toContain('City selected from your location: Paris, Île-de-France, France');
+  expect(screen.getByRole('status').textContent).not.toContain('12');
+  fireEvent.click(screen.getByRole('button', { name: 'Change' })); expect(p.onOpenChange).toHaveBeenLastCalledWith(true);
+  view.rerender(<CityPicker {...p} open={false} value={{ level: 'country', country: 'Other' }} />);
+  expect(screen.queryByRole('status')).toBeNull();
+});

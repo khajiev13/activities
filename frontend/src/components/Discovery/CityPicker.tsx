@@ -17,19 +17,21 @@ const messages: Record<CityDetectionStatus, string> = {
 
 export function CityPicker({ open, onOpenChange, countries, loading, error, value, onSelect, onRetry }: CityPickerProps) {
   const [query, setQuery] = useState('');
+  const [detectedCity, setDetectedCity] = useState<GeoSelection | null>(null);
   const opener = useRef<HTMLElement | null>(null);
   const cities = useMemo(() => flattenCities(countries), [countries]);
   const selected = useCallback((city: { country: string; state: string; city: string }) => {
-    onSelect({ level: 'city', ...city }); onOpenChange(false);
+    setDetectedCity({ level: 'city', ...city }); onSelect({ level: 'city', ...city }); onOpenChange(false);
   }, [onSelect, onOpenChange]);
   const { status, detect, cancel } = useCityDetection(cities, selected);
   useEffect(() => { if (!open) cancel(); }, [open, cancel]);
-  const choose = (geo: GeoSelection) => { cancel(); onSelect(geo); onOpenChange(false); };
+  const choose = (geo: GeoSelection) => { setDetectedCity(null); cancel(); onSelect(geo); onOpenChange(false); };
   const changeOpen = (next: boolean) => { if (!next) cancel(); onOpenChange(next); };
   const normalizedQuery = query.normalize('NFKC').trim().toLowerCase();
   const matches = cities.filter(city => `${city.city}, ${city.state}, ${city.country}`.normalize('NFKC').toLowerCase().includes(normalizedQuery));
   const pending = status === 'locating' || status === 'resolving';
-  return <Dialog open={open} onOpenChange={changeOpen}>
+  const acknowledgment = detectedCity && value?.level === 'city' && value.country === detectedCity.country && value.state === detectedCity.state && value.city === detectedCity.city;
+  return <>{!open && acknowledgment && <div className="discovery-location-success"><p role="status">City selected from your location: {[detectedCity.city, detectedCity.state, detectedCity.country].join(', ')}.</p><button onClick={() => onOpenChange(true)}>Change</button></div>}<Dialog open={open} onOpenChange={changeOpen}>
     <DialogPortal><DialogOverlay /><DialogContent className="app-account-dialog fixed left-1/2 top-1/2 z-50 grid max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border p-6 shadow-lg" onOpenAutoFocus={() => { opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null; }} onCloseAutoFocus={event => { event.preventDefault(); opener.current?.focus(); }}>
       <div className="flex items-center justify-between gap-4">
         <DialogTitle>Choose a city</DialogTitle>
@@ -56,5 +58,5 @@ export function CityPicker({ open, onOpenChange, countries, loading, error, valu
         </div>)}</div>
       </details>
     </DialogContent></DialogPortal>
-  </Dialog>;
+  </Dialog></>;
 }

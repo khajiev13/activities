@@ -57,9 +57,9 @@ async function install(context, options = {}) {
       model.resultReads++;
       if (model.failResults) return fail();
       if (model.empty) return ok([]);
-      if (path.includes('/teams/')) return ok(Array.from({ length: model.one ? 1 : 25 }, (_, i) => team('Community team ' + String(i).padStart(2, '0'))));
+      if (path.includes('/teams/')) return ok(Array.from({ length: model.one ? 1 : 25 }, (_, i) => ({ ...team('Community team ' + String(i).padStart(2, '0')), location: [{ ...resultPlace, points: options.pinReturn && i !== 6 ? { latitude: 999, longitude: 0 } : resultPlace.points }] })));
       if (path.includes('/organizations/')) return ok([model.createdOrganization || organization]);
-      return ok(Array.from({ length: model.one ? 1 : 25 }, (_, i) => ({ ...activity, location: resultPlace, pk: i === 12 || model.one ? 'one' : String(i), title: i === 12 || model.one ? activity.title : 'Local game ' + i })));
+      return ok(Array.from({ length: model.one ? 1 : 25 }, (_, i) => ({ ...activity, location: { ...resultPlace, points: options.pinReturn && i !== 12 ? { latitude: 999, longitude: 0 } : resultPlace.points }, pk: i === 12 || model.one ? 'one' : String(i), title: i === 12 || model.one ? activity.title : 'Local game ' + i })));
     }
     if (req.method() === 'GET' && path === '/api/categories/') return ok([{ pk: 'category-1', name: 'Ball games' }]);
     if (req.method() === 'GET' && path === '/api/organizations/list/') return model.failOrganizations ? fail() : ok(organizations);

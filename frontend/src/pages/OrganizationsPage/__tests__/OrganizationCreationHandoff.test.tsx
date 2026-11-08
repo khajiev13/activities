@@ -1,10 +1,17 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { cleanupVaul } from '@/test/cleanupVaul';
 import { AxiosHeaders, type InternalAxiosRequestConfig } from 'axios';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import client from '@/api/client';
 import { DiscoveryProvider } from '@/discovery/DiscoveryContext';
+import { Create } from '@/components/Drawer';
+const { reloadCalls } = vi.hoisted(() => ({ reloadCalls: vi.fn() }));
+vi.mock('@/discovery/DiscoveryContext', async importOriginal => {
+  const actual = await importOriginal<typeof import('@/discovery/DiscoveryContext')>();
+  return { ...actual, useDiscovery: () => { const value = actual.useDiscovery(); return { ...value, reload: () => { reloadCalls(); value.reload(); } }; }, useOptionalDiscovery: () => { const value = actual.useOptionalDiscovery(); return value && { ...value, reload: () => { reloadCalls(); value.reload(); } }; } };
+});
 import NewOrganizationDrawer from '@/components/OrganizationsPage/NewOrganizationDrawer';
 import Organizations from '../Organizations';
 import type { LocationDetails } from '@/components/Map/MapFunctions/AddLocation';
@@ -14,13 +21,13 @@ vi.mock('sonner', () => ({ toast: vi.fn() }));
 vi.mock('@/components/SelectLocation', () => ({ default: ({ setLocation }: { setLocation: (value: LocationDetails) => void }) => <button type="button" onClick={() => setLocation({ country: 'UK', state: 'Scotland', city: 'Edinburgh', location_pk: 'pitch', location_name: 'New pitch', country_code: 'GB', timezone: 'Europe/London', sunrise: '', sunset: '' })}>Choose stored Edinburgh location</button> }));
 const originalAdapter = client.defaults.adapter;
 const progress = vi.fn();
-beforeEach(() => { vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} }); });
-afterEach(() => { cleanup(); client.defaults.adapter = originalAdapter; vi.unstubAllGlobals(); vi.clearAllMocks(); });
+beforeEach(() => { vi.useFakeTimers({ shouldAdvanceTime: true }); window.matchMedia = vi.fn().mockImplementation(() => ({ matches: true, addEventListener() {}, removeEventListener() {} })); vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} }); });
+afterEach(async () => { await cleanupVaul(); vi.useRealTimers(); client.defaults.adapter = originalAdapter; vi.unstubAllGlobals(); vi.clearAllMocks(); });
 function success(config: InternalAxiosRequestConfig, data: unknown) {
   return { config, status: 200, statusText: 'OK', headers: new AxiosHeaders(), data: { error: 0, data } };
 }
-function CurrentRoute() { const location = useLocation(); return <output aria-label="Current route">{location.pathname}{location.search}</output>; }
-it.each([['England', 'Cambridge', 'old-search'], ['Scotland', 'Edinburgh', '']] as const)('keeps the actual organization POST handoff visible from %s/%s without another city choice', async (originState, originCity, query) => {
+function CurrentRoute() { const location = useLocation(); return <><output aria-label="Current route">{location.pathname}{location.search}</output><output aria-label="Handoff pending">{String(Boolean(location.state?.createdOrganization || location.state?.organizationResultsInvalidated))}</output></>; }
+it.each([['England', 'Cambridge', 'old-search', 'legacy'], ['Scotland', 'Edinburgh', '', 'legacy'], ['England', 'Cambridge', 'old-search', 'shell'], ['Scotland', 'Edinburgh', '', 'shell']] as const)('keeps actual organization creation visible from %s/%s (%s, %s) with one invalidation', async (originState, originCity, query, source) => {
   const created = { pk: 'new-org', name: 'New Edinburgh Club', created_at: '2026-11-08', image_url: null, country: { name: 'UK' }, state: { name: 'Scotland' }, city: { name: 'Edinburgh' }, location: { pk: 'pitch', name: 'New pitch', points: { latitude: 55.95, longitude: -3.19 } }, teams_count: 0, number_of_people_joined: 1, number_of_teams_sponsored: 0, hosting_leagues_count: 0, hosting_activities_count: 0 };
   let posts = 0; let refreshed = false;
   client.defaults.adapter = async config => {
@@ -41,17 +48,18 @@ it.each([['England', 'Cambridge', 'old-search'], ['Scotland', 'Edinburgh', '']] 
     return success(config, []);
   };
   const close = vi.fn();
-  const view = render(<MemoryRouter initialEntries={[`/map?level=city&country=UK&state=${originState}&city=${originCity}&entity=organizations&view=map&q=${query}`]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><CurrentRoute /><Routes>
-    <Route path="/map" element={<NewOrganizationDrawer setProgressBar={progress} onCreated={close} />} />
+  render(<MemoryRouter initialEntries={[`/map?level=city&country=UK&state=${originState}&city=${originCity}&entity=organizations&view=map&q=${query}`]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><CurrentRoute /><Routes>
+    <Route path="/map" element={source === 'shell' ? <Create entity="organizations" onCreated={close} /> : <NewOrganizationDrawer setProgressBar={progress} onCreated={close} />} />
     <Route path="/organizations" element={<Organizations />} />
   </Routes></DiscoveryProvider></MemoryRouter>);
+  if (source === 'shell') { window.scrollTo = vi.fn(); fireEvent.click(screen.getByRole('button', { name: 'Create' })); await screen.findByRole('dialog'); }
   fireEvent.change(screen.getByRole('textbox', { name: 'Name' }), { target: { value: 'New Edinburgh Club' } });
   fireEvent.click(screen.getByRole('button', { name: 'Choose stored Edinburgh location' }));
-  fireEvent.change(view.container.querySelector('input[type=file]')!, { target: { files: [new File(['pixels'], 'club.png', { type: 'image/png' })] } });
+  fireEvent.change(screen.getByLabelText('Picture (optional)'), { target: { files: [new File(['pixels'], 'club.png', { type: 'image/png' })] } });
   fireEvent.click(screen.getByRole('button', { name: 'Create' }));
   await waitFor(() => expect(close).toHaveBeenCalledOnce());
   expect(await screen.findByRole('button', { name: 'About New Edinburgh Club' })).toBeTruthy();
-  expect(screen.queryByRole('dialog')).toBeNull(); expect(refreshed).toBe(true); expect(posts).toBe(1);
+  expect(screen.queryByRole('dialog')).toBeNull(); expect(refreshed).toBe(true); expect(posts).toBe(1); expect(reloadCalls).toHaveBeenCalledOnce(); expect(screen.getByLabelText('Handoff pending').textContent).toBe('false');
   const route = screen.getByLabelText('Current route').textContent!;
   expect(route).toContain('/organizations?'); expect(new URL(route, 'https://example.invalid').searchParams.get('city')).toBe('Edinburgh');
   expect(new URL(route, 'https://example.invalid').searchParams.get('q')).toBe('');

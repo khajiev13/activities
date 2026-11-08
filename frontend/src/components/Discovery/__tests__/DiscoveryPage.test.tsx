@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { cleanupVaul } from '@/test/cleanupVaul';
 import { MemoryRouter, Routes, Route, Link } from 'react-router-dom';
 import { DiscoveryProvider } from '@/discovery/DiscoveryContext';
 import { fetchCountries, fetchResults } from '@/discovery/api';
@@ -25,8 +26,8 @@ const organization = { pk: 'org-1', name: 'Real Club', created_at: new Date('202
 const results: DiscoveryResults = { activities: [], teams: [], organizations: [organization] };
 const url = '/map?level=city&country=UK&state=England&city=Cambridge&entity=organizations&view=map&q=sport';
 function mount(path = url) { return render(<MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><Routes><Route path="/map" element={<DiscoveryPage />} /><Route path="/organizations" element={<DiscoveryPage entity="organizations" />} /><Route path="/login" element={<Link to={url}>Return</Link>} /></Routes></DiscoveryProvider></MemoryRouter>); }
-beforeEach(() => { window.scrollTo = vi.fn(); vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }] }]); vi.mocked(fetchResults).mockResolvedValue(results); });
-afterEach(() => { cleanup(); vi.clearAllMocks(); sdk.sources.clear(); sdk.listeners.clear(); });
+beforeEach(() => { vi.useFakeTimers({ shouldAdvanceTime: true }); window.scrollTo = vi.fn(); vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }] }]); vi.mocked(fetchResults).mockResolvedValue(results); });
+afterEach(async () => { await cleanupVaul(); vi.useRealTimers(); vi.clearAllMocks(); sdk.sources.clear(); sdk.listeners.clear(); });
 it('offers manual city and explicit location action on first visit without assuming a city', async () => {
   mount('/map'); expect(await screen.findByRole('dialog')).toBeTruthy(); expect(screen.getByRole('button', { name: 'Use my location' })).toBeTruthy();
   fireEvent.click(await screen.findByRole('button', { name: 'Cambridge, England, UK' }));

@@ -1,124 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axiosInstance from '@/axios';
-import { Building2, LucideCheckCircle } from 'lucide-react';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
-import { Skeleton } from './ui/skeleton';
-import { useNavigate } from 'react-router-dom';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Button } from './ui/button';
 
-interface Organization {
-  pk: string;
-  name: string;
-}
+type Organization = { pk: string; name: string };
+type Props = { onSelect: (pk: string) => void; label?: string; disabled?: boolean };
+export const SelectedOrganizationComp = ({ name }: Organization) => <p className="min-w-0 break-words">{name}</p>;
 
-interface Props {
-  onSelect: (pk: string) => void;
-}
-
-export const SelectedOrganizationComp: React.FC<Organization> = ({
-  name,
-  pk,
-}) => {
-  const navigate = useNavigate();
-
-  return (
-    <div
-      className="flex items-center hover:cursor-pointer m-0 p-0"
-      key={pk}
-      onClick={() => navigate(`/organizations/${pk}`)}
-    >
-      <LucideCheckCircle className="h-8 w-8 mr-2 text-primary" />
-      <Building2 className=" h-5 w-5" />
-      <h1>{name}</h1>
-    </div>
-  );
-};
-
-const SelectOrganization: React.FC<Props> = ({ onSelect }) => {
+export default function SelectOrganization({ onSelect, label = 'Organization', disabled = false }: Props) {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
-  const [selectedOrganization, setSelectedOrganization] =
-    useState<Organization | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  // Fetch organizations from the backend on component mount
+  const [selected, setSelected] = useState<Organization | null>(null);
+  const [loading, setLoading] = useState(true); const [failed, setFailed] = useState(false); const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    setLoading(true);
-    axiosInstance
-      .get('/api/organizations/list/')
-      .then((response) => {
-        setOrganizations(response.data);
-        setLoading(false);
-      })
-      .catch(() => {
-      });
-  }, []);
-
-  // Function to handle organization selection
-  const handleSelectChange = (pk: string, name: string) => {
-    const newOrganization: Organization = { pk, name };
-    setSelectedOrganization(newOrganization);
-    onSelect(pk);
-  };
-
-  return (
-    <>
-      {loading ? (
-        <div className="rounded-lg border shadow-md p-4">
-          {/* Simulate the CommandInput */}
-          <Skeleton className="h-10 mb-4" />
-          {/* Simulate the list items */}
-          {Array.from({ length: 5 }).map((_, index) => (
-            <div key={index} className="flex items-center mb-2">
-              <Skeleton className="h-4 w-4 mr-2" />
-              <Skeleton className="h-4 w-full" />
-            </div>
-          ))}
-        </div>
-      ) : !selectedOrganization ? (
-        <Command className="rounded-lg border shadow-md my-2">
-          <CommandInput placeholder="Search an organization..." />
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Organizations">
-              {organizations.map((org) => (
-                <CommandItem
-                  onClick={() => {
-                    alert('clicked');
-                  }}
-                  key={org.pk}
-                >
-                  <Building2
-                    onClick={() => {
-                      alert('clicked');
-                    }}
-                    className="mr-2 h-4 w-4"
-                  />
-                  <span
-                    onClick={() => {
-                      handleSelectChange(org.pk, org.name);
-                    }}
-                    className="w-full"
-                  >
-                    {org.name}
-                  </span>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      ) : (
-        <SelectedOrganizationComp
-          pk={selectedOrganization.pk}
-          name={selectedOrganization.name}
-        />
-      )}
-    </>
-  );
-};
-
-export default SelectOrganization;
+    let active = true; setLoading(true); setFailed(false);
+    axiosInstance.get('/api/organizations/list/').then(response => { if (active) setOrganizations(response.data); }).catch(() => { if (active) setFailed(true); }).finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [attempt]);
+  if (loading) return <p role="status" className="text-sm">Loading organizations…</p>;
+  if (failed) return <div className="space-y-2"><p role="alert">Could not load organizations.</p><Button type="button" disabled={disabled} variant="outline" className="min-h-11" onClick={() => setAttempt(value => value + 1)}>Retry organizations</Button></div>;
+  return selected ? <div className="space-y-2 min-w-0"><SelectedOrganizationComp {...selected} /><Button type="button" disabled={disabled} variant="outline" className="min-h-11" onClick={() => setSelected(null)}>Change {label.toLowerCase()}</Button></div> :
+    <Command label={`Search ${label.toLowerCase()}`} className="rounded-lg border my-2"><CommandInput aria-label={`Search ${label.toLowerCase()}`} placeholder="Search an organization…" disabled={disabled} className="min-h-11 text-base" /><CommandList className="max-h-56"><CommandEmpty>No results found.</CommandEmpty><CommandGroup heading="Organizations">{organizations.map(org => <CommandItem key={org.pk} value={`${org.name} ${org.pk}`} disabled={disabled} className="min-h-11 whitespace-normal break-words text-base" onSelect={() => { setSelected(org); onSelect(org.pk); }}>{org.name}</CommandItem>)}</CommandGroup></CommandList></Command>;
+}

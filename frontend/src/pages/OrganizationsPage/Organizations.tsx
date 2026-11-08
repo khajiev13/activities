@@ -21,8 +21,8 @@ export default function Organizations() {
     navigate({ pathname: location.pathname, search: serializeDiscovery({ ...state,
       geo: { level: 'city', country: created.country.name, state: created.state.name, city: created.city.name },
       entity: 'organizations', view: 'list', query: '',
-    }) }, { replace: true, state: { ...location.state, createdOrganization: undefined } });
-    reload();
+    }) }, { replace: true, state: { ...location.state, createdOrganization: undefined, organizationResultsInvalidated: undefined } });
+    if (!location.state?.organizationResultsInvalidated) reload();
   }, [created, location.key, location.pathname, location.state, navigate, state, reload]);
   if (created) return <p role="status">Opening the created organization…</p>;
   return <DiscoveryPage entity="organizations" />;

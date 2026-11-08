@@ -70,8 +70,32 @@ export default function NewTeamDrawer({ setProgressBar, onCreated, onPersisted }
       <section aria-labelledby="team-location" className="space-y-3"><h3 id="team-location" className="text-lg font-semibold">Location</h3>{values.location?.location_pk ? <><p>{values.location.location_name}</p><p className="text-sm">{values.location.city}, {values.location.state}, {values.location.country}</p><Button type="button" variant="outline" className="min-h-11" onClick={() => form.setValue('location', { ...form.getValues('location'), location_pk: '' })}>Change location</Button></> : <SelectLocation setLocation={location => { if (active.current) form.setValue('location', location); }} />}</section>
       <section aria-labelledby="team-kit" className="space-y-3"><h3 id="team-kit" className="text-lg font-semibold">Team kit</h3><TeamKit colorPickerNeeded setUniformColors={(name, color) => form.setValue('uniform_colors', [...form.getValues('uniform_colors').filter(item => item.name !== name), { name, color }])} /></section>
       <section aria-labelledby="team-organization" className="space-y-3"><h3 id="team-organization" className="text-lg font-semibold">Organization</h3><label className="flex items-center gap-3 min-h-11"><input type="checkbox" checked={hasOrganization} onChange={event => { setHasOrganization(event.target.checked); form.setValue('belongs_to_organization', ''); }} className="h-5 w-5" />Belongs to an organization</label>{hasOrganization && <SelectOrganization disabled={loading} onSelect={pk => form.setValue('belongs_to_organization', pk)} />}</section>
-      <section aria-labelledby="team-sponsors" className="space-y-3"><h3 id="team-sponsors" className="text-lg font-semibold">Sponsors</h3>{sponsorIds.map((id, index) => <fieldset key={id} aria-label={`Sponsor ${index + 1}`} className="min-w-0 rounded-lg border p-3 space-y-2"><legend className="text-sm">Sponsor {index + 1}</legend><SelectOrganization label={`Sponsor ${index + 1}`} disabled={loading} onSelect={pk => { const sponsors = [...form.getValues('sponsors')]; sponsors[index] = pk; form.setValue('sponsors', sponsors); }} /><Button type="button" variant="outline" className="min-h-11" onClick={() => { setSponsorIds(ids => ids.filter(item => item !== id)); form.setValue('sponsors', form.getValues('sponsors').filter((_, slot) => slot !== index)); }}>Remove sponsor {index + 1}</Button></fieldset>)}<Button type="button" variant="outline" className="min-h-11" onClick={() => { setSponsorIds(ids => [...ids, nextSponsor.current++]); form.setValue('sponsors', [...form.getValues('sponsors'), '']); }}>Add sponsor</Button></section>
+      <section aria-labelledby="team-sponsors" className="space-y-3">
+        <h3 id="team-sponsors" className="text-lg font-semibold">Sponsors</h3>
+        {sponsorIds.map((id, index) => (
+          <fieldset key={id} aria-label={`Sponsor ${index + 1}`} className="min-w-0 rounded-lg border p-3 space-y-2">
+            <legend className="text-sm">Sponsor {index + 1}</legend>
+            <SelectOrganization
+              label={`Sponsor ${index + 1}`}
+              disabled={loading}
+              onSelect={pk => {
+                const sponsors = [...form.getValues('sponsors')];
+                sponsors[index] = pk;
+                form.setValue('sponsors', sponsors);
+              }}
+            />
+            <Button type="button" variant="outline" className="min-h-11" onClick={() => {
+              setSponsorIds(ids => ids.filter(item => item !== id));
+              form.setValue('sponsors', form.getValues('sponsors').filter((_, slot) => slot !== index));
+            }}>Remove sponsor {index + 1}</Button>
+          </fieldset>
+        ))}
+        <Button type="button" variant="outline" className="min-h-11" onClick={() => {
+          setSponsorIds(ids => [...ids, nextSponsor.current++]);
+          form.setValue('sponsors', [...form.getValues('sponsors'), '']);
+        }}>Add sponsor</Button>
+      </section>
     </fieldset>
-    <div className="sticky bottom-0 border-t bg-background py-3 space-y-2">{error && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p>}<Button type="submit" aria-label="Create" disabled={loading} className="w-full min-h-11">{loading ? 'Creating…' : 'Create'}</Button></div>
+    <div data-create-submit className="sticky bottom-0 border-t bg-background py-3 space-y-2">{error && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p>}<Button type="submit" aria-label="Create" disabled={loading} className="w-full min-h-11">{loading ? 'Creating…' : 'Create'}</Button></div>
   </form></Form>;
 }

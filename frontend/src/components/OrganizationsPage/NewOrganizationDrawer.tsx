@@ -60,6 +60,6 @@ export default function NewOrganizationDrawer({ setProgressBar, onCreated, onPer
         <p className="text-sm text-muted-foreground">Choose where people can find your organization.</p>
       </section>
     </fieldset>
-    <div className="sticky bottom-0 border-t bg-background py-3 space-y-2">{error && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p>}<Button type="submit" aria-label="Create" disabled={loading} className="w-full min-h-11">{loading ? 'Creating…' : 'Create'}</Button></div>
+    <div data-create-submit className="sticky bottom-0 border-t bg-background py-3 space-y-2">{error && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p>}<Button type="submit" aria-label="Create" disabled={loading} className="w-full min-h-11">{loading ? 'Creating…' : 'Create'}</Button></div>
   </form></Form>;
 }

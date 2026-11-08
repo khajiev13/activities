@@ -23,7 +23,7 @@
     --muted-foreground: 80 4% 39%;
     --accent: 22 76% 95%;
     --accent-foreground: 14 65% 36%;
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84.2% 42%;
     --destructive-foreground: 60 9.1% 97.8%;
     --border: 60 14% 87%;
     --input: 60 14% 82%;
@@ -201,3 +201,10 @@ input, select, textarea { min-height: 44px; font-size: 16px !important; }
 .discovery-map { z-index:0; }
 
 @media(max-width:1023px) { .discovery-page.expanded-results .discovery-map { visibility:hidden; } }
+
+/* Reserve the actual sticky submit height when a field receives keyboard focus. */
+.create-sheet { height: min(95dvh, calc(var(--app-height, 100dvh) * .95)); max-height: min(95dvh, calc(var(--app-height, 100dvh) * .95)); }
+.create-form-scroll { scroll-padding: 16px 0 calc(var(--create-submit-height, 80px) + 16px); }
+/* Short visible sheets keep Create in the one scroller; Close remains in its fixed footer. */
+.create-sheet[data-short=true] [data-create-submit] { position: static; }
+.create-sheet[data-short=true] .create-form-scroll { scroll-padding-bottom: 16px; }

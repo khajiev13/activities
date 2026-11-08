@@ -62,7 +62,7 @@ it('preserves the complete payload and finishes as soon as the server responds',
   fireEvent.click(screen.getByRole('button', { name: 'Pick Beta' }));
   fireEvent.click(screen.getByRole('button', { name: 'Create' }));
   await waitFor(() => expect(done).toHaveBeenCalledOnce());
-  expect(screen.getByLabelText('Current route').textContent).toBe('/activities/activity-1');
+  await waitFor(() => expect(screen.getByLabelText('Current route').textContent).toBe('/activities/activity-1'));
   expect(writes).toEqual([{ title: 'Example match', description: 'A synthetic activity description.', public: false,
     categories: [{ pk: 'category-1', name: 'Ball games' }], date_time: new Date('2026-12-01T14:30').toISOString(), duration_in_minutes: 90,
     country: { name: 'Example country' }, state: { name: 'Example state' }, city: { name: 'Example city' }, location: { pk: 'venue-1' }, name_for_location: 'Example pitch',

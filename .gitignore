@@ -19,3 +19,6 @@ config-*.yaml
 __pycache__/
 .pytest_cache/
 .ruff_cache/
+
+# Local headless mobile verification artifacts
+.artifacts/

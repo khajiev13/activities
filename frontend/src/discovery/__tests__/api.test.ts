@@ -83,16 +83,22 @@ describe('discovery API', () => {
     };
     await fetchResults({ ...state, geo: { level: 'city', country: 'A/B', state: 'North,South', city: 'Cambridge' } });
   });
-  it('uses exact state filtering when a state contains a slash', async () => {
+  it.each(['North/South', 'North,South'])('uses exact state filtering for literal state %s', async (region) => {
     client.defaults.adapter = async config => {
       expect(config.url).toBe('/api/activities/country/United%20Kingdom/');
-      return success(config, [{ ...activity, state: { name: 'North/South' } }, activity]);
+      return success(config, [{ ...activity, state: { name: region } }, activity]);
     };
-    expect((await fetchResults({ ...state, geo: { level: 'state', country: 'United Kingdom', state: 'North/South' } })).activities).toHaveLength(1);
+    expect((await fetchResults({ ...state, geo: { level: 'state', country: 'United Kingdom', state: region } })).activities).toHaveLength(1);
   });
-  it('rejects slash country with region-choice guidance without transport', async () => {
+  it.each(['A/B', 'A,B'])('rejects unsafe country %s with region-choice guidance without transport', async (country) => {
     client.defaults.adapter = async () => { throw new Error('must not request'); };
-    await expect(fetchResults({ ...state, geo: { level: 'country', country: 'A/B' } })).rejects.toThrow(/choose another region/i);
+    await expect(fetchResults({ ...state, geo: { level: 'country', country } })).rejects.toThrow(/choose another region/i);
+  });
+
+  it.each(['A/B', 'A,B'])('rejects unsafe country fallback %s without transport', async (country) => {
+    client.defaults.adapter = async () => { throw new Error('must not request'); };
+    await expect(fetchResults({ ...state, geo: { level: 'city', country, state: 'England', city: 'Cambridge/Area' } })).rejects.toThrow(/choose another region/i);
+    await expect(fetchResults({ ...state, geo: { level: 'state', country, state: 'North,South' } })).rejects.toThrow(/choose another region/i);
   });
 
   it.each([

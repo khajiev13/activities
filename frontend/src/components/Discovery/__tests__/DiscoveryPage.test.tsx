@@ -12,12 +12,12 @@ import { DiscoveryPage } from '../DiscoveryPage';
 import type { DiscoveryResults } from '@/discovery/types';
 vi.mock('@/discovery/api', () => ({ fetchCountries: vi.fn(), fetchResults: vi.fn() }));
 vi.mock('@/components/Drawer', () => ({ Create: ({ entity }: { entity: string }) => <button>Create {entity}</button> }));
-const sdk = vi.hoisted(() => ({ sources: new Map<string, { data: { features: { properties: { pk?: string } }[] } }>(), fits: vi.fn(), jumps: vi.fn(), listeners: new Map<string, Set<() => void>>() }));
+const sdk = vi.hoisted(() => ({ styleReady: true, sources: new Map<string, { data: { features: { properties: { pk?: string } }[] } }>(), fits: vi.fn(), jumps: vi.fn(), listeners: new Map<string, Set<() => void>>() }));
 vi.mock('@maptiler/sdk', () => ({ config: {}, MapStyle: { BASIC: { DARK: 'dark', LIGHT: 'light' } }, Map: class {
   on(name: string, layer: string | (() => void), fn?: () => void) { const cb = typeof layer === 'function' ? layer : fn!; if (!sdk.listeners.has(name)) sdk.listeners.set(name, new Set()); sdk.listeners.get(name)!.add(cb); }
   once(name: string, fn: () => void) { this.on(name, fn); }
   off(name: string, layer: string | (() => void), fn?: () => void) { sdk.listeners.get(name)?.delete(typeof layer === 'function' ? layer : fn!); }
-  isStyleLoaded() { return true; } loaded() { return true; } resize() {} remove() {} setStyle() {}
+  isStyleLoaded() { return sdk.styleReady; } loaded() { return true; } resize() {} remove() {} setStyle() {}
   addSource(id: string, data: never) { sdk.sources.set(id, data); } getSource(id: string) { return sdk.sources.get(id); } removeSource(id: string) { sdk.sources.delete(id); }
   hasImage() { return true; }
   addLayer() {} getLayer() { return true; } removeLayer() {} fitBounds = sdk.fits; jumpTo = sdk.jumps;
@@ -26,8 +26,8 @@ const organization = { pk: 'org-1', name: 'Real Club', created_at: new Date('202
 const results: DiscoveryResults = { activities: [], teams: [], organizations: [organization] };
 const url = '/map?level=city&country=UK&state=England&city=Cambridge&entity=organizations&view=map&q=sport';
 function mount(path = url) { return render(<MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><Routes><Route path="/map" element={<DiscoveryPage />} /><Route path="/organizations" element={<DiscoveryPage entity="organizations" />} /><Route path="/login" element={<Link to={url}>Return</Link>} /></Routes></DiscoveryProvider></MemoryRouter>); }
-beforeEach(() => { vi.useFakeTimers({ shouldAdvanceTime: true }); window.scrollTo = vi.fn(); vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }] }]); vi.mocked(fetchResults).mockResolvedValue(results); });
-afterEach(async () => { await cleanupVaul(); vi.useRealTimers(); vi.clearAllMocks(); sdk.sources.clear(); sdk.listeners.clear(); });
+beforeEach(() => { sdk.styleReady = true; vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} }); vi.useFakeTimers({ shouldAdvanceTime: true }); window.scrollTo = vi.fn(); vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }] }]); vi.mocked(fetchResults).mockResolvedValue(results); });
+afterEach(async () => { await cleanupVaul(); vi.useRealTimers(); vi.unstubAllGlobals(); vi.clearAllMocks(); sdk.sources.clear(); sdk.listeners.clear(); });
 it('offers manual city and explicit location action on first visit without assuming a city', async () => {
   mount('/map'); expect(await screen.findByRole('dialog')).toBeTruthy(); expect(screen.getByRole('button', { name: 'Use my location' })).toBeTruthy();
   fireEvent.click(await screen.findByRole('button', { name: 'Cambridge, England, UK' }));
@@ -47,6 +47,28 @@ it('shows real tile loading while a new viewport loads and clears it on idle', a
   expect(screen.getByText('Loading map tiles…')).toBeTruthy();
   act(() => { for (const fn of sdk.listeners.get('idle') ?? []) fn(); });
   expect(screen.queryByText('Loading map tiles…')).toBeNull();
+});
+it('restores result layers when style.load arrives before the replacement style is ready', async () => {
+  const rendered = mount(); await screen.findByText('Real Club');
+  await waitFor(() => expect(sdk.sources.has('organizations')).toBe(true));
+  const fits = sdk.fits.mock.calls.length;
+  act(() => {
+    sdk.sources.clear(); sdk.styleReady = false;
+    for (const fn of sdk.listeners.get('style.load') ?? []) fn();
+  });
+  expect(sdk.sources.has('organizations')).toBe(false);
+  act(() => {
+    sdk.styleReady = true;
+    for (const fn of sdk.listeners.get('idle') ?? []) fn();
+  });
+  await waitFor(() => expect(sdk.sources.has('organizations')).toBe(true));
+  const restored = sdk.sources.get('organizations');
+  act(() => { for (const fn of sdk.listeners.get('idle') ?? []) fn(); });
+  expect(sdk.sources.get('organizations')).toBe(restored);
+  expect(sdk.fits).toHaveBeenCalledTimes(fits);
+  expect(sdk.sources.get('organizations')?.data.features[0].properties.pk).toBe('org-1');
+  rendered.unmount();
+  expect(sdk.listeners.get('idle')?.size).toBe(0);
 });
 it('keeps invalid coordinates in list while excluding them from map', async () => {
   vi.mocked(fetchResults).mockResolvedValue({ ...results, organizations: [{ ...organization, location: { ...organization.location, points: { latitude: 999, longitude: 0 } } }] });

@@ -18,6 +18,37 @@ export default function SelectOrganization({ onSelect, label = 'Organization', d
   }, [attempt]);
   if (loading) return <p role="status" className="text-sm">Loading organizations…</p>;
   if (failed) return <div className="space-y-2"><p role="alert">Could not load organizations.</p><Button type="button" disabled={disabled} variant="outline" className="min-h-11" onClick={() => setAttempt(value => value + 1)}>Retry organizations</Button></div>;
-  return selected ? <div className="space-y-2 min-w-0"><SelectedOrganizationComp {...selected} /><Button type="button" disabled={disabled} variant="outline" className="min-h-11" onClick={() => setSelected(null)}>Change {label.toLowerCase()}</Button></div> :
-    <Command label={`Search ${label.toLowerCase()}`} className="rounded-lg border my-2"><CommandInput aria-label={`Search ${label.toLowerCase()}`} placeholder="Search an organization…" disabled={disabled} className="min-h-11 text-base" /><CommandList className="max-h-56"><CommandEmpty>No results found.</CommandEmpty><CommandGroup heading="Organizations">{organizations.map(org => <CommandItem key={org.pk} value={`${org.name} ${org.pk}`} disabled={disabled} className="min-h-11 whitespace-normal break-words text-base" onSelect={() => { setSelected(org); onSelect(org.pk); }}>{org.name}</CommandItem>)}</CommandGroup></CommandList></Command>;
+  return selected ? (
+    <div className="space-y-2 min-w-0">
+      <SelectedOrganizationComp {...selected} />
+      <Button type="button" disabled={disabled} variant="outline" className="min-h-11" onClick={() => setSelected(null)}>
+        Change {label.toLowerCase()}
+      </Button>
+    </div>
+  ) : (
+    <Command label={`Search ${label.toLowerCase()}`} className="rounded-lg border my-2">
+      <CommandInput
+        aria-label={`Search ${label.toLowerCase()}`}
+        placeholder="Search an organization…"
+        disabled={disabled}
+        className="min-h-11 text-base"
+      />
+      <CommandList className="max-h-56">
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Organizations">
+          {organizations.map(org => (
+            <CommandItem
+              key={org.pk}
+              value={`${org.name} ${org.pk}`}
+              disabled={disabled}
+              className="min-h-11 whitespace-normal break-words text-base"
+              onSelect={() => { setSelected(org); onSelect(org.pk); }}
+            >
+              {org.name}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  );
 }

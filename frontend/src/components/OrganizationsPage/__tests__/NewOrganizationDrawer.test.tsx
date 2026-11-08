@@ -23,7 +23,7 @@ it('creates without an optional image and sends all stored geography fields', as
   await waitFor(() => expect(writes).toHaveLength(1));
   expect(Object.fromEntries(writes[0])).toEqual({ name: 'Example organization', pk_for_location: 'venue-1', country: 'Example', state: 'Region', city: 'City' });
   expect(done).toHaveBeenCalledOnce(); expect(persisted).toHaveBeenCalledOnce();
-  expect(screen.getByLabelText('Current route').textContent).toBe('/organizations');
+  await waitFor(() => expect(screen.getByLabelText('Current route').textContent).toBe('/organizations'));
 });
 it('keeps invalid and failed image drafts editable and retries the same multipart upload once', async () => {
   let release: () => void = () => {};

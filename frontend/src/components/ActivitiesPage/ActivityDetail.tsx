@@ -81,7 +81,7 @@ export default function ActivityDetail({ activity, action }: { activity: Activit
               </div>
               <div className="flex items-center gap-2">
                 <UsersIcon className="text-muted-foreground" />
-                <span>{activity.number_of_people_joined} people joined</span>
+                <span>{activity.number_of_people_joined} {activity.number_of_people_joined === 1 ? 'person' : 'people'} joined</span>
               </div>
             </CardContent>
           </Card>

@@ -21,7 +21,7 @@ export function ResultCard(props: Props) {
     href = `/teams/${encodeURIComponent(item.name)}${location.search}`;
   } else {
     const item = props.item; id = item.pk; title = item.name; image = item.image_url; place = `${item.location.name} · ${item.city.name}`;
-    metadata = `Since ${item.created_at.toLocaleDateString(undefined, { month: 'short', year: 'numeric' })} · ${item.teams_count} teams · ${item.number_of_people_joined} members · ${item.hosting_activities_count} activities`;
+    metadata = `Since ${item.created_at.toLocaleDateString(undefined, { month: 'short', year: 'numeric' })} · ${item.teams_count} ${item.teams_count === 1 ? 'team' : 'teams'} · ${item.number_of_people_joined} ${item.number_of_people_joined === 1 ? 'member' : 'members'} · ${item.hosting_activities_count} ${item.hosting_activities_count === 1 ? 'activity' : 'activities'}`;
   }
   const Icon = props.entity === 'activities' ? CalendarDays : props.entity === 'teams' ? Users : Building2;
   return <article className="discovery-card" data-result-id={id}>

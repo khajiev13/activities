@@ -91,7 +91,7 @@ export function LoginForm() {
           {codeStep ? <>
             <Label htmlFor="code">6-digit code</Label>
             <Input className="min-h-12 text-base" id="code" name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" minLength={6} maxLength={6} required value={code} onChange={event => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))} />
-            <p className="text-sm text-muted-foreground">If this number is registered, we sent a code to your Telegram. Not registered or no message? Open <a className="underline" href="https://t.me/eventopiarobot" target="_blank" rel="noreferrer">@eventopiarobot</a> and press Start.</p>
+            <p className="text-sm text-muted-foreground">If this number is registered, we sent a code to your Telegram. Not registered or no message? Open <a className="inline-flex min-h-11 items-center underline" href="https://t.me/eventopiarobot" target="_blank" rel="noreferrer">@eventopiarobot</a> and press Start.</p>
             <Button type="button" variant="outline" className="min-h-12 text-base" disabled={busy || remaining > 0} onClick={sendCode}>{remaining > 0 ? `Resend in ${remaining}s` : 'Resend'}</Button>
             <Button type="button" variant="ghost" className="min-h-12 text-base" disabled={busy} onClick={() => { setCodeStep(false); setCode(''); setError(null); }}>Change phone number</Button>
           </> : <>
@@ -102,7 +102,7 @@ export function LoginForm() {
         </CardContent>
         <CardFooter className="flex flex-col gap-3 p-4 pt-0 sm:p-6 sm:pt-0">
           <Button type="submit" className="min-h-12 w-full text-base" disabled={busy || status === 'loading' || (!codeStep && remaining > 0)}>{busy ? 'Please wait…' : codeStep ? 'Login' : remaining > 0 ? `Request code in ${remaining}s` : 'Send code'}</Button>
-          <p className="text-sm">Not a member yet? <Link className="underline" to="/register" state={location.state}>Sign up in Telegram</Link></p>
+          <p className="text-sm">Not a member yet? <Link className="inline-flex min-h-11 items-center underline" to="/register" state={location.state}>Sign up in Telegram</Link></p>
         </CardFooter>
       </Card>
     </form>
@@ -151,7 +151,7 @@ function TelegramLoginForm() {
       {telegramIssue === 'phone_required' && !contactShared && <Button className="min-h-12 w-full text-base" disabled={loading} onClick={share}>Share phone number</Button>}
       {(telegramIssue === 'network' || contactShared || (telegramIssue === null && status === 'anonymous')) && telegramIssue !== 'expired' && <Button className="min-h-12 w-full text-base" disabled={loading} onClick={retry}>Try again</Button>}
       {loading && <p role="status">Please wait…</p>}
-      <a className="text-sm underline" href="https://t.me/eventopiarobot" target="_blank" rel="noreferrer">Open @eventopiarobot</a>
+      <a className="inline-flex min-h-11 items-center text-sm underline" href="https://t.me/eventopiarobot" target="_blank" rel="noreferrer">Open @eventopiarobot</a>
     </CardFooter>
   </Card>;
 }

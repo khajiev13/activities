@@ -53,8 +53,11 @@ export default function RenderMap({ onOrganization, onError }: { onOrganization:
       }
       fitKey.current = regionKey;
     };
-    draw(); map.on('style.load', draw); map.on('load', draw);
-    return () => { map.off('style.load', draw); map.off('load', draw); cleanup?.(); };
+    // SDK style replacement can emit style.load before isStyleLoaded becomes true.
+    // Retry only missing result sources on idle, without recreating them on every render.
+    const restoreMissingResults = () => { if (!map.getSource(state.entity)) draw(); };
+    draw(); map.on('style.load', draw); map.on('load', draw); map.on('idle', restoreMissingResults);
+    return () => { map.off('style.load', draw); map.off('load', draw); map.off('idle', restoreMissingResults); cleanup?.(); };
   }, [map, state.entity, results, regionKey, geographyKey, points]);
   return <><BaseMap onMapLoad={setMap} onMapError={onError} />{loading && <p className="discovery-map-status" role="status">Loading map tiles…</p>}
     {!loading && !resultsLoading && state.geo && points.length === 0 && <p className="discovery-map-status" style={{ right: 12 }} role="status">No mapped locations are available for {[state.geo.city, state.geo.state, state.geo.country].filter(Boolean).join(', ')}.</p>}

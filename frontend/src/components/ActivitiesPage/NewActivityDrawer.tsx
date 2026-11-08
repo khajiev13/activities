@@ -82,6 +82,6 @@ export default function NewActivityDrawer({ setProgressBar, onCreated, onPersist
       </section>
       <section aria-labelledby="activity-competition"><h3 id="activity-competition" className="font-semibold text-lg mb-3">Competition</h3><IsCompetition setIsCompetition={value => { form.setValue('is_competition', value); if (!value) form.setValue('competition', undefined); }} setTeam1Prop={name => form.setValue('competition.team_1.name', name)} setTeam2Prop={name => form.setValue('competition.team_2.name', name)} /></section>
     </fieldset>
-    <div className="sticky bottom-0 bg-background py-3 space-y-2 border-t">{error && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p>}<Button type="submit" disabled={loading} className="w-full min-h-11" aria-label="Create">{loading ? 'Creating…' : 'Create'}</Button></div>
+    <div data-create-submit className="sticky bottom-0 bg-background py-3 space-y-2 border-t">{error && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p>}<Button type="submit" disabled={loading} className="w-full min-h-11" aria-label="Create">{loading ? 'Creating…' : 'Create'}</Button></div>
   </form></Form>;
 }

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,12 +31,14 @@ const formSchema = z.object({
   else if (first === second) context.addIssue({ code: 'custom', path: ['competition'], message: 'Choose two distinct teams for a competition.' });
 });
 type Values = z.infer<typeof formSchema>;
-type Props = { setProgressBar: (progress: number) => void; onCreated?: () => void };
+type Props = { setProgressBar: (progress: number) => void; onCreated?: () => void; onPersisted?: () => void };
 function localDateTime(value: Date) {
   return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}T${String(value.getHours()).padStart(2, '0')}:${String(value.getMinutes()).padStart(2, '0')}`;
 }
-export default function NewActivityDrawer({ setProgressBar, onCreated }: Props) {
+export default function NewActivityDrawer({ setProgressBar, onCreated, onPersisted }: Props) {
   const navigate = useNavigate(); const route = useLocation(); const inFlight = useRef(false);
+  const active = useRef(true);
+  useEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
   const [loading, setLoading] = useState(false); const [error, setError] = useState<string | null>(null);
   const form = useForm<Values>({ resolver: zodResolver(formSchema), defaultValues: {
     title: '', description: '', public: true, categories: [], date_time: new Date(), duration_in_minutes: 60,
@@ -51,16 +53,18 @@ export default function NewActivityDrawer({ setProgressBar, onCreated }: Props) 
     form.setValue('sunrise_time_for_chosen_location', location.sunrise); form.setValue('sunset_time_for_chosen_location', location.sunset);
   };
   async function submit(data: Values) {
-    if (inFlight.current) return;
+    if (!active.current || inFlight.current) return;
     inFlight.current = true; setLoading(true); setError(null); setProgressBar(50);
     try {
       const response = await axiosInstance.post('/api/activities/', data);
       if (typeof response.data?.pk !== 'string' || !response.data.pk) throw new Error('Incomplete activity response');
+      onPersisted?.();
+      if (!active.current) return;
       setProgressBar(100); onCreated?.(); navigate(`/activities/${encodeURIComponent(response.data.pk)}${route.search}`, { state: { from: route.pathname + route.search } });
-    } catch { setError('Could not create the activity. Your draft is saved here. Please try again.'); }
-    finally { inFlight.current = false; setLoading(false); }
+    } catch { if (active.current) setError('Could not create the activity. Your draft is saved here. Please try again.'); }
+    finally { inFlight.current = false; if (active.current) setLoading(false); }
   }
-  return <Form {...form}><form noValidate onSubmit={form.handleSubmit(submit, () => setError('Check the activity details, location, date, duration, and two distinct competition teams.'))} className="space-y-6 p-4 text-base">
+  return <Form {...form}><form noValidate onSubmit={form.handleSubmit(submit, () => { if (active.current) setError('Check the activity details, location, date, duration, and two distinct competition teams.'); })} className="space-y-6 p-4 text-base">
     <fieldset disabled={loading} className="space-y-6 min-w-0">
       <section aria-labelledby="activity-details" className="space-y-4"><h3 id="activity-details" className="font-semibold text-lg">Activity details</h3>
         <div><Label htmlFor="activity-title">Title</Label><Input id="activity-title" {...form.register('title')} className="text-base min-h-11" /></div>
@@ -76,7 +80,7 @@ export default function NewActivityDrawer({ setProgressBar, onCreated }: Props) 
         <div><Label htmlFor="activity-duration">Duration (minutes)</Label><Input id="activity-duration" type="number" min="1" {...form.register('duration_in_minutes', { valueAsNumber: true })} className="text-base min-h-11" /></div>
         <label className="flex items-center gap-3 min-h-11"><input type="checkbox" {...form.register('public')} className="h-5 w-5" />Public Activity</label><p className="text-sm text-muted-foreground">Everyone can join a public activity without a request.</p>
       </section>
-      <section aria-labelledby="activity-competition"><h3 id="activity-competition" className="font-semibold text-lg mb-3">Competition</h3><IsCompetition setIsCompetition={value => form.setValue('is_competition', value)} setTeam1Prop={name => form.setValue('competition.team_1.name', name)} setTeam2Prop={name => form.setValue('competition.team_2.name', name)} /></section>
+      <section aria-labelledby="activity-competition"><h3 id="activity-competition" className="font-semibold text-lg mb-3">Competition</h3><IsCompetition setIsCompetition={value => { form.setValue('is_competition', value); if (!value) form.setValue('competition', undefined); }} setTeam1Prop={name => form.setValue('competition.team_1.name', name)} setTeam2Prop={name => form.setValue('competition.team_2.name', name)} /></section>
     </fieldset>
     <div className="sticky bottom-0 bg-background py-3 space-y-2 border-t">{error && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p>}<Button type="submit" disabled={loading} className="w-full min-h-11" aria-label="Create">{loading ? 'Creating…' : 'Create'}</Button></div>
   </form></Form>;

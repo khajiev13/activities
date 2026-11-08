@@ -105,3 +105,22 @@ it('keeps the discovery query on the created detail route so Back can restore th
   fireEvent.click(screen.getByRole('button', { name: 'Create' }));
   await waitFor(() => expect(screen.getByLabelText('Current route').textContent).toBe('/activities/activity-1' + query));
 });
+
+it('submits an ordinary activity after switching a partially chosen competition off', async () => {
+  mount(); fill(); competition();
+  fireEvent.click(screen.getAllByRole('button', { name: 'Pick Alpha' })[0]);
+  const no = screen.getByRole('tab', { name: 'No' }); fireEvent.mouseDown(no, { button: 0, ctrlKey: false }); fireEvent.click(no);
+  fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+  await waitFor(() => expect(writes).toHaveLength(1));
+  expect(writes[0].is_competition).toBe(false); expect(writes[0]).not.toHaveProperty('competition');
+});
+it('clears team choices when competition is turned off and requires fresh teams when turned back on', async () => {
+  mount(); fill(); competition();
+  fireEvent.click(screen.getAllByRole('button', { name: 'Pick Alpha' })[0]);
+  const no = screen.getByRole('tab', { name: 'No' }); fireEvent.mouseDown(no, { button: 0, ctrlKey: false }); fireEvent.click(no); competition();
+  expect(screen.queryByText('Team Alpha')).toBeNull(); expect(screen.getAllByRole('button', { name: 'Pick Alpha' })).toHaveLength(2);
+  fireEvent.click(screen.getByRole('button', { name: 'Create' })); await screen.findByRole('alert'); expect(writes).toHaveLength(0);
+  fireEvent.click(screen.getAllByRole('button', { name: 'Pick Alpha' })[0]); fireEvent.click(screen.getByRole('button', { name: 'Pick Beta' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Create' })); await waitFor(() => expect(writes).toHaveLength(1));
+  expect(writes[0].competition).toEqual({ team_1: { name: 'Team Alpha' }, team_2: { name: 'Team Beta' } });
+});

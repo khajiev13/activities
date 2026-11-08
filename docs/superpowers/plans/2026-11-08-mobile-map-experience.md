@@ -138,6 +138,11 @@
 - The shared shell conservatively tracks changed inputs and clicked form controls/map canvas, prompts before discarding, and unmounts drafts only after confirmed discard or success. Team completion remains Task 7; organization `createdOrganization` bridge regression is passing.
 - Local form alert colors were corrected after measured light/dark contrast failures; global theme tokens remain Task 8. Final measured ratios: 5.77:1 / 9.15:1.
 
+**Task 6 review fix round 1 (base `29260fe`):**
+- Approved child-interface deviation: `NewActivityDrawer` retains `setProgressBar` and mounted-only `onCreated`, and adds optional `onPersisted?: () => void`. A successful persisted activity calls `onPersisted` even after confirmed discard/unmount; Create supplies its single results-reload callback. The mounted-only `onCreated` closes the current draft and invokes the external callback. Discarded form instances skip navigation, shell progress, loading/error resets and validation UI updates. No cancellation is treated as evidence that a server mutation did not persist.
+- Organization's existing `onCreated` bridge stays compatible and reloads through its existing combined shell callback; Task 7 should adopt the separated persisted/UI contract when adapting pending team/organization forms and must avoid duplicate result reloads. Venue catalogue ownership in `SelectLocation` is unchanged.
+- Competition rule: choosing No clears the complete form competition object and both local team choices; choosing Yes again starts with fresh empty choices. Thus an ordinary activity never fails validation on hidden partial teams. Durable actual shell/form and tab-toggle regressions cover both review findings.
+
 ### Task 7: Team and organization creation on phones
 
 **Files:** Modify `frontend/src/components/TeamsPage/NewTeamDrawer.tsx`, `components/OrganizationsPage/NewOrganizationDrawer.tsx`, related `SelectOrganization.tsx`, `SelectTeam.tsx`, image input helpers and team kit controls only as necessary; integrate `Drawer.tsx` success callbacks. Tests `components/TeamsPage/__tests__/NewTeamDrawer.test.tsx`, `components/OrganizationsPage/__tests__/NewOrganizationDrawer.test.tsx`.

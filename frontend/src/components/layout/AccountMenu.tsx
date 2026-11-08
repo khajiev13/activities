@@ -27,8 +27,8 @@ export function AccountMenu() {
       {status === 'loading' ? <p role="status">Checking session…</p> : status === 'authenticated' ? <>
         <div className="app-account-identity">{user?.image_url && <img src={user.image_url} alt={name} />}<strong>{name}</strong></div>
         <button className="app-account-action" type="button" disabled={loggingOut} onClick={onLogout}>{loggingOut ? 'Logging out…' : 'Log out'}</button>
-        {error && <p role="alert">Unable to finish logging out. Please try again.</p>}
-      </> : <Link className="app-account-action" to="/login" state={{ from: location.pathname + location.search + location.hash }} onClick={() => setOpen(false)}>Log in</Link>}
+      </> : <Link className="app-account-action" to="/login" state={{ from: location.pathname + location.search + location.hash, returnState: location.state, returnHistoryIndex: window.history.state?.idx }} onClick={() => setOpen(false)}>Log in</Link>}
+      {error && <div><p role="alert">Unable to finish logging out. Please try again.</p><button className="app-account-action" type="button" disabled={loggingOut} onClick={onLogout}>{loggingOut ? 'Logging out…' : 'Retry logout'}</button></div>}
       <label className="app-theme-control">Appearance<select value={theme} onChange={event => setTheme(event.target.value as 'light' | 'dark' | 'system')}>
         <option value="system">Automatic</option><option value="light">Light</option><option value="dark">Dark</option>
       </select></label>

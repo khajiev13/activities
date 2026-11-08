@@ -2,6 +2,7 @@
 import type { TelegramApp } from '@/platform/telegram';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { useState } from 'react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import { AuthContext } from '@/auth/AuthContext';
 import { ThemeProvider, useTheme } from '@/components/theme-provider';
@@ -104,4 +105,21 @@ describe('theme priority and subscriptions', () => {
     const view = theme(); expect(screen.getByText('light:light')).toBeTruthy(); view.unmount();
     localStorage.setItem('vite-ui-theme', 'invalid'); theme(); expect(screen.getByText('system:dark')).toBeTruthy();
   });
+});
+
+it('keeps rejected logout feedback visible after auth becomes anonymous and offers retry', async () => {
+  let attempts = 0;
+  function Session() {
+    const [authenticated, setAuthenticated] = useState(true);
+    return <AuthContext.Provider value={{ ...anonymous, status: authenticated ? 'authenticated' : 'anonymous',
+      user: authenticated ? { uid: '1', username: 'ada', first_name: 'Ada', last_name: 'Lovelace', image_url: '' } : null,
+      logout: async () => { setAuthenticated(false); attempts++; if (attempts === 1) throw new Error('offline'); },
+    }}><ThemeProvider><AppShell><p>Page</p></AppShell></ThemeProvider></AuthContext.Provider>;
+  }
+  render(<MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><Session /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'Account' }));
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Log out' })));
+  expect(screen.getByRole('alert').textContent).toContain('Unable to finish logging out');
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Retry logout' })));
+  expect(attempts).toBe(2); expect(screen.queryByRole('dialog')).toBeNull();
 });

@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react"
 import type { ActivityDetailsType } from '@/types/ActivitiesListSchema';
 
-export default function ActivityDetail({ activity }: { activity: ActivityDetailsType }) {
+export default function ActivityDetail({ activity, action }: { activity: ActivityDetailsType; action?: ReactNode }) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })
@@ -17,11 +18,11 @@ export default function ActivityDetail({ activity }: { activity: ActivityDetails
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 space-y-6">
+    <div className="mx-auto w-full max-w-5xl space-y-6 py-2 break-words">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="lg:col-span-2 space-y-6">
           <div className="space-y-4">
-            <h1 className="text-3xl font-bold">{activity.title}</h1>
+            <h1 className="text-2xl font-bold">{activity.title}</h1>
             <div className="flex flex-wrap gap-2">
               {activity.categories.map((category, index) => (
                 <Badge key={index} variant="secondary">{category.name}</Badge>
@@ -30,15 +31,16 @@ export default function ActivityDetail({ activity }: { activity: ActivityDetails
           </div>
 
           <Card>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-4 sm:p-6 space-y-4">
               <h2 className="text-xl font-semibold">About this activity</h2>
+              <p className="text-sm text-muted-foreground">{activity.public ? 'Public activity' : 'Private activity'}</p>
               <p className="text-muted-foreground">{activity.description}</p>
             </CardContent>
           </Card>
 
           {activity.competition.team_1.name && activity.competition.team_2.name && (
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <h2 className="text-xl font-semibold mb-4">Competition</h2>
                 <div className="flex justify-around items-center">
                   <div className="text-center">
@@ -64,7 +66,7 @@ export default function ActivityDetail({ activity }: { activity: ActivityDetails
 
         <div className="space-y-6">
           <Card>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-4 sm:p-6 space-y-4">
               <div className="flex items-center gap-2">
                 <CalendarIcon className="text-muted-foreground" />
                 <span>{formatDate(activity.date_time)}</span>
@@ -85,7 +87,7 @@ export default function ActivityDetail({ activity }: { activity: ActivityDetails
           </Card>
 
           <Card>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-4 sm:p-6 space-y-4">
               <h2 className="text-xl font-semibold">Organizer</h2>
               <div className="flex items-center gap-4">
                 <Avatar>
@@ -101,7 +103,7 @@ export default function ActivityDetail({ activity }: { activity: ActivityDetails
           </Card>
 
           <Card>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-4 sm:p-6 space-y-4">
               <h2 className="text-xl font-semibold">Attendees</h2>
               <div className="flex flex-wrap gap-2">
                 {activity.people_joined.length === 0 ? <p>No attendees yet.</p> : activity.people_joined.map((person, index) => {
@@ -121,6 +123,7 @@ export default function ActivityDetail({ activity }: { activity: ActivityDetails
           </Card>
         </div>
       </div>
+      {action}
     </div>
   )
 }

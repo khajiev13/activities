@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
@@ -24,9 +24,17 @@ export function LoginForm() {
   const from = location.state?.from;
   const returnTo = typeof from === 'string' && from.startsWith('/') && !from.startsWith('//') && !from.startsWith('/login') ? from : '/';
 
+  const returned = useRef(false);
+  const returnState = location.state?.returnState;
+  const returnHistoryIndex = location.state?.returnHistoryIndex;
   useEffect(() => {
-    if (status === 'authenticated') navigate(returnTo, { replace: true });
-  }, [status, navigate, returnTo]);
+    if (status !== 'authenticated' || returned.current) return;
+    returned.current = true;
+    const currentIndex = window.history.state?.idx;
+    if (returnTo === from && Number.isInteger(returnHistoryIndex) && returnHistoryIndex >= 0 && typeof currentIndex === 'number' && currentIndex > returnHistoryIndex) {
+      navigate(returnHistoryIndex - currentIndex);
+    } else navigate(returnTo, { replace: true, state: returnState });
+  }, [status, navigate, returnTo, from, returnHistoryIndex, returnState]);
 
   useEffect(() => {
     const tick = () => setRemaining(Math.max(0, Math.ceil((retryAt - Date.now()) / 1000)));
@@ -61,7 +69,7 @@ export function LoginForm() {
     setBusy(true);
     setError(null);
     try {
-      if (await login(phone, code)) navigate(returnTo, { replace: true });
+      await login(phone, code);
     } catch {
       setCode('');
       setError('Invalid or expired code. Please try again or request a new code.');
@@ -74,27 +82,27 @@ export function LoginForm() {
 
   return (
     <form onSubmit={submit}>
-      <Card className="dark:bg-black border-none">
-        <CardHeader className="space-y-1">
+      <Card className="border bg-card rounded-2xl">
+        <CardHeader className="space-y-2 p-4 sm:p-6">
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>{codeStep ? `Enter the code for ${formatUzPhone(phone)}` : 'Enter your phone number to receive a code in Telegram.'}</CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-4">
+        <CardContent className="grid gap-4 p-4 pt-0 sm:p-6 sm:pt-0">
           {codeStep ? <>
             <Label htmlFor="code">6-digit code</Label>
-            <Input id="code" name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" minLength={6} maxLength={6} required value={code} onChange={event => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))} />
+            <Input className="min-h-12 text-base" id="code" name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" minLength={6} maxLength={6} required value={code} onChange={event => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))} />
             <p className="text-sm text-muted-foreground">If this number is registered, we sent a code to your Telegram. Not registered or no message? Open <a className="underline" href="https://t.me/eventopiarobot" target="_blank" rel="noreferrer">@eventopiarobot</a> and press Start.</p>
-            <Button type="button" variant="outline" disabled={busy || remaining > 0} onClick={sendCode}>{remaining > 0 ? `Resend in ${remaining}s` : 'Resend'}</Button>
-            <Button type="button" variant="ghost" disabled={busy} onClick={() => { setCodeStep(false); setCode(''); setError(null); }}>Change phone number</Button>
+            <Button type="button" variant="outline" className="min-h-12 text-base" disabled={busy || remaining > 0} onClick={sendCode}>{remaining > 0 ? `Resend in ${remaining}s` : 'Resend'}</Button>
+            <Button type="button" variant="ghost" className="min-h-12 text-base" disabled={busy} onClick={() => { setCodeStep(false); setCode(''); setError(null); }}>Change phone number</Button>
           </> : <>
             <Label htmlFor="phone">Phone number</Label>
-            <Input id="phone" name="phone" disabled={busy} type="tel" inputMode="tel" autoComplete="tel" required value={phone} onChange={event => setPhone(event.target.value)} />
+            <Input className="min-h-12 text-base" id="phone" name="phone" disabled={busy} type="tel" inputMode="tel" autoComplete="tel" required value={phone} onChange={event => setPhone(event.target.value)} />
           </>}
           {error && <AlertDestructive title="Unable to log in" description={error} />}
         </CardContent>
-        <CardFooter className="flex flex-col gap-3">
-          <Button type="submit" className="w-full bg-maincolor hover:bg-orange-700" disabled={busy || status === 'loading' || (!codeStep && remaining > 0)}>{busy ? 'Please wait…' : codeStep ? 'Login' : remaining > 0 ? `Request code in ${remaining}s` : 'Send code'}</Button>
-          <p className="text-sm">Not a member yet? <Link className="underline" to="/register">Sign up in Telegram</Link></p>
+        <CardFooter className="flex flex-col gap-3 p-4 pt-0 sm:p-6 sm:pt-0">
+          <Button type="submit" className="min-h-12 w-full text-base" disabled={busy || status === 'loading' || (!codeStep && remaining > 0)}>{busy ? 'Please wait…' : codeStep ? 'Login' : remaining > 0 ? `Request code in ${remaining}s` : 'Send code'}</Button>
+          <p className="text-sm">Not a member yet? <Link className="underline" to="/register" state={location.state}>Sign up in Telegram</Link></p>
         </CardFooter>
       </Card>
     </form>
@@ -129,8 +137,8 @@ function TelegramLoginForm() {
   };
 
   const loading = busy || status === 'loading';
-  return <Card className="dark:bg-black border-none">
-    <CardHeader className="space-y-1">
+  return <Card className="border bg-card rounded-2xl">
+    <CardHeader className="space-y-2 p-4 sm:p-6">
       <CardTitle className="text-2xl">Login with Telegram</CardTitle>
       <CardDescription>{telegramIssue === 'phone_required'
         ? 'Share your phone number with @eventopiarobot to finish signing in. Telegram will ask for your permission.'
@@ -139,9 +147,9 @@ function TelegramLoginForm() {
           : loading ? 'Signing in with Telegram…' : telegramIssue === 'network' ? 'Unable to connect. Check your connection and try again.' : 'Sign in securely with your Telegram account.'}</CardDescription>
     </CardHeader>
     {message && <CardContent><AlertDestructive title="Telegram login" description={message} /></CardContent>}
-    <CardFooter className="flex flex-col gap-3">
-      {telegramIssue === 'phone_required' && !contactShared && <Button className="w-full bg-maincolor hover:bg-orange-700" disabled={loading} onClick={share}>Share phone number</Button>}
-      {(telegramIssue === 'network' || contactShared || (telegramIssue === null && status === 'anonymous')) && telegramIssue !== 'expired' && <Button disabled={loading} onClick={retry}>Try again</Button>}
+    <CardFooter className="flex flex-col gap-3 p-4 pt-0 sm:p-6 sm:pt-0">
+      {telegramIssue === 'phone_required' && !contactShared && <Button className="min-h-12 w-full text-base" disabled={loading} onClick={share}>Share phone number</Button>}
+      {(telegramIssue === 'network' || contactShared || (telegramIssue === null && status === 'anonymous')) && telegramIssue !== 'expired' && <Button className="min-h-12 w-full text-base" disabled={loading} onClick={retry}>Try again</Button>}
       {loading && <p role="status">Please wait…</p>}
       <a className="text-sm underline" href="https://t.me/eventopiarobot" target="_blank" rel="noreferrer">Open @eventopiarobot</a>
     </CardFooter>

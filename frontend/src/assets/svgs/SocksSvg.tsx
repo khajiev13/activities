@@ -13,7 +13,7 @@ const SocksSvg = ({ fill, width, height, selectClothing, selected }: Props) => {
       width={width}
       height={height}
       onClick={() => selectClothing('socks')}
-      stroke-width="5"
+      strokeWidth="5"
       stroke={selected ? 'rgba(224, 100, 60, 1)' : 'none'}
     >
       <g id="SVGRepo_bgCarrier" strokeWidth={0} />

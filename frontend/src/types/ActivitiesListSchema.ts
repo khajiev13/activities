@@ -75,6 +75,8 @@ export const ActivityDetailsType = z.object({
   }),
   location: z.object({
     name: z.string(),
+    pk: z.string().optional(),
+    points: z.object({ latitude: z.number(), longitude: z.number() }).optional(),
   }),
   categories: z.array(
     z.object({

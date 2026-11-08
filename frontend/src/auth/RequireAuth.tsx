@@ -7,9 +7,10 @@ export function RequireAuth({ children, action }: { children: ReactNode; action?
   const location = useLocation();
   if (status === 'loading') return <span role="status">Checking session…</span>;
   if (status === 'anonymous') {
-    const state = { from: location.pathname + location.search + location.hash };
+    const state = { from: location.pathname + location.search + location.hash, returnState: location.state };
     if (action) {
-      return <Link to="/login" state={state} className="inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium">{action}</Link>;
+      const returnHistoryIndex = typeof window.history.state?.idx === 'number' ? window.history.state.idx : undefined;
+      return <Link to="/login" state={{ ...state, returnHistoryIndex }} className="inline-flex min-h-12 w-full items-center justify-center rounded-md border px-4 py-2 text-base font-medium">{action}</Link>;
     }
     return <Navigate to="/login" state={state} replace />;
   }

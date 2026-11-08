@@ -73,3 +73,20 @@ it('keeps the team editable for an incomplete creation response', async () => {
   client.defaults.adapter = async config => ({ config, status: 201, statusText: 'Created', headers: new AxiosHeaders(), data: { error: 0, data: {} } });
   const done = vi.fn(); const persisted = vi.fn(); mount(done, persisted); fill(); fireEvent.click(screen.getByRole('button', { name: 'Create' })); expect(await screen.findByRole('alert')).toBeTruthy(); expect(done).not.toHaveBeenCalled(); expect(persisted).not.toHaveBeenCalled();
 });
+it.each([
+  ['Home shirt', 'tshirt_color'],
+  ['Away shirt', 'away_tshirt_color'],
+  ['Shorts', 'shorts_color'],
+  ['Socks', 'socks_color'],
+])('records an explicitly accepted initial black %s without choosing another color', async (label, field) => {
+  mount(); fill();
+  expect((screen.getByLabelText(label) as HTMLInputElement).value).toBe('#000000');
+  // Accept the displayed initial value; no change event or intermediate color.
+  fireEvent.click(screen.getByRole('button', { name: `Use ${label.toLowerCase()} color` }));
+  fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+  await waitFor(() => expect(writes).toHaveLength(1));
+  expect(writes[0].get(field)).toBe('#000000');
+  for (const other of ['tshirt_color', 'away_tshirt_color', 'shorts_color', 'socks_color']) {
+    if (other !== field) expect(writes[0].has(other)).toBe(false);
+  }
+});

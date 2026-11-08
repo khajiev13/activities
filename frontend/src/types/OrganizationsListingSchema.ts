@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const OrganizationListingSchema = z.object({
   pk: z.string(),
   name: z.string(),
-  created_at: z.date(),
+  created_at: z.union([z.date(), z.string().date().or(z.string().datetime({ offset: true })).pipe(z.coerce.date())]),
   location: z.object({
     name: z.string(),
     pk: z.string(),

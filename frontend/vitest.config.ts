@@ -5,7 +5,7 @@ export default defineConfig({
   resolve: { alias: { '@': path.resolve(__dirname, './src') } },
   test: {
     environment: 'node',
-    include: ['src/**/__tests__/**/*.test.ts'],
+    include: ['src/**/__tests__/**/*.test.{ts,tsx}'],
     restoreMocks: true,
   },
 });

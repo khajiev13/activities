@@ -26,7 +26,7 @@ export function Create() {
   return (
     <Drawer open={open} onOpenChange={setOpen} shouldScaleBackground dismissible={false}>
       <DrawerTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" aria-label="Create">
           <Plus className="h-8 w-8" />
         </Button>
       </DrawerTrigger>

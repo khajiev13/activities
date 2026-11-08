@@ -3,29 +3,22 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login/Login';
 import HomePage from './pages/HomePage/HomePage';
 import Register from '../src/pages/Register/Register';
-import Navbar from './components/Navbar';
+import { AppShell } from './components/layout/AppShell';
 import { AuthProvider } from './auth/AuthContext';
 import Activities from './pages/Activities/Activities';
 import Teams from './pages/Teams/Teams';
-import CornerButtons from './components/CornerButtons';
 import { Toaster } from './components/ui/sonner';
 import RenderMap from './components/Map/RenderMap';
 import Organizations from './pages/OrganizationsPage/Organizations';
-import { HeroHighlight } from './components/ui/hero-highlight';
 import { ActivitiesDetail } from './pages/Activities/ActivitiesDetail';
 import TeamDetails from './pages/Teams/TeamDetails';
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <HeroHighlight
-        containerClassName="p-0 m-0 fixed top-0 left-0 min-h-full"
-        className="p-0 m-0 top-0 fixed"
-      >
-        {' '}
-        <AuthProvider>
-          <Router>
-            <Navbar />
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <AuthProvider>
+        <Router>
+          <AppShell>
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -40,12 +33,11 @@ function App() {
               <Route path="/map" element={<RenderMap />} />
               <Route path="/" element={<HomePage />} />
             </Routes>
-            <CornerButtons />
-            {/* We need this to show the toast notifications */}
-            <Toaster />
-          </Router>
-        </AuthProvider>
-      </HeroHighlight>
+          </AppShell>
+          {/* We need this to show the toast notifications */}
+          <Toaster />
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

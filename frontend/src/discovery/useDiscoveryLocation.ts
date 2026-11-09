@@ -203,7 +203,14 @@ export function useDiscoveryLocation(inputs: Inputs) {
           if (!place.center) return centerPlace(place, true, true);
         },
         useCurrentLocation: () => { restored = true; return locate(true); },
-        recenter: () => { cancelPending(); const place = value.current.place; if (place) return centerPlace(place, true, false); },
+        recenter: () => {
+          const place = value.current.place;
+          // Camera-only intent must not invalidate preference reconciliation.
+          // Bootstrap will resolve a missing center and resume eligible following.
+          if (pending?.kind === 'restore') { if (place?.center) moveCamera(place); return; }
+          cancelPending();
+          if (place) return centerPlace(place, true, false);
+        },
         forgetPlaces: () => {
           cancelPending(); deferredCenter = null; restored = true; pausedVisit = false; urlPlace = null; urlFollow = undefined;
           update({ place: null, mode: 'off', recent: [], welcome: false, ready: true, status: 'idle', notice: null });

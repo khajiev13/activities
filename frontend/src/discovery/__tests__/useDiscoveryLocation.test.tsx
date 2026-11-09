@@ -250,3 +250,27 @@ it('recenter on an unmarked visit never changes the saved auto mode or recent hi
   vi.mocked(resolvePlaceCenter).mockResolvedValue(first); await action(() => d.location.recenter());
   expect(d.location.cameraRequest.place).toEqual(first); expect(d.location.mode).toBe('manual'); expect(saved()).toEqual(before);
 });
+it.each([true, false])('recenter during native restore preserves following and saved intent (cached center: %s)', async hasCenter => {
+  const cached = { ...pref(), place: hasCenter ? first : { geo: first.geo } };
+  store.preference = cached;
+  const native = delayed<{ preference: DiscoveryPreference; warning: boolean }>(); store.read.mockReturnValue(native.promise);
+  vi.mocked(getLocationPermission).mockResolvedValue('granted');
+  await mount(); const sequence = d.location.cameraRequest.sequence;
+  await action(() => d.location.recenter());
+  expect(d.location.cameraRequest.sequence).toBe(sequence + (hasCenter ? 1 : 0));
+  expect(saved()).toEqual(cached); expect(d.location.mode).toBe('auto');
+  await action(() => native.resolve({ preference: cached, warning: false }));
+  vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden'); await foreground();
+  vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible'); await foreground();
+  expect(requestDeviceLocation).toHaveBeenCalledTimes(1); expect(d.location.place).toEqual(first);
+  expect(saved().mode).toBe('auto'); expect(saved().recent).toEqual(cached.recent);
+});
+it('recenter keeps native reconciliation alive so a newer saved manual choice still wins', async () => {
+  const cached = pref(); store.preference = cached;
+  const native = delayed<{ preference: DiscoveryPreference; warning: boolean }>(); store.read.mockReturnValue(native.promise);
+  vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount();
+  await action(() => d.location.recenter()); expect(saved()).toEqual(cached);
+  await action(() => native.resolve({ preference: { ...pref('manual'), place: second, recent: [second], updatedAt: 500 }, warning: false }));
+  expect(d.location.place).toEqual(second); expect(d.location.mode).toBe('manual'); expect(d.location.recent).toEqual([second]);
+  expect(url).toContain('city=Second'); expect(requestDeviceLocation).not.toHaveBeenCalled();
+});

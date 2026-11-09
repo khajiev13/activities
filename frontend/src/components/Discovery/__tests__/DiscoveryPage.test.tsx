@@ -9,8 +9,9 @@ import { AuthContext } from '@/auth/AuthContext';
 import { AppShell } from '@/components/layout/AppShell';
 import { ResultCard } from '../ResultCard';
 import { DiscoveryPage } from '../DiscoveryPage';
+import { readDiscoveryPreference, writeDiscoveryPreference } from '@/discovery/preferences';
 import type { DiscoveryResults } from '@/discovery/types';
-vi.mock('@/discovery/preferences', () => ({ readCachedDiscoveryPreference: () => ({ preference: null, warning: false }), readDiscoveryPreference: async () => ({ preference: null, warning: false }), writeDiscoveryPreference: async () => ({ warning: false }) }));
+vi.mock('@/discovery/preferences', () => ({ readCachedDiscoveryPreference: () => ({ preference: null, warning: false }), readDiscoveryPreference: vi.fn(async () => ({ preference: null, warning: false })), writeDiscoveryPreference: vi.fn(async () => ({ warning: false })) }));
 vi.mock('@/discovery/deviceLocation', () => ({ getLocationPermission: async () => 'unknown', requestDeviceLocation: vi.fn() }));
 vi.mock('@/discovery/geoNames', () => ({ resolvePlaceCenter: async () => null, searchCityPlaces: async () => [] }));
 vi.mock('@/discovery/api', () => ({ fetchCountries: vi.fn(), fetchResults: vi.fn() }));
@@ -30,10 +31,10 @@ const organization = { pk: 'org-1', name: 'Real Club', created_at: new Date('202
 const results: DiscoveryResults = { activities: [], teams: [], organizations: [organization] };
 const url = '/map?level=city&country=UK&state=England&city=Cambridge&entity=organizations&view=map&q=sport';
 function mount(path = url) { return render(<MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><Routes><Route path="/map" element={<DiscoveryPage />} /><Route path="/organizations" element={<DiscoveryPage entity="organizations" />} /><Route path="/login" element={<Link to={url}>Return</Link>} /></Routes></DiscoveryProvider></MemoryRouter>); }
-beforeEach(() => { sdk.styleReady = true; vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} }); vi.useFakeTimers({ shouldAdvanceTime: true }); window.scrollTo = vi.fn(); vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }] }]); vi.mocked(fetchResults).mockResolvedValue(results); });
+beforeEach(() => { vi.mocked(readDiscoveryPreference).mockResolvedValue({ preference: null, warning: false }); sdk.styleReady = true; vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} }); vi.useFakeTimers({ shouldAdvanceTime: true }); window.scrollTo = vi.fn(); vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }] }]); vi.mocked(fetchResults).mockResolvedValue(results); });
 afterEach(async () => { await cleanupVaul(); vi.useRealTimers(); vi.unstubAllGlobals(); vi.clearAllMocks(); sdk.sources.clear(); sdk.listeners.clear(); });
 it('offers manual city and explicit location action on first visit without assuming a city', async () => {
-  mount('/map'); expect(await screen.findByRole('dialog')).toBeTruthy(); expect(screen.getByRole('button', { name: 'Use my location' })).toBeTruthy();
+  mount('/map'); expect(await screen.findByRole('dialog')).toBeTruthy(); expect(screen.getByRole('button', { name: 'Use current location' })).toBeTruthy();
   fireEvent.click(await screen.findByRole('button', { name: 'Cambridge, England, UK' }));
   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull()); expect(screen.getByRole('button', { name: /Cambridge/ })).toBeTruthy();
 });
@@ -173,4 +174,15 @@ it.each(['teams', 'activities'] as const)('opens an encoded %s pin preview and r
   expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'sport' } });
   expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
+});
+
+it('keeps a dismissed welcome closed when geography remains empty', async () => {
+  const view = mount('/map'); await screen.findByRole('dialog');
+  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+  expect(screen.queryByRole('dialog')).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'List' }));
+  expect(screen.queryByRole('dialog')).toBeNull();
+  const saved = vi.mocked(writeDiscoveryPreference).mock.calls.at(-1)![0]; expect(saved.welcomeSeen).toBe(true);
+  view.unmount(); vi.mocked(readDiscoveryPreference).mockResolvedValue({ preference: saved, warning: false });
+  mount('/map'); await act(async () => {}); expect(screen.queryByRole('dialog')).toBeNull();
 });

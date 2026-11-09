@@ -1,62 +1,93 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Content as DialogContent } from '@radix-ui/react-dialog';
 import { Dialog, DialogClose, DialogOverlay, DialogPortal, DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { useDiscovery } from '@/discovery/DiscoveryContext';
 import { flattenCities } from '@/discovery/query';
-import { useCityDetection } from '@/discovery/useCityDetection';
-import type { CityDetectionStatus } from '@/discovery/useCityDetection';
-import type { CountryOption, GeoSelection } from '@/discovery/types';
+import { normalizePlaceName, placeKey } from '@/discovery/place';
+import type { CityPlace, PlaceSelection } from '@/discovery/place';
+const label = (place: PlaceSelection) => [place.geo.city, place.geo.state, place.geo.country].filter(Boolean).join(', ');
+const fromCity = ({ country, state, city, geonameId, center }: CityPlace): PlaceSelection => ({ geo: { level: 'city', country, state, city }, geonameId, center });
 
-export type CityPickerProps = { open: boolean; onOpenChange: (open: boolean) => void; countries: CountryOption[]; loading: boolean; error: string | null; value: GeoSelection | null; onSelect: (geo: GeoSelection) => void; onRetry: () => void };
-const messages: Record<CityDetectionStatus, string> = {
-  idle: '', locating: 'Getting your location…', resolving: 'Finding a matching city…',
-  denied: 'Location permission denied. You can choose a city manually.',
-  unavailable: 'Device location is unavailable. Choose a city manually.',
-  unmatched: 'We found your area; choose a city from the available places.',
-  error: 'Could not detect your city. Try again or choose a city manually.',
-};
-
-export function CityPicker({ open, onOpenChange, countries, loading, error, value, onSelect, onRetry }: CityPickerProps) {
+export function CityPicker() {
+  const { state, countries, countriesLoading, countriesError, retryCountries, location, surface, openSurface, closeSurface } = useDiscovery();
+  const { searchPlaces, cancelPending } = location;
+  const open = surface === 'city';
   const [query, setQuery] = useState('');
-  const [detectedCity, setDetectedCity] = useState<GeoSelection | null>(null);
+  const [provider, setProvider] = useState<CityPlace[]>([]);
+  const [searchStatus, setSearchStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+  const [retry, setRetry] = useState(0);
+  const [searchPaused, setSearchPaused] = useState(false);
+  const [acknowledged, setAcknowledged] = useState(false);
   const opener = useRef<HTMLElement | null>(null);
+  const input = useRef<HTMLInputElement | null>(null);
+  const queryKey = normalizePlaceName(query);
   const cities = useMemo(() => flattenCities(countries), [countries]);
-  const selected = useCallback((city: { country: string; state: string; city: string }) => {
-    setDetectedCity({ level: 'city', ...city }); onSelect({ level: 'city', ...city }); onOpenChange(false);
-  }, [onSelect, onOpenChange]);
-  const { status, detect, cancel } = useCityDetection(cities, selected);
-  useEffect(() => { if (!open) cancel(); }, [open, cancel]);
-  const choose = (geo: GeoSelection) => { setDetectedCity(null); cancel(); onSelect(geo); onOpenChange(false); };
-  const changeOpen = (next: boolean) => { if (!next) cancel(); onOpenChange(next); };
-  const normalizedQuery = query.normalize('NFKC').trim().toLowerCase();
-  const matches = cities.filter(city => `${city.city}, ${city.state}, ${city.country}`.normalize('NFKC').toLowerCase().includes(normalizedQuery));
-  const pending = status === 'locating' || status === 'resolving';
-  const acknowledgment = detectedCity && value?.level === 'city' && value.country === detectedCity.country && value.state === detectedCity.state && value.city === detectedCity.city;
-  return <>{!open && acknowledgment && <div className="discovery-location-success"><p role="status">City selected from your location: {[detectedCity.city, detectedCity.state, detectedCity.country].join(', ')}.</p><button onClick={() => onOpenChange(true)}>Change</button></div>}<Dialog open={open} onOpenChange={changeOpen}>
-    <DialogPortal><DialogOverlay /><DialogContent className="app-account-dialog fixed left-1/2 top-1/2 z-50 grid max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border p-6 shadow-lg" onOpenAutoFocus={() => { opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null; }} onCloseAutoFocus={event => { event.preventDefault(); opener.current?.focus(); }}>
-      <div className="flex items-center justify-between gap-4">
-        <DialogTitle>Choose a city</DialogTitle>
-        <DialogClose asChild><button className="app-account-action" onClick={cancel}>Close</button></DialogClose>
-      </div>
-      <DialogDescription>Search available cities or browse a country or state.</DialogDescription>
-      {value && <p className="text-sm">Current: {[value.city, value.state, value.country].filter(Boolean).join(', ')}</p>}
-      <div className="grid gap-2">
-        <button type="button" className="app-account-action" onClick={detect} disabled={pending}>Use my location</button>
-        <p className="text-xs text-muted-foreground">GeoNames receives your coordinates to find a city. Eventopia does not save your exact location.</p>
-        {messages[status] && <p role="status" className="text-sm">{messages[status]}</p>}
-      </div>
-      <label className="grid gap-2 text-sm">Search cities<input className="rounded-xl border bg-background px-3 text-base" value={query} onChange={event => setQuery(event.target.value)} /></label>
-      {loading && <p role="status">Loading cities…</p>}
-      {error && <div role="alert" className="grid gap-2 text-sm"><p>{error}</p><button className="app-account-action" onClick={() => { cancel(); onRetry(); }}>Retry cities</button></div>}
-      <div className="grid gap-2" aria-label="Available cities">
-        {matches.map(city => <button className="app-account-action justify-start text-left" key={JSON.stringify(city)} onClick={() => choose({ level: 'city', ...city })}>{city.city}, {city.state}, {city.country}</button>)}
-        {!loading && !error && !matches.length && <p className="text-sm">No matching cities. Browse a country or state below.</p>}
-      </div>
-      <details><summary className="min-h-12 cursor-pointer py-3 text-sm font-semibold">Browse countries and states</summary>
-        <div className="grid gap-2">{countries.map(country => <div className="grid gap-2" key={country.name}>
-          <button className="app-account-action justify-start text-left" onClick={() => choose({ level: 'country', country: country.name })}>Browse {country.name}</button>
-          {country.states.map(state => <button className="app-account-action justify-start text-left" key={state.name} onClick={() => choose({ level: 'state', country: country.name, state: state.name })}>Browse {state.name}, {country.name}</button>)}
-        </div>)}</div>
-      </details>
-    </DialogContent></DialogPortal>
-  </Dialog></>;
+  useEffect(() => {
+    let active = true;
+    setProvider([]); setSearchStatus('idle');
+    if (!open) { setQuery(''); setSearchPaused(false); return; }
+    if (searchPaused || queryKey.length < 2) return;
+    setSearchStatus('loading');
+    const timer = window.setTimeout(() => {
+      void searchPlaces(queryKey).then(places => { if (active) { setProvider(places.slice(0, 20)); setSearchStatus('idle'); } }).catch(() => { if (active) setSearchStatus('error'); });
+    }, 300);
+    // The location owner cancels requests. This guard only protects rendered rows.
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [open, queryKey, retry, searchPlaces, searchPaused]);
+  const recent = location.recent.slice(0, 5).filter(place => normalizePlaceName(label(place)).includes(queryKey));
+  const seen = new Set(recent.map(placeKey));
+  const choices = [
+    ...cities.filter(city => normalizePlaceName([city.city, city.state, city.country].join(', ')).includes(queryKey)).map(city => ({ geo: { level: 'city' as const, ...city } })),
+    ...provider.map(fromCity),
+  ].filter(place => { const key = placeKey(place); if (seen.has(key)) return false; seen.add(key); return true; });
+  // Retain provider metadata when a catalogue row supplies canonical backend spelling.
+  const choose = (place: PlaceSelection) => {
+    const match = provider.find(city => placeKey(fromCity(city)) === placeKey(place));
+    setAcknowledged(false);
+    void location.selectPlace(match ? { ...place, geonameId: match.geonameId, center: match.center } : place);
+    closeSurface();
+  };
+  const close = () => { location.dismissWelcome(); closeSurface(); };
+  const detectCurrent = async () => {
+    setSearchPaused(true);
+    if (await location.useCurrentLocation()) { setAcknowledged(true); closeSurface(); }
+  };
+  const pending = location.status === 'locating' || location.status === 'resolving';
+  const messages = {
+    idle: '', locating: 'Getting your location…', resolving: 'Finding a matching city…',
+    denied: 'Location permission denied. Enable location access and try again, or choose a city.',
+    unavailable: 'Device location is unavailable. Try again or choose a city.',
+    unmatched: 'Could not identify your city. Try again or choose a city.',
+    error: 'Could not find your city. Check your connection and try again, or choose a city.',
+  };
+  const current = state.geo ? { geo: state.geo } : location.place;
+  return <>{!open && acknowledged && location.mode === 'auto' && location.place && <div className="discovery-location-success"><p role="status">City selected from your location: {label(location.place)}.</p><button onClick={() => openSurface('city')}>Change</button></div>}
+    <Dialog open={open} onOpenChange={next => { if (!next) close(); }}>
+      <DialogPortal><DialogOverlay /><DialogContent className="app-account-dialog fixed left-1/2 top-1/2 z-50 grid max-h-[calc(100dvh-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto border p-6 shadow-lg" onOpenAutoFocus={event => { opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null; event.preventDefault(); input.current?.focus(); }} onCloseAutoFocus={event => { event.preventDefault(); opener.current?.focus(); }}>
+        <div className="flex items-center justify-between gap-4"><DialogTitle>Choose a city</DialogTitle><DialogClose asChild><button className="app-account-action">Close</button></DialogClose></div>
+        <DialogDescription>Search cities worldwide or browse a country or state.</DialogDescription>
+        {current && <p className="text-sm">Current: {label(current)}</p>}
+        <label className="grid gap-2 text-sm">Search cities<input ref={input} className="rounded-xl border bg-background px-3 text-base" value={query} onChange={event => { if (normalizePlaceName(event.target.value) !== queryKey) cancelPending(); setSearchPaused(false); setQuery(event.target.value); }} /></label>
+        <div className="grid gap-2">
+          <button type="button" className="app-account-action" onClick={() => { void detectCurrent(); }} disabled={pending}>Use current location</button>
+          <p className="text-xs text-muted-foreground">GeoNames receives your coordinates to find a city. Eventopia does not save your exact location. With location access, your city is checked when you open or resume the app.</p>
+          {messages[location.status] && <p role="status" className="text-sm">{messages[location.status]}</p>}
+          {location.notice && location.status === 'idle' && <p role="status" className="text-sm">{location.notice}</p>}
+          {location.persistenceWarning && <p className="text-sm">Your choice may not be remembered on this device.</p>}
+        </div>
+        {recent.length > 0 && <section aria-label="Recent places" className="grid gap-2"><h3 className="text-sm font-semibold">Recent places</h3>{recent.map(place => <button className="app-account-action justify-start text-left" key={placeKey(place)} onClick={() => choose(place)}>{label(place)}</button>)}</section>}
+        {countriesLoading && <p role="status">Loading cities…</p>}
+        {countriesError && <div role="alert" className="grid gap-2 text-sm"><p>{countriesError}</p><button className="app-account-action" onClick={() => { cancelPending(); retryCountries(); }}>Retry cities</button></div>}
+        {searchStatus === 'loading' && <p role="status">Searching cities…</p>}
+        {searchStatus === 'error' && <div role="alert" className="grid gap-2 text-sm"><p>City search is unavailable. Recent places and available cities still work.</p><button className="app-account-action" onClick={() => { setSearchPaused(false); setRetry(value => value + 1); }}>Retry search</button></div>}
+        <div className="grid gap-2" aria-label="Available cities">
+          {choices.map(place => <button className="app-account-action justify-start text-left" key={placeKey(place)} onClick={() => choose(place)}>{label(place)}</button>)}
+          {!countriesLoading && searchStatus === 'idle' && !recent.length && !choices.length && <p className="text-sm">No matching cities. Browse a country or state below.</p>}
+        </div>
+        <details><summary className="min-h-12 cursor-pointer py-3 text-sm font-semibold">Browse regions</summary><div className="grid gap-2">{countries.map(country => <div className="grid gap-2" key={country.name}>
+          <button className="app-account-action justify-start text-left" onClick={() => choose({ geo: { level: 'country', country: country.name } })}>Browse {country.name}</button>
+          {country.states.map(state => <button className="app-account-action justify-start text-left" key={state.name} onClick={() => choose({ geo: { level: 'state', country: country.name, state: state.name } })}>Browse {state.name}, {country.name}</button>)}
+        </div>)}</div></details>
+      </DialogContent></DialogPortal>
+    </Dialog></>;
 }

@@ -5,6 +5,14 @@ import type { DiscoveryState } from '../types';
 const defaults = { geo: null, entity: 'activities', view: 'map', query: '' };
 
 describe('discovery URL state', () => {
+  it('roundtrips explicit follow intent without adding fields to unmarked URLs', () => {
+    expect(parseDiscovery(new URLSearchParams('loc=auto'))).toEqual({ ...defaults, follow: true });
+    const followed: DiscoveryState = { geo: { level: 'city', country: 'Country', state: 'State', city: 'City' }, entity: 'teams', view: 'list', query: 'hello', follow: true };
+    expect(new URLSearchParams(serializeDiscovery(followed)).get('loc')).toBe('auto');
+    expect(parseDiscovery(new URLSearchParams(serializeDiscovery(followed)))).toEqual(followed);
+    expect(parseDiscovery(new URLSearchParams('loc=manual'))).toEqual(defaults);
+    expect(parseDiscovery(new URLSearchParams())).not.toHaveProperty('follow');
+  });
   it.each([
     ['United Kingdom', 'England', 'Cambridge'],
     ['Brasil', 'São Paulo', 'São José/Área'],

@@ -22,6 +22,7 @@ export type GeoSelection = {
 export type CountryOption = { name: string; states: { name: string; cities: { name: string }[] }[] };
 export type CityOption = { country: string; state: string; city: string };
 export type DiscoveryState = {
+  follow?: true;
   geo: GeoSelection | null;
   entity: DiscoveryEntity;
   view: DiscoveryView;

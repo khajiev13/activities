@@ -14,6 +14,7 @@ export function parseDiscovery(params: URLSearchParams): DiscoveryState {
     entity: entity === 'teams' || entity === 'organizations' ? entity : 'activities',
     view: params.get('view') === 'list' ? 'list' : 'map',
     query: params.get('q') ?? '',
+    ...(params.get('loc') === 'auto' ? { follow: true as const } : {}),
   };
 }
 
@@ -29,6 +30,7 @@ export function serializeDiscovery(state: DiscoveryState): string {
   params.set('entity', state.entity);
   params.set('view', state.view);
   params.set('q', state.query);
+  if (state.follow) params.set('loc', 'auto');
   return params.toString();
 }
 

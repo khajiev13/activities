@@ -11,6 +11,10 @@ export type TelegramApp = {
   offEvent?: (event: string, callback: () => void) => void;
   BackButton?: { show: () => void; hide: () => void; onClick: (callback: () => void) => void; offClick: (callback: () => void) => void };
   isVersionAtLeast?: (version: string) => boolean;
+  DeviceStorage?: {
+    getItem: (key: string, callback: (error: string | null, value?: string) => void) => void;
+    setItem: (key: string, value: string, callback?: (error: string | null, stored?: boolean) => void) => void;
+  };
   LocationManager?: {
     isInited?: boolean; isLocationAvailable?: boolean; isAccessRequested?: boolean; isAccessGranted?: boolean;
     init: (callback?: () => void) => void;
@@ -34,6 +38,10 @@ export function getTelegramApp(): TelegramApp | undefined {
     offEvent: app.offEvent?.bind(app),
     BackButton: app.BackButton,
     LocationManager: app.LocationManager,
+    DeviceStorage: app.DeviceStorage ? {
+      getItem: app.DeviceStorage.getItem.bind(app.DeviceStorage),
+      setItem: app.DeviceStorage.setItem.bind(app.DeviceStorage),
+    } : undefined,
     isVersionAtLeast: app.isVersionAtLeast?.bind(app),
   };
 }

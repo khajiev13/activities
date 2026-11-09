@@ -25,7 +25,7 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer';
 import { Globe2Icon } from 'lucide-react';
-import { OrganizationListingType } from './OrganizationsPage/OrganizationsListingSchema';
+import { OrganizationListingType } from '../types/OrganizationsListingSchema.ts';
 
 type Country = {
   name: string;
@@ -42,14 +42,13 @@ const useFetchLocationData = () => {
 
   useEffect(() => {
     axiosInstance
-      .get('api/countries/list/')
+      .get('/api/countries/list/')
       .then((response) => {
         const data = response.data;
         console.log(data)
         setCountries(data);
       })
-      .catch((error) => {
-        console.error('Error fetching location data:', error);
+      .catch(() => {
       });
   }, []);
 
@@ -87,12 +86,9 @@ const SearchNavbar = ({
       axiosInstance
         .get(`/api/${search_for}/country/${countriesArray}/`, {
           params: {
-            search_by: searchBy,
           },
         })
         .then((response) => {
-          console.log(response.data);
-
           if (setTeams) {
             setTeams(response.data);
           } else if (setActivities) {
@@ -115,13 +111,10 @@ const SearchNavbar = ({
       axiosInstance
         .get(`/api/${search_for}/state/${statesArray}/`, {
           params: {
-            search_by: searchBy,
             countries: countriesArray,
           },
         })
         .then((response) => {
-          console.log(response.data);
-
           if (setTeams) {
             setTeams(response.data);
           } else if (setActivities) {
@@ -144,14 +137,11 @@ const SearchNavbar = ({
       axiosInstance
         .get(`/api/${search_for}/city/${citiesArray}/`, {
           params: {
-            search_by: searchBy,
             countries: countriesArray,
             states: statesArray,
           },
         })
         .then((response) => {
-          console.log(response.data);
-
           if (setTeams) {
             setTeams(response.data);
           } else if (setActivities) {

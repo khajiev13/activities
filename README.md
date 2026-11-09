@@ -1,138 +1,169 @@
-# How the project works
+# Eventopia
 
-![Eventopia Architecture](https://github.com/khajiev13/activities/assets/57835288/204d5a52-e7f6-4f25-94d4-17290876a848)
+Eventopia is a sports community app for organizations, teams, activities and
+competitions, with geographic search and maps. The web app uses React,
+TypeScript and Vite. A Python 3.13 FastAPI API and a Telegram long-polling bot
+share the backend services.
 
-![neo4j_schema ](https://github.com/khajiev13/activities/assets/57835288/80da7af6-be52-4a7e-acb5-6efe5483fd64)
+## Architecture
 
-![frontend_diagram](https://github.com/khajiev13/activities/assets/57835288/50fa585a-3fcb-4c8c-8218-ce5ba3bc8314)
+- `frontend/`: React UI, Zod validation, Tailwind/shadcn components and MapTiler
+  maps. Vite proxies `/api` to FastAPI and `/media` to local object storage.
+- `api/`: the `eventopia` Python package, managed by uv. HTTP views call
+  framework-independent services; data access lives in `cyphers/` and `sqls/`.
+  `wiring.py` constructs the dependencies used by the API and bot.
+- Neo4j stores profiles, organizations, teams, memberships, activities,
+  competitions and geographic data. Queries use Cypher 25.
+- SQLite stores accounts, Telegram identities, hashed OTP challenges, refresh
+  sessions and the bot polling offset. API and bot share its `auth-data` volume.
+- Silo provides S3-compatible image storage. The one-shot `silo-init` service
+  creates the media bucket and app user, with public downloads under
+  `media/public`.
 
-![high_level_structure](https://github.com/khajiev13/activities/assets/57835288/dbf6d788-e2ca-4221-ae87-240938776516)
+The browser keeps its short-lived access token in memory. Website login uses a
+rotating HttpOnly refresh cookie; auth credentials do not go in browser local or
+session storage. Telegram delivers website login codes after phone registration.
 
-# Design of Frontend
+The API and bot are separate processes built from `api/Dockerfile`. The
+entrypoint applies SQLite migrations and Neo4j constraints before starting each
+process. Configuration is loaded once at startup from the YAML selected by
+`EVENTOPIA_CONFIG`.
 
-## Technologies that are used:
+## Run locally
 
-- **React**: A popular JavaScript library chosen for its widespread adoption and component-based architecture. This approach facilitates modular development and eases maintenance, making it ideal for large-scale applications.
-- **Vite**: Employed to streamline the development process and handle the complexities of module bundling, traditionally managed by tools like Webpack and Rollup. Vite enhances the development experience with fast, hot module replacement and acts as a front-end build tool that significantly outperforms older techniques.
-- **TypeScript**: An open-source language that builds on JavaScript by adding static type definitions. TypeScript’s type-checking feature aids in developing reliable code by ensuring type correctness throughout the application.
-- **UI Components**:
-  - **Shadcn**: An open-source library that provides pre-designed, visually appealing components built with Tailwind CSS for styling and ease of customization.
-  - **Aceternity**: Built on top of Shadcn, this library leverages the same styling approach provided by Tailwind CSS to offer additional customized components.
-- **MapTiler JavaScript SDK**: Manages mapping functionalities, facilitating the rendering of maps and management of geographic data. This SDK allows users to interact with the map, select locations, and retrieve corresponding latitude and longitude coordinates.
-- **Zod**: Utilized for form and component schema validation, enhancing the robustness of user input handling within the application.
-- **Axios**: Used for making HTTP requests (GET, POST, etc.) to communicate with the server, ensuring efficient data fetching and submission.
+Use Docker with Compose v2. For host-side checks, install Python 3.13, uv, Node.js
+22 and Yarn Classic. Run the following commands from the repository root.
 
-# Design of Backend (Server API)
+### Configure
 
-## Technologies that are used:
-
-- **Azure Storage**:
-  - Utilized for managing and storing large files or data objects that do not fit well into a traditional relational or graph database.
-  - Provides scalable cloud storage solutions, ensuring data availability and durability.
-- **SQLite**:
-  - Serves as a lightweight, disk-based database.
-  - Employed to store JSON Web Tokens (JWTs) used in the application’s authentication processes.
-  - Facilitates efficient local storage without the need for a separate server process.
-  - Manages both access and refresh tokens for secure token-based authentication.
-- **Neo4j**:
-  - A graph database management system that excels in storing and querying data with complex relationships and high levels of interconnectedness.
-  - Manages the application’s core data, allowing for efficient relationship queries and enhanced data insights.
-- **Django Rest Framework**:
-  - **Serializers**: Handle data serialization and validation.
-  - **Views**: Manage request handling and business logic.
-  - **URLs**: Map endpoints to the corresponding views for routing purposes.
-  - **JWT Middleware**: Facilitates token-based authentication by handling access and refresh tokens, ensuring secure user authentication.
-- **Neomodel**:
-  - An Object Graph Mapper (OGM) for the Neo4j graph database.
-  - Built on the powerful py2neo, it simplifies working with Neo4j by providing a high-level abstraction for nodes and relationships.
-  - Allows you to interact with your Neo4j database like you would with a traditional database in Django.
-  - Provides a simple and intuitive API for creating, retrieving, updating, and deleting nodes and relationships.
-  - Supports Neo4j’s powerful graph querying language, Cypher, allowing you to perform complex queries and operations on your graph data.
-
-# Running the docker container
-
-To run the docker container, you need to have Docker installed on your machine. If you don't have Docker installed, you can download it from the official website: https://www.docker.com/products/docker-desktop
-
-Once you have Docker installed, you can run the following command to build and run the container where docker-compose.yml is located:
-
-```bash
-docker-compose up --build
+```sh
+cp .env.dev.example .env.dev
+cp api/config.example.yaml api/config-dev.yaml
+cp frontend/.env.example frontend/.env.local
+chmod 600 .env.dev api/config-dev.yaml frontend/.env.local
 ```
 
-This command will build the Docker container and run it in the foreground. If you want to run the container in the background, you can add the `-d` flag:
+Fill these private files before starting the stack:
 
-```bash
-docker-compose up --build -d
+1. In `.env.dev`, set `APP_UID` to the output of `id -u`. Choose the Neo4j
+   password, Silo administrator credentials and S3 app credentials.
+2. In `api/config-dev.yaml`, match the Neo4j password and S3 app credentials to
+   `.env.dev`. Use these container addresses and paths:
+   - `neo4j.uri`: `bolt://neo4j:7687`
+   - `s3.endpoint_url`: `http://silo:9000`
+   - `sqlite.path`: `/data/auth/eventopia.sqlite3`
+   - `app.public_base_url`: `http://localhost:5173`
+   - `app.cors_origins`: keep `[]`; the app uses the same-origin Vite proxy.
+     This setting does not enable cross-origin API access (no CORS middleware).
+   - `auth.cookie_secure`: `false` for local HTTP
+3. Set the Telegram bot token and bot username, plus independently generated JWT
+   secret and OTP pepper, in that YAML. Keep the example's auth limits and other
+   required configuration keys.
+4. Set `VITE_MAPTILER_KEY` in `frontend/.env.local`; keep
+   `VITE_API_BASE_URL=/`. Frontend `VITE_` values are included in the browser
+   bundle, so use only a public MapTiler browser key there.
+
+Private configuration is git-ignored. Commit only the example files. Before
+starting Compose, stop any host or other container poller using the same Telegram
+bot token: exactly one bot poller may run.
+
+### Start and seed
+
+Use the `eventopia-task2` project name consistently so subsequent commands use
+the same development volumes:
+
+```sh
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml up -d --build
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml exec api python -m eventopia.seed
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml ps --all
 ```
 
-To stop the container, you can run the following command:
+Open [localhost:5173](http://localhost:5173). The stack includes `api`, `bot`,
+`web`, `neo4j`, `silo` and the one-shot `silo-init` service. All published ports
+bind to localhost: web 5173, API 8000, Neo4j 7474/7687 and Silo 9000/9001.
+`api`, `web`, `neo4j` and `silo` should become healthy; `silo-init` should exit 0.
+The first web start installs its dependencies and can take longer.
 
-```bash
-docker-compose down
+The seed is safe to rerun. A fresh seed creates 48 teams, 943 player profiles,
+1,064 memberships, 3 leagues and 4 pitches. It does not create phone login
+accounts. Existing data and user-created records are preserved by reseeding.
+
+Check the API through the web proxy:
+
+```sh
+curl -fsS http://localhost:5173/api/health/ready
+curl -fsS http://localhost:5173/api/teams/search/Rockets/
 ```
 
+Readiness returns `error: 0` and `data: {neo4j: true, sqlite: true}`. Search
+includes Beijing Rockets and Beijing Rockets 7s.
 
+Python dependencies are installed with `uv sync --frozen` inside `/opt/venv`;
+web dependencies use `yarn install --frozen-lockfile` in `web-node-modules`.
+These stay separate from host `.venv` and `node_modules`. The Neo4j, Silo and
+shared SQLite data use persistent named volumes.
 
-# Contributing
+### Register and log in
 
-If you want to contribute to the project, please follow these steps:
+1. Open the configured Telegram bot in a private chat and send `/start`.
+2. Use its **Share my phone number** button to share your own contact. The bot
+   registers your phone and links your Telegram identity to your profile.
+3. Open [the website login](http://localhost:5173/login), enter that phone number
+   and request a code. Enter the six-digit code received privately in Telegram.
 
-1. Fork the repository on GitHub.
-2. Clone your fork:
+The bot supports Uzbek, Russian and English. `/start` shows registration status;
+`/phone` lets you share a replacement number. Keep the bot unblocked so it can
+send login codes. The backend also verifies Telegram Mini App authentication;
+the Mini App UI and BotFather setup are separate work.
 
-```bash
-git clone https://github.com/your-username/activities.git
+The bot saves its `getUpdates` offset in shared SQLite. To check restart behavior:
+
+```sh
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml restart bot
 ```
 
-3. Create a new branch for your changes:
+Send `/start` once afterward and verify one reply with no replay of earlier
+updates. Do not run a second host bot alongside the Compose bot.
 
-```bash
-git checkout -b your-branch-name
+### Stop or reset
+
+Stop the stack while preserving data:
+
+```sh
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml stop
 ```
 
-4. Make your changes and commit them to your branch.
-5. Push your branch to your fork:
+For a clean development reset, the following removes this project's volumes,
+including uploaded images, accounts and bot offset. Register again after seeding:
 
-```bash
-git push origin your-branch-name
+```sh
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml down -v
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml up -d --build
+docker compose --project-name eventopia-task2 --env-file .env.dev -f compose.dev.yml exec api python -m eventopia.seed
 ```
 
-6. Go to the GitHub page for your fork, and click the 'New pull request' button to create a new pull request.
+Before moving an existing signup database into `auth-data`, stop its writers,
+take a consistent SQLite backup and preserve it before restarting API and bot.
 
-Remember to replace your-username and name-of-your-branch with your GitHub username and your chosen branch name, respectively.
+## Checks
 
-# Keeping Your Fork Up to Date
+The API suite includes integration tests that start isolated Docker containers;
+keep Docker available. It does not clear the development Neo4j database.
 
-To keep your fork up to date with the original repository, you can add it as an "upstream" remote. Here is how:
-
-1. While in your local repository, add the original repository as an upstream remote:
-
-```bash
-git remote add upstream https://github.com/khajiev13/activities.git
+```sh
+cd api
+uv sync --frozen
+uv run pytest -m "integration or not integration" -q
+uv run ruff check .
+cd ../frontend
+yarn install --frozen-lockfile
+yarn test
+yarn build
 ```
 
-2. Verify that the upstream repository has been added:
+A passing build does not replace a real-phone registration and OTP login check,
+or the signed-in organization/team/image, membership, activity, competition and
+geographic search flows.
 
-```bash
-git remote -v
-```
-
-You should see upstream in the output, along with the URL of the original repository. 3. Fetch the latest changes from the upstream repository:
-
-```bash
-git fetch upstream
-```
-
-4. To merge the updates into your local branch, first make sure you are on the correct branch:
-
-```bash
-git checkout your-branch-name
-```
-
-5. Then, merge the updates:
-
-```bash
-git merge upstream/main
-```
-
-Remember to replace your-branch-name with the name of your branch.
+See the [backend design](docs/superpowers/specs/2026-11-07-fastapi-telegram-backend-design.md)
+for the API contract and data model.

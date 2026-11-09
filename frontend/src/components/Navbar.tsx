@@ -42,7 +42,9 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export default function Navbar() {
-  const { isLoggedIn, firstName } = React.useContext(AuthContext);
+  const { status, user } = React.useContext(AuthContext);
+  const isLoggedIn = status === 'authenticated';
+  const firstName = user?.first_name;
   const navigate = useNavigate();
   return (
     <>

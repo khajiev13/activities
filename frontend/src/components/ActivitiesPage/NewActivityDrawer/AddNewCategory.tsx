@@ -47,7 +47,7 @@ export default function AddNewCategory({
       is_online: is_online,
     };
     console.log(category);
-    await axiosInstance.post('api/categories/', category).then((res) => {
+    await axiosInstance.post('/api/categories/', category).then((res) => {
       const createdCategory: CategoryItem[] = [
         {
           pk: res.data.pk,

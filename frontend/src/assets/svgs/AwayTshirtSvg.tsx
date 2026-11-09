@@ -22,7 +22,7 @@ const AwayTshirtSvg = ({
       onClick={() => selectClothing('awaytshirt')}
       width={width}
       height={height}
-      stroke-width="5"
+      strokeWidth="5"
       stroke={selected ? 'rgba(224, 100, 60, 1)' : 'none'}
     >
       <g id="SVGRepo_bgCarrier" strokeWidth={0} />

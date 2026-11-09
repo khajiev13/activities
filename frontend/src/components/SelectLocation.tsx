@@ -1,113 +1,52 @@
-// SelectLocation.tsx
-import React, { useRef } from 'react';
-import ReactDOMServer from 'react-dom/server';
+import { useEffect, useRef, useState } from 'react';
+import { useOptionalDiscovery } from '@/discovery/DiscoveryContext';
 import BaseMap from './Map/BaseMap';
 import * as maptilersdk from '@maptiler/sdk';
-import lottie from 'lottie-web';
-import animationDataLocationPin from '../illustrations/location-pin.json';
 import { SubmitLocation } from './Map/SelectLocation/SubmitLocation';
-import { AddLocation } from './Map/MapFunctions/AddLocation';
-import { LocationDetails } from './Map/MapFunctions/AddLocation';
+import { AddLocation, type LocationDetails, type ManualLocationGeo } from './Map/MapFunctions/AddLocation';
 
-type SelectLocationProps = {
-  setLocation: (location: LocationDetails) => void;
-};
-
-const SelectLocation: React.FC<SelectLocationProps> = ({ setLocation }) => {
-  const markerRef = useRef<maptilersdk.Marker | null>(null);
-  const popupRef = useRef<maptilersdk.Popup | null>(null);
-
+type Props = { setLocation: (location: LocationDetails) => void };
+export default function SelectLocation({ setLocation }: Props) {
+  const discovery = useOptionalDiscovery();
+  const marker = useRef<maptilersdk.Marker | null>(null);
+  const detach = useRef<() => void>(() => {});
+  const busy = useRef(false);
+  const active = useRef(true);
+  const [name, setName] = useState('');
+  const [longitude, setLongitude] = useState(''); const [latitude, setLatitude] = useState('');
+  const [manual, setManual] = useState(false); const [mapError, setMapError] = useState(false);
+  const [geo, setGeo] = useState<ManualLocationGeo>({ country: '', state: '', city: '' });
+  const [loading, setLoading] = useState(false); const [error, setError] = useState<string | null>(null);
+  useEffect(() => { active.current = true; return () => { active.current = false; detach.current(); marker.current?.remove(); marker.current = null; }; }, []);
   const handleMapLoad = (map: maptilersdk.Map) => {
-    map.on('click', (e) => {
-      // Remove the existing marker and popup
-      if (markerRef.current) {
-        markerRef.current.remove();
-      }
-      if (popupRef.current) {
-        popupRef.current.remove();
-      }
-
-      // Create a new div for the marker
-      const markerDiv = document.createElement('div');
-      markerDiv.style.width = '40px';
-      markerDiv.style.height = '40px';
-
-      // Load the Lottie animation
-      lottie.loadAnimation({
-        container: markerDiv, // the dom element that will contain the animation
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        animationData: animationDataLocationPin, // the path to the animation json
-      });
-      // Add a new marker at the clicked location
-      markerRef.current = new maptilersdk.Marker({ element: markerDiv })
-        .setLngLat([e.lngLat.lng, e.lngLat.lat])
-        .addTo(map);
-
-      // Add a new popup at the clicked location
-      const PopupContent = <SubmitLocation />;
-      const html = ReactDOMServer.renderToString(PopupContent);
-      popupRef.current = new maptilersdk.Popup({
-        offset: [0, -25],
-        className: 'bg-transparent rounded-xl mr-0 p-0',
-      })
-        .setLngLat([e.lngLat.lng, e.lngLat.lat])
-        .setHTML(html)
-        .addTo(map);
-      // Style the popup
-      popupRef.current._content.style.backgroundColor = 'transparent';
-      popupRef.current._content.style.borderRadius = '25px';
-      popupRef.current._content.style.padding = '0';
-      // Add the event listener
-      const form = document.getElementById('location-form');
-      const input = document.getElementById(
-        'location-input'
-      ) as HTMLInputElement;
-      const button = document.getElementById(
-        'location-submit'
-      ) as HTMLButtonElement;
-      const loader = document.querySelector('#spinner-loading') as HTMLElement;
-      if (form && input && button && loader) {
-        // We are going to submit the selected location to the server input.value is our name and we have the coordinates from e.lngLat.lng and e.lngLat.lat
-        form.addEventListener('submit', async (event) => {
-          event.preventDefault();
-
-          // Show the loader and disable the button
-          loader.classList.remove('hidden');
-          button.disabled = true;
-          //Add the location to the server and it returns country_name, state_name, city_name, location_name and location_pk
-          const {
-            country,
-            state,
-            city,
-            location_name,
-            location_pk,
-            sunrise,
-            sunset,
-            country_code,
-            timezone,
-          } = await AddLocation(input.value, e.lngLat.lng, e.lngLat.lat);
-
-          //Now let's set the location details and make it available to the parent component
-          const location: LocationDetails = {
-            country,
-            state,
-            city,
-            location_name,
-            location_pk,
-            sunrise,
-            sunset,
-            country_code,
-            timezone,
-          };
-          setLocation(location);
-        });
-      }
-    });
+    detach.current();
+    const click = (event: maptilersdk.MapMouseEvent) => {
+      if (busy.current) return;
+      marker.current?.remove();
+      marker.current = new maptilersdk.Marker().setLngLat([event.lngLat.lng, event.lngLat.lat]).addTo(map);
+      setLongitude(String(event.lngLat.lng)); setLatitude(String(event.lngLat.lat)); setError(null);
+    };
+    map.on('click', click); detach.current = () => map.off('click', click);
   };
-
-  return <BaseMap onMapLoad={handleMapLoad} />;
-};
-
-export default SelectLocation;
+  async function submit() {
+    if (busy.current) return;
+    if (!name.trim() || !longitude.trim() || !latitude.trim()) { setError('Choose a point or enter coordinates, and give the venue a name.'); return; }
+    const hasManualGeo = manual && Object.values(geo).some(value => value.trim());
+    if (hasManualGeo && !Object.values(geo).every(value => value.trim())) { setError('Complete country, state or region, and city.'); return; }
+    busy.current = true; setLoading(true); setError(null);
+    try {
+      const location = await AddLocation(name, Number(longitude), Number(latitude), hasManualGeo ? geo : undefined);
+      discovery?.retryCountries();
+      if (active.current) setLocation(location);
+    } catch { if (active.current) { setError('Could not save this location. Try again, or complete the manual location fields.'); setManual(true); } }
+    finally { busy.current = false; if (active.current) setLoading(false); }
+  }
+  return <div className="space-y-4 w-full min-w-0">
+    <p className="text-sm">Choose the venue point on the map, then enter its name below.</p>
+    <div className="relative h-64 overflow-hidden rounded-lg border"><BaseMap onMapLoad={handleMapLoad} onMapError={() => { setMapError(true); setManual(true); }} /></div>
+    {mapError && <p className="text-sm">Map unavailable. You can enter the venue manually.</p>}
+    <p role="status" className="text-sm">{longitude && latitude ? 'Point selected. Confirm the venue name below.' : 'No point selected yet.'}</p>
+    {error && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p>}
+    <SubmitLocation name={name} setName={setName} longitude={longitude} latitude={latitude} setLongitude={setLongitude} setLatitude={setLatitude} manual={manual} setManual={setManual} geo={geo} setGeo={setGeo} loading={loading} onSubmit={submit} />
+  </div>;
+}

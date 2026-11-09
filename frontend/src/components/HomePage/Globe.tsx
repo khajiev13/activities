@@ -1,13 +1,8 @@
 'use client';
 import { motion } from 'framer-motion';
-import dynamic from 'next/dynamic';
+import { lazy, Suspense } from 'react';
 
-const World = dynamic(
-  () => import('@/components/ui/globe').then((m) => m.World),
-  {
-    ssr: false,
-  }
-);
+const World = lazy(() => import('@/components/ui/globe').then((m) => ({ default: m.World })));
 
 const Globe = () => {
   const globeConfig = {
@@ -419,7 +414,7 @@ const Globe = () => {
         </motion.div>
         <div className="absolute w-full bottom-0 inset-x-0 h-40 bg-gradient-to-b pointer-events-none select-none from-transparent" />
         <div className="absolute w-full  h-72 md:h-full z-10">
-          <World data={sampleArcs} globeConfig={globeConfig} />;
+          <Suspense fallback={null}><World data={sampleArcs} globeConfig={globeConfig} /></Suspense>
         </div>
       </div>
     </div>

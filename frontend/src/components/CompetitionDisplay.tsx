@@ -7,8 +7,8 @@ import { Team } from './ActivitiesPage/NewActivityDrawer/IsCompetition';
 
 type Props = {
   league_name?: string;
-  team1?: { name: string; image_url: string; score?: number };
-  team2?: { name: string; image_url: string; score?: number };
+  team1?: Team;
+  team2?: Team;
   setTeam1Prop?: (team: Team) => void;
   setTeam2Prop?: (team: Team) => void;
 };
@@ -39,13 +39,13 @@ export function CompetitionDisplay({
             <Card className="p-0 m-0 min-h-36 flex justify-center items-center">
               {team1 ? (
                 <div className="flex flex-col h-full items-center justify-center p-6 m-0">
-                  <img
+                  {team1.image_url && <img
                     src={team1.image_url}
                     alt="Team picture"
                     height="100"
                     width="100"
                     className="object-contain"
-                  />
+                  />}
                   <h3 className="text-base sm:text-sm text-black mt-4 mb-2 dark:text-neutral-200 h-4">
                     {team1.name}
                   </h3>
@@ -67,13 +67,13 @@ export function CompetitionDisplay({
             <Card className="p-0 m-0 min-h-36 flex justify-center items-center">
               {team2 ? (
                 <div className="flex flex-col h-full items-center justify-center p-6 m-0">
-                  <img
+                  {team2.image_url && <img
                     src={team2.image_url}
                     alt="Team picture"
                     height="100"
                     width="100"
                     className="object-contain"
-                  />
+                  />}
                   <h3 className="text-base sm:text-sm text-black mt-4 mb-2 dark:text-neutral-200 h-4">
                     {team2.name}
                   </h3>

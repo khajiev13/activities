@@ -1,4 +1,4 @@
-import TeamSchema from '@/components/TeamsPage/TeamsListingSchema';
+import TeamSchema from '@/types/TeamsListingSchema.ts';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
 import { z } from 'zod';
@@ -54,16 +54,16 @@ const SearchTeam = ({ setTeamProp }: Props) => {
           <div
             key={team.name}
             className="p-0 m-0"
-            onClick={() => setTeam(team)}
           >
             <TeamCard
+              setTeamName={() => setTeam(team)}
               name={team.name}
               image_url={team.image_url}
               location_name={team.city_name}
-              tshirt_color={team.tshirt_color[0].name}
-              shorts_color={team.shorts_color[0].name}
-              socks_color={team.socks_color[0].name}
-              away_tshirt_color={team.away_tshirt_color[0].name}
+              tshirt_color={team.tshirt_color[0]?.name}
+              shorts_color={team.shorts_color[0]?.name}
+              socks_color={team.socks_color[0]?.name}
+              away_tshirt_color={team.away_tshirt_color[0]?.name}
               color_picker_needed={false}
             />
           </div>

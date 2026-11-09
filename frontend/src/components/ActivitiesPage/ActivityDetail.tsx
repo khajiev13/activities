@@ -1,40 +1,11 @@
+import type { ReactNode } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react"
-import People from "../People"
-// This is a mock activity for demonstration purposes
-const activity = {
-  title: "Weekend Hike at Mount Rainier",
-  description: "Join us for a beautiful hike at Mount Rainier National Park. We'll explore the Skyline Trail and enjoy breathtaking views of the mountain and surrounding wilderness.",
-  date_time: "2024-07-15T09:00:00Z",
-  duration_in_minutes: 240,
-  public: true,
-  pk: "123456",
-  city: { name: "Ashford" },
-  country: { name: "United States" },
-  state: { name: "Washington" },
-  location: { name: "Mount Rainier National Park" },
-  categories: [{ name: "Hiking" }, { name: "Nature" }, { name: "Outdoors" }],
-  creator: {
-    first_name: "John",
-    last_name: "Doe",
-    username: "johndoe",
-    image_url: "https://example.com/johndoe.jpg"
-  },
-  people_joined: [
-    { first_name: "Alice", last_name: "Smith", username: "alicesmith", image_url: "https://example.com/alice.jpg" },
-    { first_name: "Bob", last_name: "Johnson", username: "bobjohnson", image_url: "https://example.com/bob.jpg" }
-  ],
-  number_of_people_joined: 2,
-  competition: {
-    team_1: { name: null, image_url: null },
-    team_2: { name: null, image_url: null }
-  }
-}
+import type { ActivityDetailsType } from '@/types/ActivitiesListSchema';
 
-
-export default function ActivityDetail() {
+export default function ActivityDetail({ activity, action }: { activity: ActivityDetailsType; action?: ReactNode }) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })
@@ -47,11 +18,11 @@ export default function ActivityDetail() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 space-y-6">
+    <div className="mx-auto w-full max-w-5xl space-y-6 py-2 break-words">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="lg:col-span-2 space-y-6">
           <div className="space-y-4">
-            <h1 className="text-3xl font-bold">{activity.title}</h1>
+            <h1 className="text-2xl font-bold">{activity.title}</h1>
             <div className="flex flex-wrap gap-2">
               {activity.categories.map((category, index) => (
                 <Badge key={index} variant="secondary">{category.name}</Badge>
@@ -59,20 +30,17 @@ export default function ActivityDetail() {
             </div>
           </div>
 
-          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-            <span className="text-muted-foreground">Image Placeholder</span>
-          </div>
-
           <Card>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-4 sm:p-6 space-y-4">
               <h2 className="text-xl font-semibold">About this activity</h2>
+              <p className="text-sm text-muted-foreground">{activity.public ? 'Public activity' : 'Private activity'}</p>
               <p className="text-muted-foreground">{activity.description}</p>
             </CardContent>
           </Card>
 
           {activity.competition.team_1.name && activity.competition.team_2.name && (
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <h2 className="text-xl font-semibold mb-4">Competition</h2>
                 <div className="flex justify-around items-center">
                   <div className="text-center">
@@ -98,7 +66,7 @@ export default function ActivityDetail() {
 
         <div className="space-y-6">
           <Card>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-4 sm:p-6 space-y-4">
               <div className="flex items-center gap-2">
                 <CalendarIcon className="text-muted-foreground" />
                 <span>{formatDate(activity.date_time)}</span>
@@ -113,18 +81,18 @@ export default function ActivityDetail() {
               </div>
               <div className="flex items-center gap-2">
                 <UsersIcon className="text-muted-foreground" />
-                <span>{activity.number_of_people_joined} people joined</span>
+                <span>{activity.number_of_people_joined} {activity.number_of_people_joined === 1 ? 'person' : 'people'} joined</span>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-4 sm:p-6 space-y-4">
               <h2 className="text-xl font-semibold">Organizer</h2>
               <div className="flex items-center gap-4">
                 <Avatar>
-                  <AvatarImage src={activity.creator.image_url} alt={`${activity.creator.first_name} ${activity.creator.last_name}`} />
-                  <AvatarFallback>{activity.creator.first_name[0]}{activity.creator.last_name[0]}</AvatarFallback>
+                  <AvatarImage src={activity.creator.image_url || undefined} alt={`${activity.creator.first_name} ${activity.creator.last_name}`} />
+                  <AvatarFallback>{activity.creator.first_name?.[0]}{activity.creator.last_name?.[0]}</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-medium">{`${activity.creator.first_name} ${activity.creator.last_name}`}</p>
@@ -135,15 +103,27 @@ export default function ActivityDetail() {
           </Card>
 
           <Card>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-4 sm:p-6 space-y-4">
               <h2 className="text-xl font-semibold">Attendees</h2>
               <div className="flex flex-wrap gap-2">
-                <People />
+                {activity.people_joined.length === 0 ? <p>No attendees yet.</p> : activity.people_joined.map((person, index) => {
+                  const name = [person.first_name, person.last_name].filter(Boolean).join(' ') || person.username || 'Participant';
+                  return (
+                    <div key={person.username || index} className="flex items-center gap-2">
+                      <Avatar>
+                        <AvatarImage src={person.image_url || undefined} alt={name} />
+                        <AvatarFallback>{name[0]}</AvatarFallback>
+                      </Avatar>
+                      <span>{name}</span>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
+      {action}
     </div>
   )
 }

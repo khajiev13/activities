@@ -1,0 +1,266 @@
+// @vitest-environment jsdom
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import type { TelegramApp } from '@/platform/telegram';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { cleanupVaul } from '@/test/cleanupVaul';
+import { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
+import { DiscoveryProvider } from '@/discovery/DiscoveryContext';
+import { fetchCountries, fetchResults } from '@/discovery/api';
+import { AuthContext } from '@/auth/AuthContext';
+import { AppShell } from '@/components/layout/AppShell';
+import { ResultCard } from '../ResultCard';
+import { DiscoveryPage } from '../DiscoveryPage';
+import { readDiscoveryPreference, writeDiscoveryPreference } from '@/discovery/preferences';
+import type { DiscoveryResults, GeoSelection } from '@/discovery/types';
+const native = vi.hoisted(() => ({ app: undefined as TelegramApp | undefined }));
+vi.mock('@/platform/telegram', () => ({ getTelegramApp: () => native.app }));
+vi.mock('@/discovery/preferences', () => ({ readCachedDiscoveryPreference: () => ({ preference: null, warning: false }), readDiscoveryPreference: vi.fn(async () => ({ preference: null, warning: false })), writeDiscoveryPreference: vi.fn(async () => ({ warning: false })) }));
+vi.mock('@/discovery/deviceLocation', () => ({ getLocationPermission: async () => 'unknown', requestDeviceLocation: vi.fn() }));
+vi.mock('@/discovery/geoNames', () => ({ resolvePlaceCenter: async (geo: GeoSelection) => ({ geo, center: geo.city === 'Edinburgh' ? [-3, 56] : [0, 52] }), searchCityPlaces: async () => [] }));
+vi.mock('@/discovery/api', () => ({ fetchCountries: vi.fn(), fetchResults: vi.fn() }));
+vi.mock('@/components/Drawer', () => ({ Create: ({ entity }: { entity: string }) => <button>Create {entity}</button> }));
+const sdk = vi.hoisted(() => ({ styleReady: true, sources: new Map<string, { data: { features: { properties: { pk?: string } }[] } }>(), fits: vi.fn(), moves: vi.fn(), jumps: vi.fn(), listeners: new Map<string, Set<() => void>>() }));
+vi.mock('@maptiler/sdk', () => ({ config: {}, MapStyle: { BASIC: { DARK: 'dark', LIGHT: 'light' } }, Map: class {
+  container: HTMLElement;
+  constructor(options: { container: HTMLElement }) { this.container = options.container; }
+  getContainer() { return this.container; }
+  getCenter() { return { lng: 0, lat: 20 }; } getZoom() { return 2; } getBearing() { return 0; } getPitch() { return 0; }
+  project() { return { x: 100, y: 100 }; } stop() {} panBy() {} easeTo = sdk.moves;
+  on(name: string, layer: string | (() => void), fn?: () => void) { name = typeof layer === 'string' ? name + ':' + layer : name; const cb = typeof layer === 'function' ? layer : fn!; if (!sdk.listeners.has(name)) sdk.listeners.set(name, new Set()); sdk.listeners.get(name)!.add(cb); }
+  once(name: string, fn: () => void) { this.on(name, fn); }
+  off(name: string, layer: string | (() => void), fn?: () => void) { sdk.listeners.get(typeof layer === 'string' ? name + ':' + layer : name)?.delete(typeof layer === 'function' ? layer : fn!); }
+  queryRenderedFeatures() { return [{ properties: { name: 'Real Team', pk: 'activity/one' } }]; }
+  isStyleLoaded() { return sdk.styleReady; } loaded() { return true; } resize() {} remove() {} setStyle() {}
+  addSource(id: string, data: never) { sdk.sources.set(id, data); } getSource(id: string) { return sdk.sources.get(id); } removeSource(id: string) { sdk.sources.delete(id); }
+  hasImage() { return true; }
+  addLayer() {} getLayer() { return true; } removeLayer() {} fitBounds = sdk.fits; jumpTo = sdk.jumps;
+} }));
+const organization = { pk: 'org-1', name: 'Real Club', created_at: new Date('2026-11-08'), image_url: null, country: { name: 'UK' }, state: { name: 'England' }, city: { name: 'Cambridge' }, location: { name: 'Pitch', pk: 'pitch', points: { latitude: 52, longitude: 0 } }, teams_count: 2, number_of_people_joined: 3, number_of_teams_sponsored: 1, hosting_leagues_count: 0, hosting_activities_count: 4 };
+const results: DiscoveryResults = { activities: [], teams: [], organizations: [organization] };
+const url = '/map?level=city&country=UK&state=England&city=Cambridge&entity=organizations&view=map&q=sport';
+function mount(path = url) { return render(<MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><Routes><Route path="/map" element={<DiscoveryPage />} /><Route path="/organizations" element={<DiscoveryPage entity="organizations" />} /><Route path="/login" element={<Link to={url}>Return</Link>} /></Routes></DiscoveryProvider></MemoryRouter>); }
+const showResults = () => fireEvent.click(screen.getByRole('button', { name: /^Results:/ }));
+const showSearch = () => fireEvent.click(screen.getByRole('button', { name: /^Search / }));
+const close = () => fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+beforeEach(() => { native.app = undefined; vi.mocked(readDiscoveryPreference).mockResolvedValue({ preference: null, warning: false }); sdk.styleReady = true; vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} }); vi.useFakeTimers({ shouldAdvanceTime: true }); window.scrollTo = vi.fn(); vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }] }]); vi.mocked(fetchResults).mockResolvedValue(results); });
+afterEach(async () => { await cleanupVaul(); vi.useRealTimers(); vi.unstubAllGlobals(); vi.clearAllMocks(); sdk.sources.clear(); sdk.listeners.clear(); });
+it('offers manual city and explicit location action on first visit without assuming a city', async () => {
+  mount('/map'); expect(await screen.findByRole('dialog')).toBeTruthy(); expect(screen.getByRole('button', { name: 'Use current location' })).toBeTruthy();
+  fireEvent.click(await screen.findByRole('button', { name: 'Cambridge, England, UK' }));
+  await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull()); expect(screen.getByRole('button', { name: /Cambridge/ })).toBeTruthy();
+});
+it('restores URL, plots matching result IDs, keeps map across list toggle, and does not refit for panel changes', async () => {
+  mount(); showSearch(); expect(screen.getByRole('searchbox', { name: 'Search organizations' }).getAttribute('value')).toBe('sport'); close(); showResults();
+  expect(await screen.findByText('Real Club')).toBeTruthy();
+  await waitFor(() => expect(sdk.sources.get('organizations')?.data.features[0].properties.pk).toBe('org-1'));
+  const fits = sdk.fits.mock.calls.length;
+  expect(screen.getByText('Real Club').closest('[data-result-id]')?.getAttribute('data-result-id')).toBe('org-1');
+  expect(sdk.fits).toHaveBeenCalledTimes(fits);
+});
+it('shows real tile loading while a new viewport loads and clears it on idle', async () => {
+  mount(); showResults(); await screen.findByText('Real Club');
+  act(() => { for (const fn of sdk.listeners.get('dataloading') ?? []) fn(); });
+  expect(screen.getByText('Loading map tiles…')).toBeTruthy();
+  act(() => { for (const fn of sdk.listeners.get('idle') ?? []) fn(); });
+  expect(screen.queryByText('Loading map tiles…')).toBeNull();
+});
+it('restores result layers when style.load arrives before the replacement style is ready', async () => {
+  const rendered = mount(); showResults(); await screen.findByText('Real Club');
+  await waitFor(() => expect(sdk.sources.has('organizations')).toBe(true));
+  const fits = sdk.fits.mock.calls.length;
+  act(() => {
+    sdk.sources.clear(); sdk.styleReady = false;
+    for (const fn of sdk.listeners.get('style.load') ?? []) fn();
+  });
+  expect(sdk.sources.has('organizations')).toBe(false);
+  act(() => {
+    sdk.styleReady = true;
+    for (const fn of sdk.listeners.get('idle') ?? []) fn();
+  });
+  await waitFor(() => expect(sdk.sources.has('organizations')).toBe(true));
+  const restored = sdk.sources.get('organizations');
+  act(() => { for (const fn of sdk.listeners.get('idle') ?? []) fn(); });
+  expect(sdk.sources.get('organizations')).toBe(restored);
+  expect(sdk.fits).toHaveBeenCalledTimes(fits);
+  expect(sdk.sources.get('organizations')?.data.features[0].properties.pk).toBe('org-1');
+  rendered.unmount();
+  expect(sdk.listeners.get('idle')?.size).toBe(0);
+});
+it('keeps invalid coordinates in list while excluding them from map', async () => {
+  vi.mocked(fetchResults).mockResolvedValue({ ...results, organizations: [{ ...organization, location: { ...organization.location, points: { latitude: 999, longitude: 0 } } }] });
+  mount(); showResults(); expect(await screen.findByText('Real Club')).toBeTruthy(); await waitFor(() => expect(sdk.sources.get('organizations')?.data.features).toEqual([]));
+});
+it.each(['empty', 'unmappable'] as const)('centers the selected city independently of %s results', async kind => {
+  vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }, { name: 'Scotland', cities: [{ name: 'Edinburgh' }] }] }]);
+  const other = { ...organization, pk: 'org-other', name: 'Other Club', state: { name: 'Scotland' }, city: { name: 'Edinburgh' }, location: { ...organization.location, points: { latitude: 999, longitude: 0 } } };
+  vi.mocked(fetchResults).mockImplementation(async state => state.geo?.city === 'Edinburgh'
+    ? { activities: [], teams: [], organizations: kind === 'empty' ? [] : [other] } : results);
+  mount(); showResults(); await screen.findByText('Real Club'); close(); await waitFor(() => expect(sdk.moves).toHaveBeenCalled());
+  fireEvent.click(screen.getByRole('button', { name: /Cambridge/ }));
+  fireEvent.click(await screen.findByRole('button', { name: 'Edinburgh, Scotland, UK' }));
+  await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+  showResults(); if (kind === 'empty') await screen.findByText(/No organizations found/); else await screen.findByText('Other Club');
+  expect(await screen.findByText('No mapped locations are available for Edinburgh, Scotland, UK.')).toBeTruthy();
+  expect(sdk.moves).toHaveBeenLastCalledWith(expect.objectContaining({ center: [-3, 56], zoom: 12 }));
+  expect(sdk.fits).not.toHaveBeenCalled(); expect(sdk.jumps).not.toHaveBeenCalled();
+  const moves = sdk.moves.mock.calls.length; const jumps = sdk.jumps.mock.calls.length;
+  close(); showResults(); close();
+  expect(sdk.moves).toHaveBeenCalledTimes(moves); expect(sdk.jumps).toHaveBeenCalledTimes(jumps);
+});
+it('preserves intentional pan when search becomes empty within the same geography', async () => {
+  vi.mocked(fetchResults).mockImplementation(async state => state.query === 'none' ? { activities: [], teams: [], organizations: [] } : results);
+  mount(); showResults(); await screen.findByText('Real Club'); close(); await waitFor(() => expect(sdk.moves).toHaveBeenCalled());
+  const jumps = sdk.jumps.mock.calls.length;
+  showSearch(); fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'none' } }); close(); showResults();
+  await screen.findByText(/No organizations found/);
+  expect(sdk.jumps).toHaveBeenCalledTimes(jumps);
+  expect(screen.queryByText(/This map view does not show the selected region/)).toBeNull();
+});
+it('shows usable list after a map failure and an informational organization preview without invented detail or join action', async () => {
+  mount(); showResults(); await screen.findByText('Real Club'); act(() => { for (const fn of sdk.listeners.get('error') ?? []) fn(); });
+  expect(await screen.findByText(/Map unavailable/)).toBeTruthy(); fireEvent.click(screen.getByRole('button', { name: 'About Real Club' }));
+  expect(screen.getByRole('region', { name: 'Organization preview' }).textContent).toContain('2 teams'); expect(screen.queryByRole('link', { name: /join|details/i })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Close preview' })); fireEvent.click(screen.getByRole('button', { name: 'Teams' }));
+  expect(screen.queryByRole('region', { name: 'Organization preview' })).toBeNull();
+});
+it('distinguishes loading, failure/retry and empty state', async () => {
+  let reject: (error: Error) => void = () => {}; vi.mocked(fetchResults).mockImplementationOnce(() => new Promise((_resolve, no) => { reject = no; }));
+  mount(); showResults(); expect(screen.getByText('Loading organizations…')).toBeTruthy();
+  await act(async () => reject(new Error('offline'))); expect(screen.getByRole('button', { name: 'Retry results' })).toBeTruthy();
+  vi.mocked(fetchResults).mockResolvedValue({ activities: [], teams: [], organizations: [] }); fireEvent.click(screen.getByRole('button', { name: 'Retry results' }));
+  expect(await screen.findByText(/No organizations found/)).toBeTruthy();
+});
+
+vi.mock('@/components/ActivitiesPage/NewActivityDrawer', () => ({ default: () => <p>Activity creation form</p> }));
+vi.mock('@/components/TeamsPage/NewTeamDrawer', () => ({ default: () => <p>Team creation form</p> }));
+vi.mock('@/components/OrganizationsPage/NewOrganizationDrawer', () => ({ default: () => <p>Organization creation form</p> }));
+it.each([['activities', 'Activity'], ['teams', 'Team'], ['organizations', 'Organization']] as const)('opens the existing %s creation form from Explore', async (entity, label) => {
+  const { Create } = await vi.importActual<typeof import('@/components/Drawer')>('@/components/Drawer');
+  render(<MemoryRouter initialEntries={['/map']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><Create entity={entity} /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+  expect(await screen.findByText(`${label} creation form`)).toBeTruthy();
+});
+
+const anonymous = { user: null, status: 'anonymous' as const, telegramIssue: null, login: async () => false, logout: async () => {}, retryTelegramLogin: async () => false, shareTelegramContact: async () => 'cancelled' as const };
+const team = { name: 'Real Team', founded_at: null, image_url: 'https://example.invalid/team.png', city_name: 'Cambridge', state_name: 'England', country_name: 'UK', location: [organization.location], men_team: true, public_team: true, categories: [], tshirt_color: [], away_tshirt_color: [], shorts_color: [], socks_color: [] };
+it('restores query and list position through real detail and login return links', async () => {
+  vi.mocked(fetchResults).mockResolvedValue({ ...results, teams: [team] });
+  const path = '/teams?level=city&country=UK&state=England&city=Cambridge&entity=teams&view=list&q=sport';
+  const view = render(<MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><AuthContext.Provider value={anonymous}><DiscoveryProvider><AppShell><Routes>
+    <Route path="/teams" element={<DiscoveryPage entity="teams" />} />
+    <Route path="/teams/:name" element={<p>Real team detail route</p>} />
+    <Route path="/login" element={<p>Login route</p>} />
+  </Routes></AppShell></DiscoveryProvider></AuthContext.Provider></MemoryRouter>);
+  fireEvent.scroll((await screen.findByText('Real Team')).closest('.discovery-results-scroll')!, { target: { scrollTop: 180 } });
+  const card = screen.getByRole('link', { name: 'Real Team' }); expect(card.getAttribute('href')).toContain('q=sport');
+  fireEvent.click(card); expect(screen.getByText('Real team detail route')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+  expect((await within(screen.getByRole('region', { name: 'Discovery results' })).findByText('Real Team')).closest('.discovery-results-scroll')?.scrollTop).toBe(180);
+  close(); fireEvent.click(screen.getByRole('button', { name: 'Profile' }));
+  fireEvent.click(screen.getByRole('link', { name: 'Log in' }));
+  expect(screen.getByText('Login route')).toBeTruthy(); fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+  expect((await within(screen.getByRole('region', { name: 'Discovery results' })).findByText('Real Team')).closest('.discovery-results-scroll')?.scrollTop).toBe(180);
+  view.unmount();
+});
+it('shows an icon fallback after a team image fails', () => {
+  const view = render(<MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><ResultCard entity="teams" item={team} /></MemoryRouter>);
+  fireEvent.error(view.container.querySelector('img')!);
+  expect(view.container.querySelector('.discovery-card-image svg')).toBeTruthy();
+});
+
+it.each(['teams', 'activities'] as const)('opens an encoded %s pin preview and restores selection through detail/back, clearing on changed search', async entity => {
+  const activity = { pk: 'activity/one', title: 'Real Activity', date_time: '2026-12-01', duration_in_minutes: 90, public: true, description: '', competition: { team_1: { name: null, image_url: null }, team_2: { name: null, image_url: null } }, people_joined: [], creator: { username: 'sample', first_name: 'Sample', last_name: 'Player', image_url: '' }, country: organization.country, state: organization.state, city: organization.city, location: organization.location, categories: [], number_of_people_joined: 0 };
+  vi.mocked(fetchResults).mockResolvedValue({ ...results, teams: [team], activities: [activity] });
+  const path = url.replace('entity=organizations', 'entity=' + entity);
+  function Detail() { const navigate = useNavigate(); return <button onClick={() => navigate(-1)}>Return to results</button>; }
+  render(<MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><Routes><Route path="/map" element={<DiscoveryPage />} /><Route path="/teams/:id" element={<Detail />} /><Route path="/activities/:id" element={<Detail />} /></Routes></DiscoveryProvider></MemoryRouter>);
+  await waitFor(() => expect(sdk.sources.has(entity)).toBe(true));
+  act(() => { for (const fn of sdk.listeners.get(entity === 'teams' ? 'click:teams' : 'click:unclustered-point') ?? []) (fn as (event: unknown) => void)({ point: {} }); });
+  const preview = screen.queryByRole('region', { name: 'Selected result' }); expect(preview).not.toBeNull();
+  const link = preview!.querySelector('a')!; expect(link.getAttribute('href')).toContain(entity === 'teams' ? '/teams/Real%20Team?' : '/activities/activity%2Fone?'); expect(link.getAttribute('href')).toContain('q=sport');
+  expect(screen.queryByRole('button', { name: /^Results:/ })).toBeNull();
+  fireEvent.click(screen.getByRole('region', { name: 'Selected result' }).querySelector('a')!);
+  fireEvent.click(screen.getByRole('button', { name: 'Return to results' }));
+  await waitFor(() => expect(screen.queryByRole('region', { name: 'Selected result' })).not.toBeNull());
+  showSearch(); fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'changed' } });
+  expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'sport' } });
+  expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
+});
+
+it('keeps a dismissed welcome closed when geography remains empty', async () => {
+  const view = mount('/map'); await screen.findByRole('dialog');
+  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+  expect(screen.queryByRole('dialog')).toBeNull();
+  showResults(); close();
+  expect(screen.queryByRole('dialog')).toBeNull();
+  const saved = vi.mocked(writeDiscoveryPreference).mock.calls.at(-1)![0]; expect(saved.welcomeSeen).toBe(true);
+  view.unmount(); vi.mocked(readDiscoveryPreference).mockResolvedValue({ preference: saved, warning: false });
+  mount('/map'); await act(async () => {}); expect(screen.queryByRole('dialog')).toBeNull();
+});
+
+it('rests on a full map with named icon categories, floating search and a two-destination dock', async () => {
+  const view = mount(); await waitFor(() => expect(sdk.sources.has('organizations')).toBe(true));
+  expect(view.container.querySelector('[data-discovery-geometry] .discovery-map')).toBeTruthy();
+  expect(screen.queryByRole('searchbox')).toBeNull(); expect(screen.queryByRole('region', { name: 'Discovery results' })).toBeNull();
+  for (const name of ['Activities', 'Teams', 'Organizations']) {
+    const button = screen.getByRole('button', { name }); expect(button.textContent).toBe(''); expect(button.getAttribute('title')).toBe(name);
+    expect(button.getAttribute('aria-pressed')).toBe(String(name === 'Organizations'));
+  }
+  const nav = screen.getByRole('navigation', { name: 'Main navigation' });
+  expect(within(nav).getAllByRole('button').map(button => button.textContent)).toEqual(['Map', 'Profile']);
+  expect(screen.getByRole('button', { name: /Results:.*organizations/i })).toBeTruthy();
+  const writes = vi.mocked(writeDiscoveryPreference).mock.calls.length; const moves = sdk.moves.mock.calls.length; fireEvent.click(screen.getByRole('button', { name: 'Center map' }));
+  await waitFor(() => expect(sdk.moves.mock.calls.length).toBeGreaterThan(moves));
+  expect(writeDiscoveryPreference).toHaveBeenCalledTimes(writes);
+});
+it('makes surfaces exclusive, hides background controls and returns keyboard focus after Escape', async () => {
+  mount(); const search = screen.getByRole('button', { name: 'Search organizations' }); search.focus(); fireEvent.click(search);
+  expect(screen.getAllByRole('dialog')).toHaveLength(1); expect(screen.queryByRole('navigation')).toBeNull();
+  expect(document.querySelector('[data-discovery-background]')?.hasAttribute('inert')).toBe(true);
+  expect(document.activeElement).toBe(screen.getByRole('searchbox'));
+  fireEvent.keyDown(document.activeElement!, { key: 'Escape' }); await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+  await waitFor(() => expect(document.activeElement).toBe(search));
+  const profile = screen.getByRole('button', { name: 'Profile' }); profile.focus(); fireEvent.click(profile);
+  fireEvent.click(screen.getByRole('button', { name: 'Choose a city' })); expect(screen.getAllByRole('dialog')).toHaveLength(1);
+  fireEvent.click(await screen.findByRole('button', { name: 'Cambridge, England, UK' }));
+  expect(screen.getByRole('dialog').getAttribute('aria-labelledby')).toBeTruthy(); expect(screen.getByRole('heading', { name: 'Profile' })).toBeTruthy();
+  close(); expect(screen.queryByRole('dialog')).toBeNull(); await waitFor(() => expect(document.activeElement).toBe(profile));
+});
+
+it('owns native Back only while a discovery surface is open', async () => {
+  const handlers = new Set<() => void>(); native.app = { BackButton: { show: vi.fn(), hide: vi.fn(), onClick: callback => handlers.add(callback), offClick: callback => { handlers.delete(callback); } } };
+  const view = mount(); await waitFor(() => expect(sdk.sources.has('organizations')).toBe(true)); expect(handlers.size).toBe(0);
+  fireEvent.click(screen.getByRole('button', { name: 'Profile' })); expect(handlers.size).toBe(1);
+  act(() => [...handlers][0]()); expect(screen.queryByRole('dialog')).toBeNull(); expect(handlers.size).toBe(0);
+  fireEvent.click(screen.getByRole('button', { name: /Cambridge/ })); expect(handlers.size).toBe(1); view.unmount(); expect(handlers.size).toBe(0);
+});
+
+it('restores Results/Create when a selected record disappears during detail return', async () => {
+  vi.mocked(fetchResults).mockResolvedValue({ ...results, teams: [team] });
+  function Detail() { const navigate = useNavigate(); return <button onClick={() => navigate(-1)}>Return to map</button>; }
+  render(<MemoryRouter initialEntries={[url.replace('entity=organizations', 'entity=teams')]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><Routes><Route path="/map" element={<DiscoveryPage />} /><Route path="/teams/:id" element={<Detail />} /></Routes></DiscoveryProvider></MemoryRouter>);
+  await waitFor(() => expect(sdk.sources.has('teams')).toBe(true)); act(() => { for (const fn of sdk.listeners.get('click:teams') ?? []) (fn as (event: unknown) => void)({ point: {} }); });
+  fireEvent.click(screen.getByRole('region', { name: 'Selected result' }).querySelector('a')!); vi.mocked(fetchResults).mockResolvedValue({ activities: [], teams: [], organizations: [] });
+  fireEvent.click(screen.getByRole('button', { name: 'Return to map' })); expect(await screen.findByRole('button', { name: 'Results: 0 teams' })).toBeTruthy(); expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
+});
+
+it.each([
+  ['/activities', 'activities', 'teams', 'Teams'],
+  ['/teams/', 'teams', 'organizations', 'Organizations'],
+  ['/organizations', 'organizations', 'activities', 'Activities'],
+] as const)('switches category on the map after closing the initial %s directory list', async (path, origin, target, name) => {
+  vi.mocked(fetchResults).mockResolvedValue({ ...results, teams: [team] });
+  function RouteProbe() { const route = useLocation(); return <output aria-label="Category route">{route.pathname}{route.search}</output>; }
+  render(<MemoryRouter initialEntries={[path + '?level=city&country=UK&state=England&city=Cambridge&entity=' + origin + '&view=list&q=sport&loc=auto']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><RouteProbe /><Routes>
+    <Route path="/map" element={<DiscoveryPage />} /><Route path={path} element={<DiscoveryPage entity={origin} />} />
+  </Routes></DiscoveryProvider></MemoryRouter>);
+  expect(await screen.findByRole('heading', { name: 'Results' })).toBeTruthy(); close();
+  await waitFor(() => expect(sdk.moves).toHaveBeenCalled()); const moves = sdk.moves.mock.calls.length;
+  fireEvent.click(screen.getByRole('button', { name }));
+  await waitFor(() => expect(screen.getByRole('button', { name }).getAttribute('aria-pressed')).toBe('true'));
+  expect(screen.queryByRole('dialog')).toBeNull(); expect(screen.getByRole('button', { name: /^Results:/ }).textContent).toContain(target);
+  const route = new URL(screen.getByLabelText('Category route').textContent!, 'https://example.invalid');
+  expect(route.pathname).toBe('/map'); expect(Object.fromEntries(route.searchParams)).toEqual({ level: 'city', country: 'UK', state: 'England', city: 'Cambridge', entity: target, view: 'map', q: 'sport', loc: 'auto' });
+  expect(sdk.moves).toHaveBeenCalledTimes(moves); showResults(); expect(screen.getByRole('heading', { name })).toBeTruthy();
+});

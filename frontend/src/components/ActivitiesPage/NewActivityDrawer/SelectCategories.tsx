@@ -1,175 +1,22 @@
-('use client');
-import React from 'react';
-import { Switch } from '@/components/ui/switch';
+import { useState } from 'react';
 import { Label } from '@/components/ui/label';
-import BadgeItem from '@/components/CategoryBadgeItem';
-import { Card, CardContent } from '@/components/ui/card';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import useFetchCategories from './useFetchCategories';
-import CategoryLoadingSkeleton from './CategoryLoadingSkeleton';
+import { Switch } from '@/components/ui/switch';
+import useFetchCategories from '@/hooks/useFetchCategories';
 import AddNewCategory from './AddNewCategory';
 
-export type CategoryItem = {
-  pk: string;
-  name: string;
-};
-
-interface Props {
-  setCategories: (categories: CategoryItem[]) => void;
+export type CategoryItem = { pk: string; name: string };
+export default function SelectCategories({ setCategories }: { setCategories: (categories: CategoryItem[]) => void }) {
+  const [kind, setKind] = useState('');
+  const [selected, setSelected] = useState<CategoryItem[]>([]);
+  const { loading, fetchedCategories } = useFetchCategories(kind === 'indoor', kind === 'outdoor', kind === 'online');
+  function update(next: CategoryItem[]) { setSelected(next); setCategories(next); }
+  return <div className="space-y-4 text-base">
+    <div className="flex flex-wrap gap-4">{[['outdoor', 'Outdoor activity'], ['indoor', 'Indoor activity'], ['online', 'Online activity']].map(([value, label]) => <div key={value} className="flex items-center gap-2 min-h-11"><Switch id={`category-${value}`} checked={kind === value} onCheckedChange={checked => { setKind(checked ? value : ''); update([]); }} /><Label htmlFor={`category-${value}`}>{label}</Label></div>)}</div>
+    {selected.length > 0 && <p className="text-sm">Selected: {selected.map(category => category.name).join(', ')}</p>}
+    {kind && <><div className="max-h-56 overflow-y-auto space-y-2" aria-label="Available categories">
+      {loading && <p role="status" className="text-sm">Loading categories…</p>}
+      {fetchedCategories.map(category => <label key={category.pk} className="flex items-center gap-3 min-h-11"><input type="checkbox" className="h-5 w-5" checked={selected.some(item => item.pk === category.pk)} onChange={event => update(event.target.checked ? [...selected, { pk: category.pk, name: category.name }] : selected.filter(item => item.pk !== category.pk))} />{category.name}</label>)}
+      {!loading && !fetchedCategories.length && <p className="text-sm">No categories available for this type.</p>}
+    </div><AddNewCategory is_indoor={kind === 'indoor'} is_outdoor={kind === 'outdoor'} is_online={kind === 'online'} setValue={() => {}} setCategories={created => update([...selected, ...created.filter(category => !selected.some(item => item.pk === category.pk))])} /></>}
+  </div>;
 }
-
-const SelectCategories: React.FC<Props> = ({ setCategories }) => {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState<string[]>([]);
-  const [isOutdoor, setIsOutdoor] = React.useState<boolean>(false);
-  const [isIndoor, setIsIndoor] = React.useState<boolean>(false);
-  const [isOnline, setIsOnline] = React.useState<boolean>(false);
-
-  // If user turned the switch on for outdoor activities, we need to fetch the categories for outdoor activities
-  const { loading, fetchedCategories } = useFetchCategories(
-    isIndoor,
-    isOutdoor,
-    isOnline
-  );
-  const onSwitchChange = (onSwitchName: string) => (checked: boolean) => {
-    fetchedCategories.length = 0;
-    if (onSwitchName === 'outdoor') {
-      setIsOutdoor(checked);
-    } else if (onSwitchName === 'indoor') {
-      setIsIndoor(checked);
-    } else if (onSwitchName === 'online') {
-      setIsOnline(checked);
-    }
-    // Empty the selected categories because we wanna clear everything when the user changes the indoor and outdoor switches
-    setValue([]);
-  };
-  return (
-    <div className="p-1 px-0">
-      <Card className="lg:text-4xl h-full min-h-[410px]">
-        <CardContent className="flex aspect-square  p-6 flex-col gap-5">
-          <div className="flex items-center justify-around">
-            <div className="flex items-center">
-              <Switch
-                id="outdoor"
-                disabled={isIndoor || isOnline}
-                onCheckedChange={onSwitchChange('outdoor')}
-              />
-              <Label htmlFor="outdoor">Outdoor activity</Label>
-            </div>
-            <div className="flex items-center">
-              <Switch
-                disabled={isOutdoor || isOnline}
-                id="indoor"
-                onCheckedChange={onSwitchChange('indoor')}
-              />
-              <Label htmlFor="indoor">Indoor activity</Label>
-            </div>
-            <div className="flex items-center">
-              <Switch
-                disabled={isIndoor || isOutdoor}
-                id="online"
-                onCheckedChange={onSwitchChange('online')}
-              />
-              <Label htmlFor="online">Online activity</Label>
-            </div>
-          </div>
-          <ul className="flex flex-wrap gap-3">
-            {value.map((val) => {
-              const [pk, name] = val.split(' ');
-              return BadgeItem({ pk: pk, name: name });
-            })}
-          </ul>
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild className="w-full min-w-full">
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={open}
-                className="w-[200px] justify-between"
-                disabled={isOutdoor || isIndoor || isOnline ? false : true}
-              >
-                Select categories
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[310px] md:w-[475px] lg:w-[475px] p-0">
-              <Command>
-                <CommandInput placeholder="Search categories..." />
-                <CommandEmpty>No category found.</CommandEmpty>
-                <CommandGroup className="max-h-[200px] overflow-y-auto scroll-auto min-h-fit ">
-                  {loading && (
-                    <>
-                      <CategoryLoadingSkeleton />
-                      <CategoryLoadingSkeleton />
-                      <CategoryLoadingSkeleton />
-                      <CategoryLoadingSkeleton />
-                      <CategoryLoadingSkeleton />
-                    </>
-                  )}
-                  {fetchedCategories.map((category: CategoryItem) => (
-                    <CommandItem
-                      key={category.pk}
-                      value={category.pk + ' ' + category.name}
-                      onSelect={(currentValue) => {
-                        const newValue = value.includes(currentValue)
-                          ? value.filter((val) => val !== currentValue)
-                          : [...value, currentValue];
-
-                        const filteredNewValues = newValue.map((val) => {
-                          const [pk, name] = val.split(' ');
-                          return { pk, name };
-                        });
-                        setCategories(filteredNewValues); // Update the categories state with the new array
-                        setValue(newValue); // We need to update the value state to update the UI and Check component below checks the value state to show the check icon
-                        setOpen(true);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          value.includes(
-                            category.pk + ' ' + category.name.toLowerCase()
-                          )
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {category.name}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-                <AddNewCategory
-                  is_outdoor={isOutdoor}
-                  is_indoor={isIndoor}
-                  is_online={isOnline}
-                  setValue={(value: string) => {
-                    setValue((prevValue) => [...prevValue, value]);
-                  }}
-                  setCategories={(newCategories: CategoryItem[]) => {
-                    setCategories([...newCategories, ...newCategories]);
-                  }}
-                />
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
-export default SelectCategories;

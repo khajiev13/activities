@@ -2,3 +2,23 @@
 /backend/db.sqlite3
 /frontend/node_modules
 /.vscode
+
+package-lock.json
+
+# Local config with secrets (python-service-patterns YAML config)
+config-*.yaml
+!config.example.yaml
+.env
+
+# FastAPI environment, state, and private configuration
+/api/config*.yaml
+!/api/config.example.yaml
+/api/.data/
+.env.dev
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+
+# Local headless mobile verification artifacts
+.artifacts/

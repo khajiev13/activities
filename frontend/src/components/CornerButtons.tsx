@@ -1,6 +1,6 @@
 import React from 'react';
-import { Chatbot } from '@/components/Chatbot';
 import { Create } from '@/components/Drawer';
+import { RequireAuth } from '@/auth/RequireAuth';
 import { useLocation } from 'react-router-dom';
 const CornerButtons: React.FC = () => {
   const location = useLocation();
@@ -13,9 +13,8 @@ const CornerButtons: React.FC = () => {
         '/activities/',
         '/teams/',
         '/organizations/',
-      ].includes(location.pathname) && <Create />}
+      ].includes(location.pathname) && <RequireAuth action="Create"><Create /></RequireAuth>}
 
-      <Chatbot />
     </div>
   );
 };

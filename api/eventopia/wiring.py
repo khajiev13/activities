@@ -1,0 +1,155 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from eventopia.bot.dispatcher import BotDispatcher
+from eventopia.bot.poller import BotPoller
+from eventopia.config import AppConfig
+from eventopia.context.neo4j import Neo4jConnector
+from eventopia.context.request_id import configure_logging
+from eventopia.context.sqlite import SqliteConnector
+from eventopia.services.account import AccountService
+from eventopia.services.activity import ActivityService
+from eventopia.services.auth import AuthService
+from eventopia.services.category import CategoryService
+from eventopia.services.geo import GeoService
+from eventopia.services.location import LocationService
+from eventopia.services.media import MediaService
+from eventopia.services.organization import OrganizationService
+from eventopia.services.otp import OtpService
+from eventopia.services.session import SessionService
+from eventopia.services.team import TeamService
+from eventopia.storage.base import ObjectStorage
+from eventopia.storage.s3 import S3ObjectStorage
+from eventopia.telegram.gateway import TelegramGateway
+from eventopia.telegram.http_gateway import HttpTelegramGateway
+from eventopia.views.activities import ActivitiesView
+from eventopia.views.auth import AuthView
+from eventopia.views.base import ApiView
+from eventopia.views.categories import CategoriesView
+from eventopia.views.geo import GeoView
+from eventopia.views.health import HealthView
+from eventopia.views.locations import LocationsView
+from eventopia.views.organizations import OrganizationsView
+from eventopia.views.teams import TeamsView
+from eventopia.views.users import UsersView
+
+
+@dataclass
+class Container:
+    views: list[ApiView]
+    neo4j: Neo4jConnector | None = None
+    sqlite: SqliteConnector | None = None
+    account_service: AccountService | None = None
+    session_service: SessionService | None = None
+    otp_service: OtpService | None = None
+    auth_service: AuthService | None = None
+    telegram: TelegramGateway | None = None
+    _owns_telegram: bool = False
+    storage: ObjectStorage | None = None
+    media_service: MediaService | None = None
+    _owns_storage: bool = False
+    dispatcher: BotDispatcher | None = None
+    poller: BotPoller | None = None
+
+    async def close(self) -> None:
+        """Finish OTP delivery before releasing the connectors and gateway it uses."""
+        try:
+            if self.otp_service is not None:
+                await self.otp_service.close()
+        finally:
+            await self._close_resources()
+
+    async def _close_resources(self) -> None:
+        try:
+            if self.neo4j is not None:
+                await self.neo4j.close()
+        finally:
+            try:
+                if self.sqlite is not None:
+                    await self.sqlite.close()
+            finally:
+                try:
+                    if self._owns_telegram and self.telegram is not None:
+                        await self.telegram.close()
+                finally:
+                    if self._owns_storage and self.storage is not None:
+                        await self.storage.close()
+
+
+def build_container(
+    config: AppConfig,
+    *,
+    telegram: TelegramGateway | None = None,
+    storage: ObjectStorage | None = None,
+) -> Container:
+    configure_logging(config["app"]["log_level"])
+    neo4j = Neo4jConnector(config["neo4j"])
+    sqlite = SqliteConnector(config["sqlite"])
+    account_service = AccountService(neo4j, sqlite, config["auth"])
+    gateway = (
+        telegram if telegram is not None else HttpTelegramGateway(config["telegram"])
+    )
+    session_service = SessionService(sqlite, config["auth"])
+    otp_service = OtpService(sqlite, gateway, account_service, config["auth"])
+    auth_service = AuthService(
+        account_service,
+        session_service,
+        otp_service,
+        config["telegram"],
+        config["auth"],
+    )
+    object_storage = storage if storage is not None else S3ObjectStorage(config["s3"])
+    media_service = MediaService(object_storage, config["app"], config["s3"])
+    geo_service = GeoService(neo4j)
+    category_service = CategoryService(neo4j)
+    location_service = LocationService(neo4j)
+    activity_service = ActivityService(neo4j)
+    team_service = TeamService(neo4j, media_service)
+    organization_service = OrganizationService(neo4j, media_service)
+    return Container(
+        views=[
+            HealthView(neo4j, sqlite),
+            AuthView(auth_service, config["auth"]),
+            UsersView(auth_service),
+            GeoView(geo_service),
+            CategoriesView(category_service, auth_service),
+            LocationsView(location_service, auth_service),
+            ActivitiesView(activity_service, auth_service),
+            TeamsView(team_service, auth_service, config["s3"]["max_upload_bytes"]),
+            OrganizationsView(
+                organization_service, auth_service, config["s3"]["max_upload_bytes"]
+            ),
+        ],
+        neo4j=neo4j,
+        sqlite=sqlite,
+        account_service=account_service,
+        session_service=session_service,
+        otp_service=otp_service,
+        auth_service=auth_service,
+        telegram=gateway,
+        _owns_telegram=telegram is None,
+        storage=object_storage,
+        media_service=media_service,
+        _owns_storage=storage is None,
+    )
+
+
+def build_bot_container(config: AppConfig) -> Container:
+    configure_logging(config["app"]["log_level"])
+    neo4j = Neo4jConnector(config["neo4j"])
+    sqlite = SqliteConnector(config["sqlite"])
+    account_service = AccountService(neo4j, sqlite, config["auth"])
+    gateway = HttpTelegramGateway(config["telegram"])
+    dispatcher = BotDispatcher(account_service, gateway, config["app"])
+    poller = BotPoller(dispatcher, gateway, sqlite, config["telegram"])
+    return Container(
+        views=[],
+        neo4j=neo4j,
+        sqlite=sqlite,
+        account_service=account_service,
+        telegram=gateway,
+        _owns_telegram=True,
+        dispatcher=dispatcher,
+        poller=poller,
+    )

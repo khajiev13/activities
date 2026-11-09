@@ -337,7 +337,7 @@ async function geography() {
       equal(reverseRequests, 0, 'Cancelled GPS callback does not start reverse lookup; manual center lookup remains allowed');
     } else {
       await dialog.getByRole('status').filter({ hasText: mode === 'denied' ? 'permission denied' : mode === 'unmatched' ? 'Could not identify' : 'Could not find' }).waitFor();
-      await dialog.getByLabel('Search cities').fill('Shared city');
+      await dialog.getByLabel('Search cities and places').fill('Shared city');
       equal(await dialog.getByRole('button', { name: /^Shared city,/ }).count(), 3, 'Duplicate geographic names remain separately selectable');
       await dialog.getByRole('button', { name: `Shared city, ${data.state}, Other country`, exact: true }).click();
       equal(new URL(page.url()).searchParams.get('country'), 'Other country', 'Manual choice preserves exact country');

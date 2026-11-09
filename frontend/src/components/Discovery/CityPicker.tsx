@@ -45,7 +45,7 @@ export function CityPicker() {
     void location.selectPlace(match ? { ...place, geonameId: match.geonameId, center: match.center } : place);
     closeSurface();
   };
-  const close = () => { location.dismissWelcome(); closeSurface(); };
+  const close = () => { if (location.welcome) location.dismissWelcome(); closeSurface(); };
   const detectCurrent = async () => {
     setSearchPaused(true);
     if (await location.useCurrentLocation()) { setAcknowledged(true); closeSurface(); }
@@ -60,9 +60,9 @@ export function CityPicker() {
   };
   const current = state.geo ? { geo: state.geo } : location.place;
   return <>{!open && acknowledged && location.mode === 'auto' && location.place && <div className="discovery-location-success"><p role="status">City selected from your location: {label(location.place)}.</p><button onClick={() => openSurface('city')}>Change</button></div>}
-    <DiscoverySurface open={open} title="Choose a city" description="Search cities worldwide or browse a country or state." onClose={close} initialFocus={input}>
+    <DiscoverySurface open={open} title="Choose a city" description="Search cities and places worldwide or browse a country or state." onClose={close} initialFocus={input}>
         {current && <p className="text-sm">Current: {label(current)}</p>}
-        <label className="grid gap-2 text-sm">Search cities<input ref={input} className="rounded-xl border bg-background px-3 text-base" value={query} onChange={event => { if (normalizePlaceName(event.target.value) !== queryKey) cancelPending(); setSearchPaused(false); setQuery(event.target.value); }} /></label>
+        <label className="grid gap-2 text-sm">Search cities and places<input ref={input} className="rounded-xl border bg-background px-3 text-base" value={query} onChange={event => { if (normalizePlaceName(event.target.value) !== queryKey) cancelPending(); setSearchPaused(false); setQuery(event.target.value); }} /></label>
         <div className="grid gap-2">
           <button type="button" className="app-account-action" onClick={() => { void detectCurrent(); }} disabled={pending}>Use current location</button>
           <p className="text-xs text-muted-foreground">GeoNames receives your coordinates to find a city. Eventopia does not save your exact location. With location access, your city is checked when you open or resume the app.</p>
@@ -73,12 +73,12 @@ export function CityPicker() {
         {recent.length > 0 && <section aria-label="Recent places" className="grid gap-2"><h3 className="text-sm font-semibold">Recent places</h3>{recent.map(place => <button className="app-account-action justify-start text-left" key={placeKey(place)} onClick={() => choose(place)}>{label(place)}</button>)}</section>}
         {countriesLoading && <p role="status">Loading cities…</p>}
         {countriesError && <div role="alert" className="grid gap-2 text-sm"><p>{countriesError}</p><button className="app-account-action" onClick={() => { cancelPending(); retryCountries(); }}>Retry cities</button></div>}
-        {searchStatus === 'loading' && <p role="status">Searching cities…</p>}
-        {searchStatus === 'error' && <div role="alert" className="grid gap-2 text-sm"><p>City search is unavailable. Recent places and available cities still work.</p><button className="app-account-action" onClick={() => { setSearchPaused(false); setRetry(value => value + 1); }}>Retry search</button></div>}
-        <div className="grid gap-2" aria-label="Available cities">
+        {searchStatus === 'loading' && <p role="status">Searching cities and places…</p>}
+        {searchStatus === 'error' && <div role="alert" className="grid gap-2 text-sm"><p>Place search is unavailable. Recent places and available suggestions still work.</p><button className="app-account-action" onClick={() => { setSearchPaused(false); setRetry(value => value + 1); }}>Retry search</button></div>}
+        <section className="grid gap-2" aria-label="Cities and places"><h3 className="text-sm font-semibold">Cities and places</h3>
           {choices.map(place => <button className="app-account-action justify-start text-left" key={placeKey(place)} onClick={() => choose(place)}>{label(place)}</button>)}
-          {!countriesLoading && !countriesError && searchStatus === 'idle' && !recent.length && !choices.length && <p className="text-sm">No matching cities. Browse a country or state below.</p>}
-        </div>
+          {!countriesLoading && !countriesError && searchStatus === 'idle' && !recent.length && !choices.length && <p className="text-sm">No matching cities or places. Browse a country or state below.</p>}
+        </section>
         <details><summary className="min-h-12 cursor-pointer py-3 text-sm font-semibold">Browse regions</summary><div className="grid gap-2">{countries.map(country => <div className="grid gap-2" key={country.name}>
           <button className="app-account-action justify-start text-left" onClick={() => choose({ geo: { level: 'country', country: country.name } })}>Browse {country.name}</button>
           {country.states.map(state => <button className="app-account-action justify-start text-left" key={state.name} onClick={() => choose({ geo: { level: 'state', country: country.name, state: state.name } })}>Browse {state.name}, {country.name}</button>)}

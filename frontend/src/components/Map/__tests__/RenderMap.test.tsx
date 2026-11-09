@@ -151,3 +151,10 @@ it('does not reserve the absent Results/Create row below a replacing preview', (
   const view = render(<App />); const root = view.container.querySelector('[data-discovery-geometry]') as HTMLElement;
   root.querySelector('[data-discovery-actions]')!.remove(); act(() => resize()); expect(root.style.getPropertyValue('--discovery-actions-height')).toBe('0px');
 });
+
+it('announces automatic city success without offering a center-error recovery action', () => {
+  fixtures.context.location.notice = 'Updated to Example city.'; fixtures.context.location.status = 'idle';
+  render(<App />);
+  expect(screen.getAllByRole('status').some(node => node.textContent === 'Updated to Example city.')).toBe(true);
+  expect(screen.queryByRole('button', { name: 'Center map' })).toBeNull();
+});

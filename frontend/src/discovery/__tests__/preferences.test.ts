@@ -188,3 +188,13 @@ it('reads validated cache synchronously without waiting for native and keeps the
   vi.spyOn(localStorage, 'getItem').mockImplementation(() => { throw Error('unavailable'); });
   expect(cached()).toEqual({ preference: preference(200), warning: true });
 });
+
+it('keeps a timed-out native write serialized until its callback before a later success', async () => {
+  const callbacks: (() => void)[] = []; let stored = '';
+  native({ getItem: (_key, callback) => callback(null, stored), setItem: (_key, value, callback) => { callbacks.push(() => { stored = value; callback?.(null, true); }); } });
+  const older = write(preference(100)); await vi.advanceTimersByTimeAsync(1500); expect(await older).toEqual({ warning: true });
+  const newer = write(preference(200)); await vi.advanceTimersByTimeAsync(0);
+  expect(callbacks).toHaveLength(1); expect(local().updatedAt).toBe(200);
+  callbacks[0](); await vi.advanceTimersByTimeAsync(0); expect(callbacks).toHaveLength(2);
+  callbacks[1](); expect(await newer).toEqual({ warning: false }); expect(JSON.parse(stored).updatedAt).toBe(200);
+});

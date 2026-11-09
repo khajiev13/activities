@@ -42,6 +42,8 @@ export function useDiscoveryLocation(inputs: Inputs) {
     let pending: { controller: AbortController; generation: number; kind: string } | null = null;
     let mounted = true;
     let restored = false;
+    let restoreUnknown = !cache.preference;
+    let announcementTimer: ReturnType<typeof setTimeout> | undefined;
     let lastAttempt = -Infinity;
     let deferredCenter: PlaceSelection | null = null;
     let deferredRestore: { preference: DiscoveryPreference | null; warning: boolean } | null = null;
@@ -53,6 +55,8 @@ export function useDiscoveryLocation(inputs: Inputs) {
     const update = (patch: Partial<LocationState>) => { value.current = { ...value.current, ...patch }; if (mounted) setModel(value.current); };
     const cancelPending = () => {
       generation++; pending?.controller.abort(); pending = null; deferredRestore = null;
+      clearTimeout(announcementTimer);
+      if (value.current.notice?.startsWith('Updated to ')) update({ notice: null });
       if (value.current.status === 'locating' || value.current.status === 'resolving') update({ status: 'idle' });
     };
     const begin = (kind: string) => {
@@ -125,6 +129,14 @@ export function useDiscoveryLocation(inputs: Inputs) {
         lastAttempt = Date.now(); update({ status: 'locating', notice: null, welcome: false });
         const position = await requestDeviceLocation(job.controller.signal);
         if (!valid(job)) return false;
+        // A valid explicit device fix accepts following independently of provider
+        // availability. Keep the previous coarse city and camera until resolved.
+        if (explicit) {
+          pausedVisit = false; urlFollow = true; urlPlace = null; restored = true; restoreUnknown = false;
+          update({ mode: 'auto', ready: true });
+          save({ mode: 'auto', place: value.current.place, welcomeSeen: true });
+          writeUrl(value.current.place, 'auto');
+        }
         update({ status: 'resolving' });
         const city = await resolveCurrentCity(position, current.current.cities, job.controller.signal);
         if (!valid(job)) return false;
@@ -132,7 +144,14 @@ export function useDiscoveryLocation(inputs: Inputs) {
         if (!city) { update({ status: 'unmatched', notice: 'Could not identify your city. Choose a city or try again.' }); return false; }
         const place: PlaceSelection = { geo: { level: 'city', country: city.country, state: city.state, city: city.city }, geonameId: city.geonameId, center: city.center };
         pausedVisit = false; urlFollow = true; urlPlace = null; restored = true;
-        showPlace(place, 'auto', explicit); remember(place, 'auto'); update({ ready: true }); return true;
+        const changed = !samePlace(value.current.place, place);
+        showPlace(place, 'auto', explicit); remember(place, 'auto'); update({ ready: true });
+        if (!explicit && changed) {
+          const notice = `Updated to ${place.geo.city}.`;
+          update({ notice });
+          announcementTimer = setTimeout(() => { if (value.current.notice === notice) update({ notice: null }); }, 5000);
+        }
+        return true;
       } catch (reason) {
         if (!valid(job)) return false;
         pending = null;
@@ -145,12 +164,12 @@ export function useDiscoveryLocation(inputs: Inputs) {
       if (!restored || !eligible() || pending) return;
       if (deferredRestore) {
         const result = deferredRestore; deferredRestore = null;
-        preference = result.preference;
+        preference = result.preference; restoreUnknown = !preference && result.warning;
         restorePlace(); update({ persistenceWarning: value.current.persistenceWarning || result.warning });
         if (value.current.place && !value.current.place.center && (pausedVisit || value.current.mode !== 'auto')) void centerPlace(value.current.place, false, false);
       }
       if (deferredCenter) { void centerPlace(deferredCenter, false, false); return; }
-      if (pausedVisit || (preference && value.current.mode !== 'auto') || Date.now() - lastAttempt < 300000) return;
+      if (pausedVisit || (!urlFollow && restoreUnknown) || (preference && value.current.mode !== 'auto') || Date.now() - lastAttempt < 300000) return;
       void locate(false);
     };
     const restorePlace = () => {
@@ -170,7 +189,7 @@ export function useDiscoveryLocation(inputs: Inputs) {
       // A bounded storage read may finish behind a sheet. Reconcile its value
       // only when Map is eligible; explicit intents still invalidate this stage.
       if (!eligible()) { deferredRestore = result; return; }
-      preference = result.preference;
+      preference = result.preference; restoreUnknown = !preference && result.warning;
       restorePlace(); update({ persistenceWarning: value.current.persistenceWarning || result.warning });
       if (pausedVisit || (preference && value.current.mode !== 'auto')) {
         if (value.current.place && !value.current.place.center && current.current.enabled) void centerPlace(value.current.place, false, false);
@@ -202,7 +221,11 @@ export function useDiscoveryLocation(inputs: Inputs) {
     };
     return {
       bootstrap, contextChanged,
-      foregroundChanged: () => { if (!foreground()) { if (pending?.kind === 'restore') restored = true; if (!deferredRestore) cancelPending(); } else resume(); },
+      foregroundChanged: () => {
+        // Storage is bounded and does not request location. Retain its evidence
+        // while hidden, staging the result until eligible Map returns.
+        if (!foreground()) { if (pending?.kind !== 'restore' && !deferredRestore) cancelPending(); } else resume();
+      },
       dispose: () => { mounted = false; cancelPending(); },
       actions: {
         cancelPending,
@@ -227,7 +250,7 @@ export function useDiscoveryLocation(inputs: Inputs) {
           update({ place: null, mode: 'off', recent: [], welcome: false, ready: true, status: 'idle', notice: null });
           save({ place: null, mode: 'off', recent: [], welcomeSeen: true }); writeUrl(null, 'off'); moveCamera(null);
         },
-        dismissWelcome: () => { update({ welcome: false }); save({ welcomeSeen: true }); },
+        dismissWelcome: () => { if (!value.current.welcome) return; update({ welcome: false }); save({ welcomeSeen: true }); },
         searchPlaces: async (query: string): Promise<CityPlace[]> => {
           const job = begin('search');
           try {

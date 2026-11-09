@@ -28,7 +28,7 @@ async function mount(saved: DiscoveryPreference | null = null) {
   const view = render(<MemoryRouter initialEntries={['/map']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><Probe /></DiscoveryProvider></MemoryRouter>);
   await act(async () => {}); screen.getByRole('button', { name: 'Choose place' }).focus(); fireEvent.click(screen.getByRole('button', { name: 'Choose place' })); return view;
 }
-const input = () => screen.getByRole('textbox', { name: 'Search cities' });
+const input = () => screen.getByRole('textbox', { name: 'Search cities and places' });
 const search = async (query: string) => { fireEvent.change(input(), { target: { value: query } }); await act(async () => { vi.advanceTimersByTime(300); }); };
 beforeEach(() => {
   vi.resetAllMocks(); vi.useFakeTimers({ shouldAdvanceTime: true });
@@ -121,4 +121,11 @@ it('explicit GPS is not canceled by a previously scheduled search debounce', asy
 it('does not describe a catalogue outage as a completed empty search', async () => {
   vi.mocked(fetchCountries).mockRejectedValue(new Error('offline')); await mount();
   expect(screen.getByRole('button', { name: 'Retry cities' })).toBeTruthy(); expect(screen.queryByText(/No matching cities/)).toBeNull();
+});
+
+it('names manual suggestions as cities and places including the empty search state', async () => {
+  await mount(); expect(screen.getByRole('region', { name: 'Cities and places' })).toBeTruthy();
+  expect(screen.getByRole('heading', { name: 'Cities and places' })).toBeTruthy();
+  expect(screen.getByRole('textbox', { name: 'Search cities and places' })).toBeTruthy();
+  await search('Unknown'); expect(screen.getByText(/No matching cities or places/)).toBeTruthy();
 });

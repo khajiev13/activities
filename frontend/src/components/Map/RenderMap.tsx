@@ -151,7 +151,7 @@ export default function RenderMap({ onOrganization, onError }: { onOrganization:
   }, [map, selectionKey, selectedPoint]);
   return <><BaseMap onMapLoad={setMap} onMapError={onError} />{loading && <p className="discovery-map-status" role="status">Loading map tiles…</p>}
     {!loading && !resultsLoading && state.geo && points.length === 0 && <p className="discovery-map-status" style={{ right: 12 }} role="status">No mapped locations are available for {[state.geo.city, state.geo.state, state.geo.country].filter(Boolean).join(', ')}.</p>}
-    {location.notice && <div className="discovery-map-recovery" role="status"><p>{location.notice}</p><button onClick={() => location.recenter()}>Center map</button></div>}
+    {location.notice && <div className="discovery-map-recovery" role="status"><p>{location.notice}</p>{!location.notice.startsWith('Updated to ') && <button onClick={() => location.recenter()}>Center map</button>}</div>}
     {(selectedActivity || selectedTeam) && <section data-discovery-preview className="discovery-map-selection" aria-label="Selected result">
       {selectedActivity && <ResultCard entity="activities" item={selectedActivity} />}
       {selectedTeam && <ResultCard entity="teams" item={selectedTeam} />}

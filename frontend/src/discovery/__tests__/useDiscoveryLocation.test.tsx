@@ -200,9 +200,11 @@ it('explicit location returns true only for accepted success so the picker can r
   vi.mocked(resolveCurrentCity).mockResolvedValue(null); await act(async () => { accepted = await d.location.useCurrentLocation(); }); expect(accepted).toBe(false); expect(d.surface).toBe('city');
   vi.mocked(requestDeviceLocation).mockRejectedValue(new DOMException('Denied', 'NotAllowedError')); await act(async () => { accepted = await d.location.useCurrentLocation(); }); expect(accepted).toBe(false);
 });
-it('native read cancelled by backgrounding cannot strand the location lifecycle on return', async () => {
-  store.preference = pref(); store.read.mockReturnValue(new Promise(() => {})); vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount();
+it('bounded native read retained through backgrounding resumes cached following on return', async () => {
+  store.preference = pref(); const native = delayed<{ preference: DiscoveryPreference; warning: boolean }>(); store.read.mockReturnValue(native.promise); vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount();
   vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden'); await foreground();
+  await action(() => native.resolve({ preference: pref(), warning: true }));
+  expect(requestDeviceLocation).not.toHaveBeenCalled();
   vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible'); await foreground();
   expect(requestDeviceLocation).toHaveBeenCalledTimes(1); expect(d.location.mode).toBe('auto');
 });
@@ -293,4 +295,94 @@ it('allows explicit Profile following but keeps automatic lookup paused and reta
   vi.mocked(requestDeviceLocation).mockRejectedValueOnce(new DOMException('Denied', 'NotAllowedError')); let accepted: boolean | undefined;
   await act(async () => { accepted = await d.location.useCurrentLocation(); }); expect(accepted).toBe(false); expect(d.location.place).toEqual(first); expect(d.location.status).toBe('denied'); expect(d.surface).toBe('profile');
   await act(async () => { accepted = await d.location.useCurrentLocation(); }); expect(accepted).toBe(true); expect(d.location.mode).toBe('auto'); expect(url).toContain('loc=auto'); expect(d.surface).toBe('profile');
+});
+
+it.each(['unmatched', 'error'])('explicit resumed following survives provider %s', async failure => {
+ store.preference = pref('manual'); vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount();
+ if (failure === 'unmatched') vi.mocked(resolveCurrentCity).mockResolvedValueOnce(null);
+ else vi.mocked(resolveCurrentCity).mockRejectedValueOnce(new Error('Synthetic outage'));
+ await action(() => d.location.useCurrentLocation());
+ expect(d.location.place).toEqual(first);
+ expect(d.location.status).toBe(failure);
+ expect.soft(saved().mode).toBe('auto');
+ expect.soft(url).toContain('loc=auto');
+ await act(async () => { await vi.advanceTimersByTimeAsync(300000); }); await foreground();
+ expect(requestDeviceLocation).toHaveBeenCalledTimes(2);
+});
+it.each(['manual', 'off'] as const)('backgrounded native-only %s preference is honored on return', async mode => {
+ const native = delayed<{preference: DiscoveryPreference; warning: boolean}>(); store.read.mockReturnValue(native.promise);
+ vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount();
+ vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden'); await foreground();
+ const nativePref = mode === 'manual' ? {...pref('manual'), place: second, recent:[second]} : {...pref('off'), place:null, recent:[]};
+ await action(() => native.resolve({preference:nativePref, warning:false}));
+ vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible'); await foreground();
+ expect.soft(requestDeviceLocation).not.toHaveBeenCalled();
+ expect.soft(d.location.mode).toBe(mode);
+ expect(d.location.place).toEqual(nativePref.place);
+});
+
+it('control: successful explicit resume persists following', async()=>{store.preference=pref('manual');await mount();await action(()=>d.location.useCurrentLocation());expect(saved().mode).toBe('auto');expect(url).toContain('loc=auto');});
+it('control: uninterrupted native-only manual restore prevents GPS',async()=>{const pending=delayed<{preference:DiscoveryPreference;warning:boolean}>();store.read.mockReturnValue(pending.promise);vi.mocked(getLocationPermission).mockResolvedValue('granted');await mount();await action(()=>pending.resolve({preference:pref('manual'),warning:false}));expect(requestDeviceLocation).not.toHaveBeenCalled();expect(d.location.mode).toBe('manual');});
+
+it('unreadable native-only preference is not genuine absence for automatic adoption',async()=>{store.read.mockResolvedValue({preference:null,warning:true});vi.mocked(getLocationPermission).mockResolvedValue('granted');await mount();expect.soft(requestDeviceLocation).not.toHaveBeenCalled();expect.soft(d.location.mode).toBe('off');expect(d.location.persistenceWarning).toBe(true);});
+it('control: genuinely missing preference with granted access adopts automatic mode',async()=>{vi.mocked(getLocationPermission).mockResolvedValue('granted');await mount();expect(requestDeviceLocation).toHaveBeenCalledTimes(1);expect(d.location.mode).toBe('auto');});
+
+it('explicit auto URL can follow even when storage is unreadable', async () => {
+  store.read.mockResolvedValue({ preference: null, warning: true }); vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount('/map?loc=auto');
+  expect(requestDeviceLocation).toHaveBeenCalledTimes(1); expect(d.location.mode).toBe('auto'); expect(url).toContain('loc=auto');
+});
+it('announces only an actual automatic city change briefly and preserves same-city camera', async () => {
+  store.preference = pref(); vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount();
+  expect(d.location.notice).toBeNull(); const initialSequence = d.location.cameraRequest.sequence;
+  vi.mocked(resolveCurrentCity).mockResolvedValue({ ...city, state: 'South', city: 'Second', geonameId: 202, center: [30, 40] });
+  await act(async () => { await vi.advanceTimersByTimeAsync(300000); }); await foreground();
+  expect(d.location.notice).toMatch(/Updated to Second/); expect(d.location.status).toBe('idle'); expect(d.location.cameraRequest.sequence).toBe(initialSequence + 1);
+  await act(async () => { await vi.advanceTimersByTimeAsync(5000); }); expect(d.location.notice).toBeNull();
+  await act(async () => { await vi.advanceTimersByTimeAsync(300000); }); await foreground();
+  expect(d.location.notice).toBeNull(); expect(d.location.cameraRequest.sequence).toBe(initialSequence + 1);
+});
+it.each(['unmatched', 'error'] as const)('reload retains follow intent after explicit provider %s', async failure => {
+  store.preference = pref('manual'); const view = await mount(); const camera = d.location.cameraRequest;
+  if (failure === 'unmatched') vi.mocked(resolveCurrentCity).mockResolvedValueOnce(null); else vi.mocked(resolveCurrentCity).mockRejectedValueOnce(new Error('offline'));
+  let accepted: boolean | undefined; await act(async () => { accepted = await d.location.useCurrentLocation(); });
+  expect(accepted).toBe(false); expect(d.location.cameraRequest).toEqual(camera); expect(saved().place).toEqual(first);
+  view.unmount(); vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount();
+  expect(d.location.mode).toBe('auto'); expect(requestDeviceLocation).toHaveBeenCalledTimes(2);
+});
+
+it('explicit request remains usable after unreadable storage while denial retains manual intent', async () => {
+  store.read.mockResolvedValue({ preference: null, warning: true }); await mount();
+  await action(() => d.location.selectPlace(second)); const before = saved();
+  vi.mocked(requestDeviceLocation).mockRejectedValueOnce(new DOMException('Denied', 'NotAllowedError'));
+  await action(() => d.location.useCurrentLocation()); expect(saved()).toEqual(before); expect(d.location.mode).toBe('manual'); expect(url).not.toContain('loc=auto');
+  await action(() => d.location.useCurrentLocation()); expect(saved().mode).toBe('auto'); expect(url).toContain('loc=auto');
+});
+it('automatic city announcement expiry cannot clear a newer center failure', async () => {
+  vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount(); expect(d.location.notice).toMatch(/Updated to First/);
+  await action(() => d.location.selectPlace({ geo: second.geo })); expect(d.location.notice).toMatch(/center/);
+  await act(async () => { await vi.advanceTimersByTimeAsync(5000); }); expect(d.location.notice).toMatch(/center/);
+});
+
+it('unreadable restoration never creates welcome or an empty write on ordinary close', async () => {
+  store.read.mockResolvedValue({ preference: null, warning: true }); vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount();
+  expect(d.location.welcome).toBe(false); await action(() => d.openSurface('city'));
+  await action(() => { d.location.dismissWelcome(); d.closeSurface(); });
+  expect(store.preference).toBeNull(); expect(d.location.welcome).toBe(false); expect(requestDeviceLocation).not.toHaveBeenCalled();
+});
+it.each(['manual', 'off'] as const)('stages native-only %s restore while Telegram is deactivated', async mode => {
+  const events = new Map<string, () => void>(); let active = true;
+  nativeWindow.Telegram = { WebApp: { isVersionAtLeast: () => true, get isActive() { return active; }, onEvent: (name, callback) => events.set(name, callback) } };
+  const native = delayed<{ preference: DiscoveryPreference; warning: boolean }>(); store.read.mockReturnValue(native.promise);
+  vi.mocked(getLocationPermission).mockResolvedValue('granted'); await mount();
+  active = false; await action(() => events.get('deactivated')?.());
+  const stored = mode === 'manual' ? pref('manual') : { ...pref('off'), place: null, recent: [] };
+  await action(() => native.resolve({ preference: stored, warning: false })); expect(d.location.place).toBeNull();
+  active = true; await action(() => events.get('activated')?.());
+  expect(d.location.mode).toBe(mode); expect(d.location.place).toEqual(stored.place); expect(requestDeviceLocation).not.toHaveBeenCalled();
+});
+it('a later manual choice defeats provider completion after explicit follow intent was accepted', async () => {
+  store.preference = pref('manual'); await mount(); const provider = delayed<CityPlace | null>(); vi.mocked(resolveCurrentCity).mockReturnValue(provider.promise);
+  await action(() => d.location.useCurrentLocation()); expect(saved().mode).toBe('auto');
+  await action(() => d.location.selectPlace(second)); await action(() => provider.resolve(city));
+  expect(d.location.place).toEqual(second); expect(saved().mode).toBe('manual'); expect(url).not.toContain('loc=auto');
 });

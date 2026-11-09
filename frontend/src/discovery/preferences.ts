@@ -95,14 +95,18 @@ export function writeDiscoveryPreference(preference: DiscoveryPreference): Promi
       resolve(result);
     };
     // Queue wait counts toward the caller's deadline too. Expired queued work
-    // is skipped; an in-flight callback can never change the browser mirror.
+    // is skipped. The native lane itself waits for the real callback because
+    // DeviceStorage writes cannot be canceled, even after caller timeout.
     const timeout = setTimeout(() => { controller.abort(); finish({ warning: true }); }, nativeTimeout);
     const pending = writeQueue.then(async () => {
       if (controller.signal.aborted || Date.now() >= deadline) return { warning: true };
       try {
         const storage = nativeStorage();
         if (storage) {
-          const result = await nativeCall<boolean>(finish => storage.setItem(storageKey, serialized, finish), controller.signal);
+          const result = await new Promise<{ value?: boolean; warning: boolean }>(resolveNative => {
+            try { storage.setItem(storageKey, serialized, (error, value) => resolveNative({ value, warning: Boolean(error) })); }
+            catch { resolveNative({ warning: true }); }
+          });
           return { warning: warning || result.warning || controller.signal.aborted || result.value === false };
         }
         return { warning };

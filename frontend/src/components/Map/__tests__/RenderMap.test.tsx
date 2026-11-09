@@ -152,9 +152,19 @@ it('does not reserve the absent Results/Create row below a replacing preview', (
   root.querySelector('[data-discovery-actions]')!.remove(); act(() => resize()); expect(root.style.getPropertyValue('--discovery-actions-height')).toBe('0px');
 });
 
-it('announces automatic city success without offering a center-error recovery action', () => {
+it('prioritizes automatic city success over empty-map feedback until the notice clears', () => {
   fixtures.context.location.notice = 'Updated to Example city.'; fixtures.context.location.status = 'idle';
-  render(<App />);
-  expect(screen.getAllByRole('status').some(node => node.textContent === 'Updated to Example city.')).toBe(true);
+  const view = render(<App />);
+  expect(screen.getByRole('status').textContent).toBe('Updated to Example city.');
+  expect(screen.queryByText(/No mapped locations/)).toBeNull();
   expect(screen.queryByRole('button', { name: 'Center map' })).toBeNull();
+  fixtures.context.location.notice = null; view.rerender(<App />);
+  expect(screen.getByRole('status').textContent).toBe('No mapped locations are available for Example city, Example region, Example country.');
+});
+it('prioritizes the location notice over tile loading and restores loading feedback when it clears', () => {
+  fixtures.context.location.notice = 'Updated to Example city.';
+  const view = render(<App />); act(() => fixtures.maps[0].emit('dataloading'));
+  expect(screen.getByRole('status').textContent).toBe('Updated to Example city.');
+  fixtures.context.location.notice = null; view.rerender(<App />);
+  expect(screen.getByRole('status').textContent).toBe('Loading map tiles…');
 });

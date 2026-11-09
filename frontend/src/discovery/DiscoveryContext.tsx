@@ -66,7 +66,9 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
     return () => { active = false; controller.abort(); };
   }, [requestKey, version, enabled]);
   const updateState = (value: DiscoveryState) => {
-    navigate({ pathname: location.pathname, search: serializeDiscovery(value) }, { replace: true, state: location.state });
+    const directory = routeEntity(path);
+    const changedCategory = Boolean(directory && directory !== value.entity);
+    navigate({ pathname: changedCategory ? '/map' : location.pathname, search: serializeDiscovery(changedCategory ? { ...value, view: 'map' } : value) }, { replace: true, state: location.state });
   };
   const [surface, setSurface] = useState<DiscoverySurface>('none');
   const returnSurface = useRef<'none' | 'profile'>('none');

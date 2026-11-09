@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import type { TelegramApp } from '@/platform/telegram';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { cleanupVaul } from '@/test/cleanupVaul';
-import { MemoryRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { DiscoveryProvider } from '@/discovery/DiscoveryContext';
 import { fetchCountries, fetchResults } from '@/discovery/api';
 import { AuthContext } from '@/auth/AuthContext';
@@ -243,4 +243,24 @@ it('restores Results/Create when a selected record disappears during detail retu
   await waitFor(() => expect(sdk.sources.has('teams')).toBe(true)); act(() => { for (const fn of sdk.listeners.get('click:teams') ?? []) (fn as (event: unknown) => void)({ point: {} }); });
   fireEvent.click(screen.getByRole('region', { name: 'Selected result' }).querySelector('a')!); vi.mocked(fetchResults).mockResolvedValue({ activities: [], teams: [], organizations: [] });
   fireEvent.click(screen.getByRole('button', { name: 'Return to map' })); expect(await screen.findByRole('button', { name: 'Results: 0 teams' })).toBeTruthy(); expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
+});
+
+it.each([
+  ['/activities', 'activities', 'teams', 'Teams'],
+  ['/teams/', 'teams', 'organizations', 'Organizations'],
+  ['/organizations', 'organizations', 'activities', 'Activities'],
+] as const)('switches category on the map after closing the initial %s directory list', async (path, origin, target, name) => {
+  vi.mocked(fetchResults).mockResolvedValue({ ...results, teams: [team] });
+  function RouteProbe() { const route = useLocation(); return <output aria-label="Category route">{route.pathname}{route.search}</output>; }
+  render(<MemoryRouter initialEntries={[path + '?level=city&country=UK&state=England&city=Cambridge&entity=' + origin + '&view=list&q=sport&loc=auto']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><RouteProbe /><Routes>
+    <Route path="/map" element={<DiscoveryPage />} /><Route path={path} element={<DiscoveryPage entity={origin} />} />
+  </Routes></DiscoveryProvider></MemoryRouter>);
+  expect(await screen.findByRole('heading', { name: 'Results' })).toBeTruthy(); close();
+  await waitFor(() => expect(sdk.moves).toHaveBeenCalled()); const moves = sdk.moves.mock.calls.length;
+  fireEvent.click(screen.getByRole('button', { name }));
+  await waitFor(() => expect(screen.getByRole('button', { name }).getAttribute('aria-pressed')).toBe('true'));
+  expect(screen.queryByRole('dialog')).toBeNull(); expect(screen.getByRole('button', { name: /^Results:/ }).textContent).toContain(target);
+  const route = new URL(screen.getByLabelText('Category route').textContent!, 'https://example.invalid');
+  expect(route.pathname).toBe('/map'); expect(Object.fromEntries(route.searchParams)).toEqual({ level: 'city', country: 'UK', state: 'England', city: 'Cambridge', entity: target, view: 'map', q: 'sport', loc: 'auto' });
+  expect(sdk.moves).toHaveBeenCalledTimes(moves); showResults(); expect(screen.getByRole('heading', { name })).toBeTruthy();
 });

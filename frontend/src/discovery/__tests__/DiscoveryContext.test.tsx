@@ -67,3 +67,22 @@ it.each(['geography', 'entity', 'search'] as const)('retains selection across vi
   fireEvent.click(screen.getByText('Change context')); expect(selection()).toBe('none');
   fireEvent.click(screen.getByText('Original context')); expect(selection()).toBe('none');
 });
+
+it.each([
+  ['/activities', 'teams', true], ['/teams/', 'organizations', false], ['/organizations', 'activities', true],
+] as const)('normalizes category changes from %s while retaining geography, query, follow and context-owned memories', async (path, entity, follow) => {
+  vi.mocked(fetchCountries).mockResolvedValue([]); vi.mocked(fetchResults).mockResolvedValue({ activities: [], teams: [], organizations: [] });
+  const original = path + '?level=city&country=UK&state=England&city=Cambridge&view=list&q=sport' + (follow ? '&loc=auto' : '');
+  let value!: ReturnType<typeof useDiscovery>;
+  function CategoryProbe() { value = useDiscovery(); const route = useLocation(); return <><output aria-label="Category path">{route.pathname}</output><Link to={original}>Original directory</Link></>; }
+  render(<MemoryRouter initialEntries={[original]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><CategoryProbe /></DiscoveryProvider></MemoryRouter>);
+  await act(async () => {}); act(() => value.setSelected('source-pin')); expect(value.selected).toBe('source-pin');
+  const memory = value.cameraMemory; memory.current = { center: [10, 20], zoom: 8, bearing: 10, pitch: 5, appliedSequence: value.location.cameraRequest.sequence };
+  const camera = value.location.cameraRequest; const scroll = value.scrollPositions; scroll.set(original, 180);
+  act(() => value.setState(state => ({ ...state, entity })));
+  expect(screen.getByLabelText('Category path').textContent).toBe('/map');
+  expect(value.state).toEqual({ entity, geo: { level: 'city', country: 'UK', state: 'England', city: 'Cambridge' }, view: 'map', query: 'sport', ...(follow ? { follow: true } : {}) });
+  expect(value.selected).toBeNull(); expect(value.cameraMemory).toBe(memory); expect(value.cameraMemory.current).toEqual({ center: [10, 20], zoom: 8, bearing: 10, pitch: 5, appliedSequence: camera.sequence });
+  expect(value.location.cameraRequest).toEqual(camera); expect(value.scrollPositions).toBe(scroll); expect(scroll.get(original)).toBe(180);
+  fireEvent.click(screen.getByRole('link', { name: 'Original directory' })); expect(value.selected).toBeNull();
+});

@@ -52,7 +52,7 @@ async function install(context, options = {}) {
     }
     model.requests.push({ path: decoded, search: new URL(req.url()).searchParams.get('search_by'), method: req.method() });
     if (req.method() === 'GET' && path === '/api/users/me') return ok(member);
-    if (req.method() === 'GET' && path === '/api/countries/list/') { model.countryReads++; return ok(countries); }
+    if (req.method() === 'GET' && path === '/api/countries/list/') { model.countryReads++; return ok(options.countries || countries); }
     if (req.method() === 'GET' && /^\/api\/(activities|teams|organizations)\/(city|state|country)\/[^/]+\/$/.test(path)) {
       model.resultReads++;
       if (model.failResults) return fail();

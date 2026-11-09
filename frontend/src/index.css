@@ -247,7 +247,7 @@ input, select, textarea { min-height: 44px; font-size: 16px !important; }
 .discovery-map-recovery { position: absolute; top: calc(var(--app-safe-top) + var(--discovery-top-height, 0px) + 12px); left: 12px; right: 12px; z-index: 4; padding: 8px 12px; background: hsl(var(--card)); border-radius: 12px; font-size: 14px; }
 .discovery-map-recovery button { text-decoration: underline; }
 /* Portal sheets use the same visible viewport origin without translating the body. */
-.create-sheet, .join-sheet { bottom: max(0px, calc(100dvh - var(--app-offset-top, 0px) - var(--app-height, 100dvh))); }
+.create-sheet, .join-sheet[data-vaul-drawer] { bottom: max(0px, calc(100dvh - var(--app-offset-top, 0px) - var(--app-height, 100dvh))); }
 
 /* Full-map discovery: only the floating controls intercept map gestures. */
 .app-shell.app-discovery-shell { padding: 0; }
@@ -258,7 +258,7 @@ input, select, textarea { min-height: 44px; font-size: 16px !important; }
 .full-map button, .full-map a, .full-map .discovery-preview, .full-map .discovery-map-selection { pointer-events: auto; }
 .full-map [hidden] { display: none !important; }
 .discovery-floating-top { position: absolute; top: 0; left: 0; right: 0; z-index: 4; padding: calc(var(--app-safe-top) + 18px) calc(var(--app-safe-right) + 16px) 0 calc(var(--app-safe-left) + 16px); display: grid; gap: 10px; pointer-events: none; }
-.discovery-floating-row { display: flex; align-items: center; gap: 10px; }
+.discovery-floating-row { min-width: 0; display: flex; align-items: center; gap: 10px; }
 .full-map .discovery-city, .discovery-search-button, .full-map .discovery-entities button, .discovery-query, .discovery-results-button, .discovery-center, .discovery-dock { background: hsl(var(--card) / .97); border: 1px solid hsl(var(--border)); box-shadow: 0 3px 15px #352e4d18; }
 .full-map .discovery-city { display: flex; align-items: center; gap: 9px; min-width: 0; max-width: calc(100% - 58px); min-height: 48px; padding: 7px 13px; border-radius: 17px; text-align: left; }
 .full-map .discovery-city > svg { flex-shrink: 0; color: var(--discovery-accent); }

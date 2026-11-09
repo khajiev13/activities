@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const data = require('./fixtures/mobile-data.cjs');
+const native = require('./fixtures/discovery-native.cjs');
 const BASE = process.env.EVENTOPIA_BASE_URL || 'http://127.0.0.1:5173';
 const OUT = path.resolve(process.env.SCREENSHOT_DIR || '.artifacts/mobile-ui');
 const selected = process.argv.find(arg => arg.startsWith('--case='))?.slice(7);
@@ -18,11 +19,13 @@ async function shot(page, name) { return page.screenshot({ path: path.join(OUT, 
 async function setup(options = {}) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', ...options.context });
   const model = await data.install(context, options);
+  if (options.realMap) await context.addInitScript(({ key, preference }) => localStorage.setItem(key, JSON.stringify(preference)), { key: native.key, preference: native.preference() });
   if (!options.realMap) {
     await context.route(url => url.hostname.endsWith('maptiler.com'), route => route.abort());
     await context.route(url => url.hostname === 'telegram.org', route => route.fulfill({ body: '' }));
   }
   await context.route(url => url.hostname.endsWith('geonames.org'), route => route.abort());
+  if (options.realMap) await context.route(url => url.pathname === '/src/components/Map/BaseMap.tsx', async route => { const response=await route.fetch(); const body=await response.text(); assert.ok(body.includes('callbacks.current.onMapLoad(map);')); await route.fulfill({ response, body:body.replace('callbacks.current.onMapLoad(map);','window.__observedMap=map; callbacks.current.onMapLoad(map);') }); });
   const page = await context.newPage(); const errors = []; const resources = [];
   page.on('pageerror', error => errors.push(error.message.replace(/https?:\/\/\S+/g, '[URL]').replace(/\+\d{9,15}|\b\d{6}\b|\b[a-f0-9]{32,64}\b/gi, '[synthetic auth value]')));
   page.on('request', request => { const url = new URL(request.url()); if (url.origin === new URL(BASE).origin && !url.pathname.startsWith('/api/')) resources.push(url.pathname); });
@@ -49,14 +52,39 @@ async function targets(page) {
 }
 async function fieldReachable(page, field) {
   await field.scrollIntoViewIfNeeded(); await field.focus(); await settle(page);
+  await until(() => field.evaluate(el => { const r=el.getBoundingClientRect(); const hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2); return r.x>=0&&r.right<=innerWidth+1&&r.y>=0&&r.bottom<=innerHeight+1&&(hit===el||el.contains(hit)); }), 'Field settles exposed after responsive modal animation');
   const r = await field.boundingBox(), viewport = page.viewportSize();
   check(r && r.x >= 0 && r.x + r.width <= viewport.width + 1 && r.y >= 0 && r.y + r.height <= viewport.height + 1, 'Focused field fits the viewport');
   const exposed = await field.evaluate(el => { const r = el.getBoundingClientRect(), hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2); return { fits: hit === el || el.contains(hit), id: el.id, shortSheet: el.closest('.create-sheet')?.dataset.short, sheetHeight: el.closest('.create-sheet')?.getBoundingClientRect().height, hit: hit?.tagName + ':' + hit?.textContent?.slice(0, 100), field: { x: r.x, y: r.y, width: r.width, height: r.height } }; });
   if (!exposed.fits) await shot(page, 'clipped-field-' + viewport.width + '-' + exposed.id.replace(/[^a-zA-Z0-9]/g, ''));
   check(exposed.fits, 'Focused field is exposed above sticky controls: ' + JSON.stringify(exposed));
 }
+async function closeResults(page) {
+  const results = page.getByRole('dialog', { name: 'Results', exact: true });
+  if (await results.isVisible()) await results.getByRole('button', { name: 'Close', exact: true }).click();
+}
+async function openResults(page) {
+  const dialog=page.getByRole('dialog',{name:'Results',exact:true}); if(await dialog.isVisible())return;
+  const selection=page.getByRole('button', { name:'Close selection', exact:true });
+  await until(async()=>await selection.isVisible()||await page.getByRole('button',{name:/^Results:/}).isVisible(), 'Results action or selected preview becomes available');
+  if(await selection.isVisible()) await selection.click();
+  await page.getByRole('button', { name: /^Results:/ }).click();
+  await page.getByRole('dialog', { name: 'Results', exact: true }).waitFor();
+}
+async function category(page, name, results = true) {
+  await closeResults(page);
+  await page.getByRole('button', { name, exact: true }).click();
+  if (results) await openResults(page);
+}
+async function search(page, value) {
+  await closeResults(page);
+  await page.getByRole('button', { name: /^Search (activities|teams|organizations)$/ }).click();
+  await page.getByRole('searchbox').fill(value);
+  await page.getByRole('button', { name: 'Show on map', exact: true }).click();
+}
 async function openCreate(page, entity) {
   await page.goto(BASE + '/' + entity + data.query(entity));
+  await closeResults(page);
   await page.getByRole('button', { name: 'Create', exact: true }).click();
   return page.getByRole('dialog').filter({ hasText: 'Create a new ' + (entity === 'activities' ? 'activity' : entity === 'teams' ? 'team' : 'organization') });
 }
@@ -78,33 +106,30 @@ async function runCase(name, fn) {
   if (selected && !selected.split(',').includes(name)) return;
   const before = checks; const start = Date.now();
   try { await fn(); results.push({ name, status: 'PASS', checks: checks - before, milliseconds: Date.now() - start }); console.log('PASS ' + name + ' (' + (checks - before) + ' checks)'); }
-  catch (error) { const message = error.message.replace(/https?:\/\/\S+/g, '[URL]').replace(/\+\d{9,15}|\b\d{6}\b|\b[a-f0-9]{32,64}\b/gi, '[synthetic auth value]').slice(0, 2200); results.push({ name, status: 'FAIL', checks: checks - before, message }); console.error('FAIL ' + name + ': ' + message); }
+  catch (error) { if(name==='pin-return') for(const context of browser.contexts()) for(const p of context.pages()) if(new URL(p.url()).pathname==='/map') await shot(p,'pin-failure'); const message = error.message.replace(/https?:\/\/\S+/g, '[URL]').replace(/\+\d{9,15}|\b\d{6}\b|\b[a-f0-9]{32,64}\b/gi, '[synthetic auth value]').slice(0, 2200); results.push({ name, status: 'FAIL', checks: checks - before, message }); console.error('FAIL ' + name + ': ' + message); if(['navigation','pin-return','native-adapter'].includes(name)) {console.error(error.stack?.split('\n').slice(-4).join('\n').replace(/https?:\/\/\S+/g,'[URL]'));} }
   finally { for (const context of browser.contexts()) await context.close(); }
 }
 async function cityHeader() {
   for (const authenticated of [false, true]) for (const width of [320, 390]) for (const city of ['Wangfujing', 'Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch']) {
     const run = await setup({ authenticated, context: { viewport: { width, height: 844 } } }); const { page, model } = run;
-    const query = new URLSearchParams(data.query('activities').slice(1)); query.set('city', city);
+    const query = new URLSearchParams(data.query('activities').slice(1)); query.set('city', city); query.set('view', 'map');
     await page.goto(BASE + '/map?' + query);
-    const header = page.locator('.discovery-header-top');
-    const create = header.getByRole(authenticated ? 'button' : 'link', { name: 'Create', exact: true }); await create.waitFor();
-    const bounds = await header.evaluate(el => {
-      const city = el.querySelector('.discovery-city'), strong = city.querySelector('strong'), create = el.querySelector('a, button:not(.discovery-city)');
-      const range = document.createRange(); range.selectNodeContents(strong.firstChild);
-      const rect = r => ({ left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width, height: r.height });
-      const exposed = element => { const r = element.getBoundingClientRect(), hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return element === hit || element.contains(hit); };
-      return { city: rect(city.getBoundingClientRect()), title: [...range.getClientRects()].map(rect), chevron: rect(strong.querySelector('svg').getBoundingClientRect()), create: rect(create.getBoundingClientRect()), cityExposed: exposed(city), createExposed: exposed(create) };
+    const cityButton = page.locator('.discovery-city'); await cityButton.waitFor();
+    const bounds = await page.locator('[data-discovery-top]').evaluate(el => {
+      const city = el.querySelector('.discovery-city'), title = city.querySelector('strong'), chevron = city.lastElementChild, search = el.querySelector('.discovery-search-button');
+      const rect = el => el.getBoundingClientRect().toJSON();
+      const exposed = el => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)); };
+      return { city: rect(city), title: rect(title), chevron: rect(chevron), search: rect(search), cityExposed: exposed(city), searchExposed: exposed(search) };
     });
-    const name = `${authenticated ? 'member' : 'anonymous'}-${width}-${city === 'Wangfujing' ? 'stored-city' : 'long-city'}`;
-    await shot(page, 'header-' + name);
-    check(bounds.city.right <= bounds.create.left && [...bounds.title, bounds.chevron].every(r => r.left >= bounds.city.left - 1 && r.right <= bounds.city.right + 1 && r.top >= bounds.city.top - 1 && r.bottom <= bounds.city.bottom + 1), 'City title and chevron stay inside their control, clear of Create: ' + name + ' ' + JSON.stringify(bounds));
-    check(bounds.chevron.width > 0, 'City change chevron remains visible: ' + name);
-    check(bounds.city.width >= 44 && bounds.city.height >= 44 && bounds.create.width >= 44 && bounds.create.height >= 44 && bounds.cityExposed && bounds.createExposed, 'City and Create controls remain exposed 44px targets: ' + name);
-    await fit(page);
-    await header.getByRole('button', { name: new RegExp(city) }).click(); await page.getByRole('dialog').getByRole('heading', { name: 'Choose a city', exact: true }).waitFor();
-    await page.getByRole('dialog').getByRole('button', { name: 'Close', exact: true }).click();
-    equal(new URL(page.url()).searchParams.get('city'), city, 'City chooser close preserves selected city');
-    equal(model.writes.length, 0, 'Header checks make no content writes'); await clean(run);
+    await shot(page, `header-${authenticated ? 'member' : 'anonymous'}-${width}-${city === 'Wangfujing' ? 'stored-city' : 'long-city'}`);
+    check(bounds.city.right <= bounds.search.left && [bounds.title, bounds.chevron].every(r => r.left >= bounds.city.left-1 && r.right <= bounds.city.right+1), 'City text and chevron stay clear of search');
+    check(bounds.chevron.width > 0, 'City chevron remains visible');
+    check(bounds.city.width >=44 && bounds.city.height >=44 && bounds.search.width >=44 && bounds.search.height >=44 && bounds.cityExposed && bounds.searchExposed, 'City and search remain exposed targets: '+JSON.stringify(bounds));
+    check(await page.getByRole(authenticated ? 'button' : 'link', { name: 'Create', exact: true }).isVisible(), 'Category-aware Create remains available');
+    await fit(page); await cityButton.click(); await page.getByRole('dialog', { name: 'Choose a city' }).waitFor();
+    await page.getByRole('button', { name: 'Close', exact: true }).click();
+    equal(new URL(page.url()).searchParams.get('city'), city, 'City close preserves selected city');
+    equal(model.writes.length, 0, 'Header makes no writes'); await clean(run);
   }
 }
 
@@ -112,8 +137,9 @@ async function responsive() {
   for (const width of [320, 360, 390, 430, 768, 1280]) for (const theme of ['light', 'dark']) {
     const run = await setup({ context: { viewport: { width, height: width >= 768 ? 960 : 844 }, colorScheme: theme } }); const { page, resources, model } = run;
     for (const [label, route] of [['Explore', '/map'], ['Activities', '/activities'], ['Teams', '/teams'], ['Organizations', '/organizations']]) {
-      if (label === 'Explore') await page.goto(BASE + route + data.query('activities'));
-      else await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: label, exact: true }).click();
+      if (label === 'Explore') await page.goto(BASE + route + data.query('activities').replace('view=list', 'view=map'));
+      else await category(page, label);
+      if (label === 'Explore') await openResults(page);
       await until(() => page.locator('[data-result-id]').count());
       await fit(page); await targets(page);
       equal(new URL(page.url()).searchParams.get('city'), data.city, 'Tab preserves city');
@@ -135,29 +161,21 @@ async function copy() {
 }
 async function navigation() {
   const run = await setup(); const { page, model } = run;
-  await page.goto(BASE + '/map' + data.query('activities'));
-  await page.getByRole('searchbox').fill('friendly');
-  await until(() => model.requests.some(request => request.search === 'friendly'));
-  await page.getByRole('button', { name: 'Teams', exact: true }).click();
-  await page.getByRole('link', { name: 'Community team 06', exact: true }).waitFor();
-  const query = new URL(page.url()).search;
-  const scroll = page.locator('.discovery-results-scroll');
-  await page.getByRole('link', { name: 'Community team 06', exact: true }).scrollIntoViewIfNeeded(); const before = await scroll.evaluate(el => el.scrollTop);
-  await page.getByRole('link', { name: 'Community team 06', exact: true }).click();
+  await page.goto(BASE + '/map' + data.query('activities')); await closeResults(page);
+  await search(page, 'friendly'); await until(() => model.requests.some(r => r.search === 'friendly'));
+  await category(page, 'Teams'); const query = new URL(page.url()).search;
+  const scroll = page.locator('.discovery-results-scroll'); const link = page.getByRole('link', { name: 'Community team 06', exact: true });
+  await link.scrollIntoViewIfNeeded(); const before = await scroll.evaluate(el => el.scrollTop); await link.click();
   await page.getByRole('region', { name: 'Team information' }).waitFor(); await shot(page, 'detail-team-390');
-  await page.getByRole('button', { name: 'Back', exact: true }).click();
-  await until(async () => await scroll.count() && await scroll.evaluate(el => el.scrollTop) === before, 'Detail restores list scroll');
-  equal(new URL(page.url()).search, query, 'Detail restores filter/view/query');
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Organizations' }).click();
-  await page.getByRole('button', { name: 'About Community club' }).click();
-  await page.getByRole('region', { name: 'Organization preview' }).waitFor();
-  equal(await page.getByRole('region', { name: 'Organization preview' }).getByRole('link').count(), 0, 'Organization preview has no invented detail action');
-  await page.getByRole('button', { name: 'Close preview' }).click();
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Explore' }).click();
-  equal(new URL(page.url()).search, query, 'Explore preserves own entity/filter/view');
-  model.failResults = true; await page.getByRole('searchbox').fill('offline'); await page.getByRole('button', { name: 'Retry results' }).waitFor();
-  model.failResults = false; model.empty = true; await page.getByRole('button', { name: 'Retry results' }).click(); await page.getByText(/No teams found/).waitFor();
-  await clean(run);
+  await page.getByRole('button', { name: 'Back', exact: true }).click(); await openResults(page);
+  await until(async () => await scroll.evaluate(el => el.scrollTop) === before, 'Detail restores list scroll');
+  equal(new URL(page.url()).search, query, 'Detail restores query');
+  await category(page, 'Organizations'); await page.getByRole('button', { name: 'About Community club' }).click();
+  const preview = page.getByRole('region', { name: 'Organization preview' }); await preview.waitFor();
+  equal(await preview.getByRole('link').count(), 0, 'Organization has no invented detail action'); await page.getByRole('button', { name: 'Close preview' }).click();
+  await category(page, 'Teams', false); equal(new URL(page.url()).search, query, 'Category retains geography/filter/view');
+  model.failResults = true; await search(page, 'offline'); await openResults(page); await page.getByRole('button', { name: 'Retry results' }).waitFor();
+  model.failResults = false; model.empty = true; await page.getByRole('button', { name: 'Retry results' }).click(); await page.getByText(/No teams found/).waitFor(); await clean(run);
 }
 async function teamJoin() {
   const run = await setup({ authenticated: true }); const { page, model } = run;
@@ -225,16 +243,17 @@ async function pinReturn() {
     const run = await setup({ realMap: true, pinReturn: true }); const { page, model } = run;
     // Public tile/SDK loading is retained; every content/auth API remains fixture-only.
     const title = entity === 'activities' ? data.activity.title : 'Community team 06'; const id = entity === 'activities' ? 'one' : title;
-    const initial = data.query(entity); await page.goto(BASE + '/map' + initial);
+    const initial = data.query(entity).replace('view=list','view=map'); await page.goto(BASE + '/map' + initial); await openResults(page);
     const panel = page.locator('.discovery-results-scroll'); const card = panel.locator('[data-result-id="' + id + '"]');
     await card.getByRole('link', { name: title, exact: true }).scrollIntoViewIfNeeded(); const listScroll = await panel.evaluate(el => el.scrollTop); check(listScroll > 0, 'Pin return begins with a scrolled list');
-    await page.getByRole('button', { name: 'Map', exact: true }).click();
+    await closeResults(page);
     await page.waitForFunction(() => !document.body.textContent.includes('Loading map tiles…'));
     const canvas = page.locator('.maplibregl-canvas'); await canvas.waitFor();
-    await until(async () => { const box = await canvas.boundingBox(); await page.mouse.click(box.x + box.width / 2, box.y + (box.height + 40 - 240) / 2); return page.getByRole('region', { name: 'Selected result', exact: true }).isVisible(); }, 'Actual activity/team pin opens detail preview'); checks++;
-    const query = new URL(page.url()).search; const mapScroll = await panel.evaluate(el => el.scrollTop);
+    await until(async () => { const box = await canvas.boundingBox(); const point=await page.evaluate(()=>{ const p=window.__observedMap.project([-0.1278,51.5074]);return{x:p.x,y:p.y}; }); await page.mouse.click(box.x+point.x,box.y+point.y); return page.getByRole('region', { name: 'Selected result', exact: true }).isVisible(); }, 'Actual activity/team pin opens detail preview'); checks++;
+    const query = new URL(page.url()).search; const mapScroll = listScroll;
     const preview = page.getByRole('region', { name: 'Selected result', exact: true });
     equal(await preview.getByRole('link', { name: title, exact: true }).getAttribute('href'), '/' + entity + '/' + encodeURIComponent(id) + query, 'Pin preview uses encoded existing detail route and discovery query');
+    const cameraBefore=await page.evaluate(()=>{const map=window.__observedMap,c=map.getCenter();return[c.lng,c.lat,map.getZoom(),map.getBearing(),map.getPitch()];});
     await shot(page, 'pin-preview-' + entity); await preview.getByRole('link', { name: title, exact: true }).click();
     await page.getByRole('link', { name: entity === 'activities' ? 'Join activity' : 'Join', exact: true }).click();
     await page.getByLabel('Phone number').fill('+99890' + String(require('node:crypto').randomInt(1000000, 9999999))); await page.getByRole('button', { name: 'Send code', exact: true }).click();
@@ -242,14 +261,16 @@ async function pinReturn() {
     await page.getByRole('button', { name: entity === 'activities' ? 'Join activity' : 'Join', exact: true }).waitFor();
     equal(new URL(page.url()).pathname, '/' + entity + '/' + encodeURIComponent(id), 'Login returns to selected pin detail'); equal(new URL(page.url()).search, query, 'Login preserves pin discovery context');
     await page.getByRole('button', { name: 'Back', exact: true }).click(); await preview.waitFor();
+    await until(()=>page.evaluate(()=>Boolean(window.__observedMap?.isStyleLoaded())),'Returned real SDK is loaded');
+    const cameraAfter=await page.evaluate(()=>{const map=window.__observedMap,c=map.getCenter();return[c.lng,c.lat,map.getZoom(),map.getBearing(),map.getPitch()];}); check(cameraAfter.every((n,i)=>Math.abs(n-cameraBefore[i])<1e-7),'Pin detail/login Back retains actual camera');
     equal(new URL(page.url()).pathname, '/map', 'Back returns to original Explore'); equal(new URL(page.url()).search, query, 'Back restores map query');
-    await until(async () => await panel.evaluate(el => el.scrollTop) === mapScroll, 'Pin detail/login restores map results position'); checks++;
-    equal(await preview.getByRole('link', { name: title, exact: true }).count(), 1, 'Selected preview survives detail and login');
-    await page.getByRole('button', { name: 'List', exact: true }).click(); await until(async () => await panel.evaluate(el => el.scrollTop) === listScroll, 'Pin list toggle restores prior list position'); checks++;
-    equal(await card.getAttribute('data-selected'), 'true', 'Selected result is highlighted in list');
-    await page.getByRole('button', { name: 'Map', exact: true }).click(); await preview.waitFor();
-    await page.getByRole('searchbox').fill('changed'); await preview.waitFor({ state: 'hidden' }); check(true, 'Changed search clears pin selection');
-    await page.getByRole('searchbox').fill('ball'); await until(() => model.requests.some(request => request.search === 'ball'));
+    equal(await preview.getByRole('link', { name: title, exact: true }).count(), 1, 'Selected preview survives detail and login'); await page.getByRole('button', { name: 'Close selection', exact: true }).click(); await openResults(page); await until(async () => await panel.evaluate(el => el.scrollTop) === mapScroll, 'Pin detail/login restores map results position (expected '+mapScroll+', actual '+await panel.evaluate(el=>el.scrollTop)+')'); checks++; await closeResults(page);
+    await openResults(page); await until(async () => await panel.evaluate(el => el.scrollTop) === listScroll, 'Results reopen restores prior list position'); checks++;
+    await card.getByRole('link', { name: title, exact: true }).click(); await page.getByRole('button', { name: 'Back', exact: true }).click(); await page.getByRole('dialog',{name:'Results',exact:true}).waitFor(); equal(await card.getAttribute('data-selected'),'true','Detail Back retains selected card in already-open Results'); await closeResults(page); await preview.waitFor();
+    await page.getByRole('button', { name:'Map', exact:true }).click(); equal(await preview.count(),0,'Map dock clears selected pin'); await openResults(page); equal(await card.getAttribute('data-selected'),null,'Cleared selection is not highlighted in Results'); await closeResults(page);
+    await until(async()=>{const point=await page.evaluate(()=>{const p=window.__observedMap.project([-0.1278,51.5074]);return{x:p.x,y:p.y};});await page.mouse.click(point.x,point.y);return preview.isVisible();},'Actual pin can be reselected before search'); checks++;
+    await search(page, 'changed'); await preview.waitFor({ state: 'hidden' }); check(true, 'Changed search clears pin selection');
+    await search(page, 'ball'); await until(() => model.requests.some(request => request.search === 'ball'));
     equal(await preview.count(), 0, 'Old selection does not reappear on returning to previous search');
     equal(model.writes.length, 0, 'Pin/login navigation performs no content writes'); await clean(run);
   }
@@ -294,18 +315,18 @@ async function geography() {
         else success({ coords: { latitude: 20, longitude: 10, accuracy: 100 } });
       };
     }, mode);
-    let providerRequests = 0;
+    let reverseRequests=0;
     await context.route(url => url.hostname.endsWith('geonames.org'), route => {
-      providerRequests++;
+      if(new URL(route.request().url()).pathname.includes('findNearby')) reverseRequests++;
       check(!route.request().headers().authorization && !route.request().headers().cookie, 'Lookup carries no Eventopia credentials');
       if (mode === 'provider-failure') return route.fulfill({ status: 503, json: {} });
-      return route.fulfill({ json: { geonames: [{ name: mode === 'unmatched' ? 'Unknown city' : 'Shared city', countryName: data.country, adminName1: 'Other state' }] } });
+      return route.fulfill({ json: { totalResultsCount: 1, geonames: [{ ...native.row(mode === 'unmatched' ? 'Unknown city' : 'Shared city', 'Other state'), ...(mode === 'unmatched' ? { fcode:'PPL' } : {}) }] } });
     });
     await page.goto(BASE + '/'); const dialog = page.getByRole('dialog'); await dialog.waitFor();
     equal(await page.evaluate(() => window.__locationCalls), 0, 'No automatic location prompt');
     equal(model.resultReads, 0, 'No default city result request');
     check(await dialog.getByText(/GeoNames receives your coordinates/).count(), 'Provider disclosure appears before location action');
-    await dialog.getByRole('button', { name: 'Use my location', exact: true }).click();
+    await dialog.getByRole('button', { name: 'Use current location', exact: true }).click();
     if (mode === 'allowed') {
       await dialog.waitFor({ state: 'hidden' }); equal(new URL(page.url()).searchParams.get('state'), 'Other state', 'Duplicate city resolved with compatible exact parent');
       await until(() => model.requests.some(request => request.path.includes('/city/Shared city/')), 'Exact stored city requested');
@@ -313,9 +334,9 @@ async function geography() {
       await dialog.getByRole('button', { name: `${data.city}, ${data.state}, ${data.country}`, exact: true }).click();
       await page.evaluate(() => window.__resolveLocation());
       equal(new URL(page.url()).searchParams.get('city'), data.city, 'Manual city wins over pending GPS');
-      equal(providerRequests, 0, 'Cancelled GPS callback does not start provider lookup');
+      equal(reverseRequests, 0, 'Cancelled GPS callback does not start reverse lookup; manual center lookup remains allowed');
     } else {
-      await dialog.getByRole('status').filter({ hasText: mode === 'denied' ? 'permission denied' : mode === 'unmatched' ? 'choose a city from' : 'Could not detect' }).waitFor();
+      await dialog.getByRole('status').filter({ hasText: mode === 'denied' ? 'permission denied' : mode === 'unmatched' ? 'Could not identify' : 'Could not find' }).waitFor();
       await dialog.getByLabel('Search cities').fill('Shared city');
       equal(await dialog.getByRole('button', { name: /^Shared city,/ }).count(), 3, 'Duplicate geographic names remain separately selectable');
       await dialog.getByRole('button', { name: `Shared city, ${data.state}, Other country`, exact: true }).click();
@@ -327,9 +348,9 @@ async function geography() {
   }
   const run = await setup(); const { page } = run;
   await page.goto(BASE + '/'); const dialog = page.getByRole('dialog');
-  await dialog.getByText('Browse countries and states', { exact: true }).click(); await dialog.getByRole('button', { name: 'Browse Other state, ' + data.country, exact: true }).click();
+  await dialog.getByText('Browse regions', { exact: true }).click(); await dialog.getByRole('button', { name: 'Browse Other state, ' + data.country, exact: true }).click();
   equal(new URL(page.url()).searchParams.get('level'), 'state', 'Explicit state browsing works');
-  await page.getByRole('button', { name: new RegExp('^Other state') }).click(); await dialog.getByText('Browse countries and states', { exact: true }).click();
+  await page.getByRole('button', { name: new RegExp('^Other state') }).click(); await dialog.getByText('Browse regions', { exact: true }).click();
   await dialog.getByRole('button', { name: 'Browse ' + data.country, exact: true }).click(); equal(new URL(page.url()).searchParams.get('level'), 'country', 'Explicit country browsing works'); await clean(run);
 }
 async function authParticipation() {
@@ -373,22 +394,22 @@ async function contrastPairs(page) {
 }
 async function modalFocus() {
   const run = await setup({ authenticated: true }); const { page } = run;
-  await page.goto(BASE + '/activities' + data.query('activities')); await page.getByRole('searchbox').waitFor();
-  await page.getByRole('button', { name: 'Account', exact: true }).click(); const dialog = page.getByRole('dialog'); await dialog.waitFor(); await settle(page);
+  await page.goto(BASE + '/activities' + data.query('activities')); await closeResults(page); await page.locator('.discovery-city').waitFor();
+  await closeResults(page); await page.getByRole('button', { name: 'Profile', exact: true }).click(); const dialog = page.getByRole('dialog'); await dialog.waitFor(); await settle(page);
   check(await dialog.evaluate(el => el.contains(document.activeElement)), 'Account modal receives focus');
   for (let i = 0; i < 9; i++) { await page.keyboard.press('Tab'); check(await dialog.evaluate(el => el.contains(document.activeElement)), 'Tab focus remains inside modal'); }
-  await dialog.getByRole('button', { name: 'Close', exact: true }).focus(); await settle(page); await page.keyboard.press('Escape'); await dialog.waitFor({ state: 'hidden' }); await until(() => page.getByRole('button', { name: 'Account', exact: true }).evaluate(el => document.activeElement === el), 'Escape restores opener focus'); checks++;
+  await dialog.getByRole('button', { name: 'Close', exact: true }).focus(); await settle(page); await page.keyboard.press('Escape'); await dialog.waitFor({ state: 'hidden' }); await until(() => page.getByRole('button', { name: 'Profile', exact: true }).evaluate(el => document.activeElement === el), 'Escape restores opener focus'); checks++;
   await page.getByRole('button', { name: new RegExp('^' + data.city) }).click(); await dialog.waitFor(); await dialog.getByRole('button', { name: 'Close', exact: true }).focus(); await settle(page); await page.keyboard.press('Escape'); await dialog.waitFor({ state: 'hidden' });
   await until(() => page.getByRole('button', { name: new RegExp('^' + data.city) }).evaluate(el => document.activeElement === el), 'City modal restores opener focus'); checks++;
   await clean(run);
 }
 async function accessibility() {
   const run = await setup({ authenticated: true }); const { page } = run;
-  await page.goto(BASE + '/activities' + data.query('activities')); await page.getByRole('searchbox').waitFor();
+  await page.goto(BASE + '/activities' + data.query('activities')); await closeResults(page); await page.locator('.discovery-city').waitFor();
   for (const size of [{ width: 320, height: 568, text: '20px' }, { width: 667, height: 320, text: '20px' }, { width: 390, height: 844, text: '32px' }]) {
-    await page.goto(BASE + '/teams' + data.query('teams')); await page.getByRole('searchbox').waitFor();
+    await page.goto(BASE + '/teams' + data.query('teams')); await closeResults(page); await page.locator('.discovery-city').waitFor();
     await page.setViewportSize({ width: size.width, height: size.height }); await page.evaluate(text => document.documentElement.style.fontSize = text, size.text); await settle(page);
-    await fit(page); await targets(page); await page.getByRole('button', { name: 'Create', exact: true }).click(); const drawer = page.getByRole('dialog'); await drawer.getByLabel('Name', { exact: true }).waitFor();
+    await fit(page); await targets(page); await closeResults(page); await page.getByRole('button', { name: 'Create', exact: true }).click(); const drawer = page.getByRole('dialog'); await drawer.getByLabel('Name', { exact: true }).waitFor();
     equal(await page.evaluate(() => getComputedStyle(document.documentElement).fontSize), size.text, 'Text scale persists in the actual opened form');
     await until(() => drawer.evaluate(el => el.dataset.short === String(el.getBoundingClientRect().height <= 400)), 'Create observes actual portaled sheet height'); checks++;
     for (const label of ['Name', 'Founded date', 'Logo of the team (optional)', 'Venue name']) {
@@ -404,11 +425,11 @@ async function accessibility() {
   for (let i = 0; i < 4; i++) {
     await page.goto(BASE + '/activities' + data.query('activities')); await until(() => page.locator('[data-result-id]').count());
     const panel = page.locator('.discovery-results-scroll'); await panel.evaluate(el => { el.scrollTop = 500; el.dispatchEvent(new Event('scroll', { bubbles: true })); }); const before = await panel.evaluate(el => el.scrollTop);
-    await page.getByRole('button', { name: 'Create', exact: true }).click(); const drawer = page.getByRole('dialog'); await drawer.getByLabel('Title', { exact: true }).fill('Draft ' + i); await discard(page, drawer);
-    equal(await panel.evaluate(el => el.scrollTop), before, 'Closing drawer restores actual list scroll');
-    await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Teams', exact: true }).click();
+    await closeResults(page); await page.getByRole('button', { name: 'Create', exact: true }).click(); const drawer = page.getByRole('dialog'); await drawer.getByLabel('Title', { exact: true }).fill('Draft ' + i); await discard(page, drawer);
+    await openResults(page); equal(await panel.evaluate(el => el.scrollTop), before, 'Closing drawer restores actual list scroll');
+    await category(page, 'Teams', false);
     equal(await page.locator('[data-vaul-drawer]').count(), 0, 'No stale drawer after route switch');
-    equal(await page.locator('canvas').count(), 0, 'Directory cleans up map canvases');
+    check(await page.locator('canvas').count() <= 1, 'Directory retains at most one map canvas');
   }
   await clean(run);
 }
@@ -419,20 +440,20 @@ async function nativeAdapter() {
     await context.addInitScript(({ denied, marker }) => {
       const events = {}; window.__native = { calls: 0, browserCalls: 0, events, back: null, shows: 0, hides: 0 };
       navigator.geolocation.getCurrentPosition = () => window.__native.browserCalls++;
-      window.Telegram = { WebApp: { initData: marker, colorScheme: 'dark', viewportStableHeight: 800, safeAreaInset: { top: 20, bottom: 10 }, contentSafeAreaInset: { bottom: 30 }, ready() {}, expand() {}, isVersionAtLeast: () => true,
+      window.Telegram = { WebApp: { initData: marker, isActive:true, colorScheme: 'dark', viewportStableHeight: 800, safeAreaInset: { top: 20, bottom: 10 }, contentSafeAreaInset: { bottom: 30 }, ready() {}, expand() {}, isVersionAtLeast: () => true,
         onEvent: (event, callback) => { (events[event] ||= []).push(callback); }, offEvent: (event, callback) => { events[event] = events[event].filter(item => item !== callback); },
         BackButton: { show() { window.__native.shows++; }, hide() { window.__native.hides++; }, onClick(callback) { window.__native.back = callback; }, offClick(callback) { if (window.__native.back === callback) window.__native.back = null; } },
         LocationManager: { isInited: false, isLocationAvailable: true, init(callback) { this.isInited = true; callback(); }, getLocation(callback) { window.__native.calls++; callback(denied ? null : { latitude: 20, longitude: 10, horizontal_accuracy: 100 }); } },
       } };
     }, { denied, marker: require('node:crypto').randomBytes(16).toString('hex') });
-    await context.route(url => url.hostname.endsWith('geonames.org'), route => route.fulfill({ json: { geonames: [{ name: data.city, countryName: data.country, adminName1: data.state }] } }));
+    await native.provider(context);
     await page.goto(BASE + '/'); const dialog = page.getByRole('dialog'); await dialog.waitFor();
     equal(await page.evaluate(() => window.__native.calls), 0, 'Native permission waits for explicit action');
-    await dialog.getByRole('button', { name: 'Use my location', exact: true }).click();
+    await dialog.getByRole('button', { name: 'Use current location', exact: true }).click();
     if (denied) { await dialog.getByRole('status').filter({ hasText: 'permission denied' }).waitFor(); await dialog.getByRole('button', { name: `${data.city}, ${data.state}, ${data.country}`, exact: true }).click(); }
     await dialog.waitFor({ state: 'hidden' }); if (!denied) { await page.getByRole('status').filter({ hasText: 'City selected from your location: ' + data.city }).waitFor(); check(await page.getByRole('button', { name: 'Change', exact: true }).isVisible(), 'GPS success offers Change'); await shot(page, 'gps-coarse-city-success'); } equal(await page.evaluate(() => window.__native.calls), 1, 'Controlled native manager called once'); equal(await page.evaluate(() => window.__native.browserCalls), 0, 'Native denial/success does not prompt browser');
     check(await page.evaluate(() => document.documentElement.classList.contains('dark')), 'Telegram theme wins over system');
-    await page.getByRole('button', { name: 'Account', exact: true }).click(); await page.getByLabel('Appearance').selectOption('light'); await page.keyboard.press('Escape'); await dialog.waitFor({ state: 'hidden' });
+    await page.getByRole('button', { name: 'Profile', exact: true }).click(); await page.getByLabel('Appearance').selectOption('light'); await page.keyboard.press('Escape'); await dialog.waitFor({ state: 'hidden' });
     check(await page.evaluate(() => !document.documentElement.classList.contains('dark')), 'Explicit theme wins over Telegram');
     await page.evaluate(() => { const app = window.Telegram.WebApp; app.contentSafeAreaInset.bottom = 48; app.viewportStableHeight = 700; for (const name of ['viewportChanged', 'safeAreaChanged', 'contentSafeAreaChanged']) window.__native.events[name].forEach(callback => callback()); });
     equal(await page.evaluate(() => document.documentElement.style.getPropertyValue('--native-safe-bottom')), '48px', 'Telegram inset event updates maximum safe area');
@@ -550,13 +571,13 @@ async function organizationForm() {
 async function mapFailure() {
   const run = await setup(); const { page } = run;
   await page.goto(BASE + '/map' + data.query('activities').replace('view=list', 'view=map'));
-  await page.getByText(/Map unavailable/).waitFor(); await until(() => page.locator('[data-result-id]').count());
+  await page.getByText(/Map unavailable/).waitFor(); await page.getByRole('button', { name: 'Show results', exact: true }).click(); await until(() => page.locator('[data-result-id]').count());
   check(await page.getByRole('link', { name: data.activity.title, exact: true }).count(), 'Map failure keeps usable list alternative'); await fit(page); await shot(page, 'map-failure-list-390'); await clean(run);
 }
 // Pixels outside the synthetic pin must contain painted basemap detail, not a flat canvas.
 async function basemapTexture(page, screenshot) {
   const region = await page.evaluate(() => {
-    const canvas = document.querySelector('.maplibregl-canvas').getBoundingClientRect(), panel = document.querySelector('.discovery-results').getBoundingClientRect();
+    const canvas = document.querySelector('.maplibregl-canvas').getBoundingClientRect(), panel = document.querySelector('[data-discovery-actions]').getBoundingClientRect();
     const bottom = panel.left < canvas.right && panel.right > canvas.left ? panel.top : canvas.bottom;
     return { x: canvas.x, y: canvas.y, width: canvas.width, height: bottom - canvas.y - 32, pinY: (canvas.height + 40 - 240) / 2 };
   });
@@ -596,8 +617,8 @@ async function realMap() {
   async function pin() {
     try { await until(async () => {
       const box = await canvas.boundingBox();
-      // fitBounds reserves 40px above and 240px below the one public synthetic point.
-      await page.mouse.click(box.x + box.width / 2, box.y + (box.height + 40 - 240) / 2);
+      // Project the public fixture pin through the actual SDK after viewport/style changes.
+      const point=await page.evaluate(()=>{ const p=window.__observedMap.project([-0.1278,51.5074]);return{x:p.x,y:p.y}; }); await page.mouse.click(box.x+point.x,box.y+point.y);
       return page.getByRole('region', { name: 'Selected result', exact: true }).getByRole('link', { name: data.activity.title, exact: true }).isVisible();
     }, 'Actual rendered pin is selectable after style/viewport change'); } catch (error) {
       await shot(page, 'real-map-failure-' + page.viewportSize().width);
@@ -626,25 +647,16 @@ async function realMap() {
     }
   }
   await page.setViewportSize({ width: 390, height: 844 }); await settle(page);
-  let attribution;
-  await until(async () => {
-    attribution = await page.evaluate(() => {
-      const panel = document.querySelector('.discovery-results').getBoundingClientRect(), attrib = document.querySelector('.maplibregl-ctrl-attrib').getBoundingClientRect();
-      return { clear: attrib.bottom <= panel.top + 1, panelTop: panel.top, attributionBottom: attrib.bottom };
-    });
-    return attribution.clear;
-  }, 'Attribution settles above compact controls');
-  check(attribution.clear, 'Attribution stays above compact controls');
   const mountedCanvas = await canvas.elementHandle();
-  await page.getByRole('button', { name: 'List', exact: true }).click(); await until(() => page.locator('[data-result-id]').count());
-  equal(new URL(page.url()).searchParams.get('city'), data.city, 'Map to list preserves city');
-  await page.getByRole('button', { name: 'Map', exact: true }).click(); check(await mountedCanvas.evaluate(el => el.isConnected), 'List to map retains mounted map');
-  equal(new URL(page.url()).searchParams.get('q'), 'ball', 'Map/list preserves text filter');
-  await page.getByRole('button', { name: 'Expand results', exact: true }).click();
-  await until(async () => await page.locator('.discovery-map').evaluate(el => getComputedStyle(el).visibility === 'hidden'), 'Expanded results cover map and provider controls'); checks++;
-  await page.getByRole('button', { name: 'Compact results', exact: true }).click(); await settle(page);
+  await openResults(page); await until(() => page.locator('[data-result-id]').count());
+  equal(new URL(page.url()).searchParams.get('city'), data.city, 'Map to results preserves city');
+  check(await page.locator('[data-discovery-background]').evaluate(el=>el.inert), 'Expanded results make map inert');
+  await closeResults(page); check(await mountedCanvas.evaluate(el => el.isConnected), 'Closing results retains mounted map');
+  equal(new URL(page.url()).searchParams.get('q'), 'ball', 'Map/results preserves filter');
+  const credit = await page.locator('.maplibregl-ctrl-attrib').boundingBox(), dock = await page.locator('[data-discovery-dock]').boundingBox();
+  check(credit.y+credit.height<=dock.y-7, 'Real attribution stays above dock');
   const before = model.resultReads;
-  await canvas.dragTo(canvas, { sourcePosition: { x: 100, y: 100 }, targetPosition: { x: 150, y: 130 } });
+  await canvas.dragTo(canvas, { sourcePosition: { x: 100, y: 300 }, targetPosition: { x: 150, y: 330 } });
   equal(model.resultReads, before, 'Panning map does not change city-scoped results');
   check(tileSuccess > 0, 'Real tile successes recorded'); equal(tileFailure, 0, 'No provider tile failures');
   equal(model.writes.length, 0, 'Real provider case performs no content writes');
@@ -660,7 +672,7 @@ async function authControls() {
 }
 async function themeContrast() {
   const run = await setup(); const { page } = run; const measurements = {};
-  await page.goto(BASE + '/activities' + data.query('activities')); await page.getByRole('searchbox').waitFor();
+  await page.goto(BASE + '/activities' + data.query('activities')); await closeResults(page); await page.locator('.discovery-city').waitFor();
   for (const theme of ['light', 'dark']) { await page.evaluate(theme => document.documentElement.classList.toggle('dark', theme === 'dark'), theme); measurements[theme] = await contrastPairs(page); }
   fs.writeFileSync(path.join(OUT, 'contrast.json'), JSON.stringify(measurements, null, 2)); await clean(run);
 }
@@ -680,25 +692,25 @@ async function nativeKit() {
 async function importFailure() {
   const run = await setup({ authenticated: true }); const { page, context, errors } = run;
   await context.route(url => url.pathname.endsWith('/NewTeamDrawer.tsx'), route => route.abort());
-  await page.goto(BASE + '/teams' + data.query('teams'));
+  await page.goto(BASE + '/teams' + data.query('teams')); await closeResults(page);
   await page.getByRole('button', { name: 'Create', exact: true }).click();
   const drawer = page.getByRole('dialog'); await drawer.getByRole('alert').filter({ hasText: 'Could not load this form' }).waitFor();
   check(await drawer.getByRole('button', { name: 'Reload form', exact: true }).isEnabled(), 'Failed import offers explicit reload');
   await drawer.getByRole('button', { name: 'Close', exact: true }).click(); await drawer.waitFor({ state: 'hidden' });
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Activities', exact: true }).click();
-  await page.getByRole('searchbox').waitFor(); check(errors.every(error => /Failed to fetch dynamically imported module/.test(error)), 'Only deliberate failed-import errors were observed'); errors.length = 0; await clean(run);
+  await category(page, 'Activities', false);
+  await closeResults(page); await page.locator('.discovery-city').waitFor(); check(errors.every(error => /Failed to fetch dynamically imported module/.test(error)), 'Only deliberate failed-import errors were observed'); errors.length = 0; await clean(run);
 }
 
 async function entryLoading() {
   const run = await setup({ authenticated: true }); const { page, context, resources } = run;
-  await page.goto(BASE + '/activities' + data.query('activities')); await page.getByRole('searchbox').waitFor();
+  await page.goto(BASE + '/activities' + data.query('activities')); await closeResults(page); await page.locator('.discovery-city').waitFor();
   const formModules = resources.filter(resource => /NewTeamDrawer|NewOrganizationDrawer|NewActivityDrawer/.test(resource));
   const bytes = await page.evaluate(() => performance.getEntriesByType('resource').filter(resource => /NewTeamDrawer|NewOrganizationDrawer|NewActivityDrawer/.test(new URL(resource.name).pathname)).reduce((total, resource) => total + resource.decodedBodySize, 0));
   fs.writeFileSync(path.join(OUT, 'entry-loading.json'), JSON.stringify({ initialFormModuleRequests: formModules.length, initialFormDecodedBytes: bytes }, null, 2));
   equal(formModules.length, 0, 'Discovery entry defers form modules until Create');
   let release; const gate = new Promise(resolve => { release = resolve; }); let requested = false;
   await context.route(url => url.pathname.endsWith('/NewTeamDrawer.tsx'), async route => { requested = true; await gate; await route.continue(); });
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Teams', exact: true }).click();
+  await category(page, 'Teams', false);
   await page.getByRole('button', { name: 'Create', exact: true }).click(); await page.getByRole('status').filter({ hasText: 'Loading team form' }).waitFor(); check(requested, 'Delayed form chunk requested on demand');
   release(); await page.getByRole('dialog').getByLabel('Name', { exact: true }).waitFor(); await discard(page, page.getByRole('dialog')); await clean(run);
 }

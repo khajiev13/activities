@@ -574,29 +574,72 @@ async function mapFailure() {
   await page.getByText(/Map unavailable/).waitFor(); await page.getByRole('button', { name: 'Show results', exact: true }).click(); await until(() => page.locator('[data-result-id]').count());
   check(await page.getByRole('link', { name: data.activity.title, exact: true }).count(), 'Map failure keeps usable list alternative'); await fit(page); await shot(page, 'map-failure-list-390'); await clean(run);
 }
-// Pixels outside the synthetic pin must contain painted basemap detail, not a flat canvas.
-async function basemapTexture(page, screenshot) {
-  const region = await page.evaluate(() => {
-    const canvas = document.querySelector('.maplibregl-canvas').getBoundingClientRect(), panel = document.querySelector('[data-discovery-actions]').getBoundingClientRect();
-    const bottom = panel.left < canvas.right && panel.right > canvas.left ? panel.top : canvas.bottom;
-    return { x: canvas.x, y: canvas.y, width: canvas.width, height: bottom - canvas.y - 32, pinY: (canvas.height + 40 - 240) / 2 };
-  });
-  return page.evaluate(({ png, region }) => new Promise(resolve => {
-    const image = new Image();
-    image.onload = () => {
-      const canvas = document.createElement('canvas'); canvas.width = image.width; canvas.height = image.height;
-      const context = canvas.getContext('2d'); context.drawImage(image, 0, 0);
-      const pixels = context.getImageData(region.x, region.y, region.width, region.height).data, colors = new Set(); let edges = 0;
-      for (let y = 20; y < region.height - 4; y += 4) for (let x = 12; x < region.width - 12; x += 4) {
-        if (Math.abs(x - region.width / 2) < 70 && Math.abs(y - region.pinY) < 70) continue;
-        const index = (y * region.width + x) * 4, next = index + 12;
-        const rgb = [...pixels.slice(index, index + 3)]; colors.add(rgb.map(value => Math.floor(value / 16)).join(','));
-        if (rgb.reduce((sum, value, channel) => sum + Math.abs(value - pixels[next + channel]), 0) > 35) edges++;
+// Negative controls retain real UI/pin pixels but replace every other pixel
+// with flat gray. Their retained regions are independent of the sampler mask.
+async function flatBasemapControl(page, screenshot, retain) {
+  return page.evaluate(async ({ png, retain }) => {
+    const image = new Image(); image.src = 'data:image/png;base64,' + png; await image.decode();
+    const canvas = document.createElement('canvas'); canvas.width = image.width; canvas.height = image.height;
+    const context = canvas.getContext('2d'); context.fillStyle = '#e6e6e6'; context.fillRect(0, 0, canvas.width, canvas.height);
+    const rectangles = [];
+    if (retain.includes('ui')) for (const el of document.querySelectorAll('[data-discovery-top], [data-discovery-actions], [data-discovery-dock], .discovery-center, .maplibregl-ctrl')) {
+      const r = el.getBoundingClientRect(); if (r.width && r.height) rectangles.push({ x:r.x, y:r.y, width:r.width, height:r.height });
+    }
+    if (retain.includes('pin')) {
+      const point = window.__observedMap.project([-0.1278, 51.5074]);
+      const box = document.querySelector('.maplibregl-canvas').getBoundingClientRect();
+      rectangles.push({ x:box.x + point.x - 48, y:box.y + point.y - 48, width:96, height:96 });
+    }
+    for (const r of rectangles) context.drawImage(image, r.x, r.y, r.width, r.height, r.x, r.y, r.width, r.height);
+    return { png:canvas.toDataURL('image/png').split(',')[1], retainedRectangles:rectangles.length };
+  }, { png:screenshot.toString('base64'), retain });
+}
+
+// Sample only exposed basemap, with conservative guards for overlay shadows and
+// actual projected result features. UI/pin pixels never contribute to the metric.
+async function basemapTexture(page, screenshot, maskPath) {
+  const result = await page.evaluate(async ({ png, evidence }) => {
+    const image = new Image(); image.src = 'data:image/png;base64,' + png; await image.decode();
+    if (image.width !== innerWidth || image.height !== innerHeight) throw new Error('Texture sampling requires one screenshot pixel per CSS pixel');
+    const canvas = document.createElement('canvas'); canvas.width = image.width; canvas.height = image.height;
+    const context = canvas.getContext('2d'); context.drawImage(image, 0, 0);
+    const pixels = context.getImageData(0, 0, image.width, image.height).data;
+    const mapCanvas = document.querySelector('.maplibregl-canvas'), box = mapCanvas.getBoundingClientRect();
+    const overlays = [...document.querySelectorAll('.discovery-background > :not(.discovery-map), .discovery-map > :not(.discovery-map-canvas), .maplibregl-ctrl, .maplibregl-marker, .maplibregl-popup')]
+      .filter(el => getComputedStyle(el).visibility !== 'hidden')
+      .map(el => el.getBoundingClientRect()).filter(r => r.width && r.height)
+      .map(r => ({ left:r.left-32, right:r.right+32, top:r.top-32, bottom:r.bottom+32 }));
+    const map = window.__observedMap;
+    const features = map.queryRenderedFeatures().filter(feature => ['activities', 'teams', 'organizations'].includes(feature.source) && feature.geometry.type === 'Point');
+    const points = [...new Map(features.map(feature => {
+      const p = map.project(feature.geometry.coordinates); const point = { x:box.x+p.x, y:box.y+p.y };
+      return [Math.round(point.x)+','+Math.round(point.y), point];
+    })).values()];
+    // Current result glyphs are <=64px across and cluster radius<=40px. A64px
+    // guard in every direction also removes antialiasing around the full symbol.
+    const excluded = (x,y) => overlays.some(r => x>=r.left && x<=r.right && y>=r.top && y<=r.bottom)
+      || points.some(p => Math.abs(x-p.x)<=64 && Math.abs(y-p.y)<=64);
+    const samples = [], colors = new Set(); let edges = 0, candidates = 0;
+    for (let y=Math.max(20,Math.ceil(box.top)+20); y<Math.min(image.height-4,Math.floor(box.bottom)-4); y+=4) {
+      for (let x=Math.max(12,Math.ceil(box.left)+12); x<Math.min(image.width-12,Math.floor(box.right)-12); x+=4) {
+        candidates++;
+        if (excluded(x,y) || excluded(x+3,y) || document.elementFromPoint(x,y)!==mapCanvas || document.elementFromPoint(x+3,y)!==mapCanvas) continue;
+        const index=(y*image.width+x)*4, next=index+12, rgb=[...pixels.slice(index,index+3)];
+        colors.add(rgb.map(value=>Math.floor(value/16)).join(','));
+        if (rgb.reduce((sum,value,channel)=>sum+Math.abs(value-pixels[next+channel]),0)>35) edges++;
+        samples.push({x,y});
       }
-      resolve({ colors: colors.size, edges });
-    };
-    image.src = 'data:image/png;base64,' + png;
-  }), { png: screenshot.toString('base64'), region });
+    }
+    let mask;
+    if (evidence) {
+      context.fillStyle='#e6e6e6'; context.fillRect(0,0,canvas.width,canvas.height);
+      for (const {x,y} of samples) context.drawImage(image,x,y,4,4,x,y,4,4);
+      mask=canvas.toDataURL('image/png').split(',')[1];
+    }
+    return { colors:colors.size, edges, samples:samples.length, candidates, excludedUIRects:overlays.length, excludedProjectedPins:points.length, ...(mask?{mask}:{}) };
+  }, { png:screenshot.toString('base64'), evidence:Boolean(maskPath) });
+  if (maskPath) { fs.writeFileSync(maskPath,Buffer.from(result.mask,'base64')); delete result.mask; }
+  return result;
 }
 
 async function realMap() {
@@ -641,9 +684,17 @@ async function realMap() {
       await page.waitForFunction(() => !document.body.textContent.includes('Loading map tiles…'), { timeout: 25000 });
       await page.waitForLoadState('networkidle'); await settle(page);
       const screenshot = await shot(page, 'real-map-' + width + '-' + theme);
-      const texture = await basemapTexture(page, screenshot);
-      urbanTextures.push({ width, theme, ...texture });
-      check(texture.colors > 8 && texture.edges > 20, 'Urban basemap paints varied street texture outside the pin: ' + JSON.stringify(texture));
+      const texture = await basemapTexture(page, screenshot, path.join(OUT,'basemap-mask-'+width+'-'+theme+'.png'));
+      check(texture.samples>1000&&texture.excludedUIRects>0&&texture.excludedProjectedPins>0, 'Sampler has adequate exposed basemap coverage and excludes actual UI/pins');
+      const negativeControls=[];
+      urbanTextures.push({ width, theme, ...texture, negativeControls });
+      for (const retain of ['ui', 'pin', 'ui,pin', '']) {
+        const control=await flatBasemapControl(page,screenshot,retain);
+        const flat=await basemapTexture(page,Buffer.from(control.png,'base64'));
+        negativeControls.push({retain:retain||'nothing',retainedRectangles:control.retainedRectangles,...flat});
+        check(!(flat.colors>8&&flat.edges>20), 'Flat basemap with retained '+(retain||'nothing')+' must fail street texture: '+JSON.stringify(flat));
+      }
+      check(texture.colors > 8 && texture.edges > 20, 'Exposed basemap paints varied street texture after UI/pin exclusion: ' + JSON.stringify(texture));
     }
   }
   await page.setViewportSize({ width: 390, height: 844 }); await settle(page);

@@ -3,6 +3,7 @@ import { isInTelegram } from '@/api/authApi';
 export type TelegramInsets = Partial<Record<'top' | 'right' | 'bottom' | 'left', number>>;
 export type TelegramLocation = { latitude: number; longitude: number; altitude?: number; course?: number; speed?: number; horizontal_accuracy?: number };
 export type TelegramApp = {
+  readonly isActive?: boolean;
   colorScheme?: string;
   viewportStableHeight?: number;
   safeAreaInset?: TelegramInsets;
@@ -30,6 +31,7 @@ export function getTelegramApp(): TelegramApp | undefined {
   const app = (window as Window & { Telegram?: { WebApp?: TelegramApp } }).Telegram?.WebApp;
   if (!app) return undefined;
   return {
+    get isActive() { return app.isActive; },
     get colorScheme() { return app.colorScheme; },
     get viewportStableHeight() { return app.viewportStableHeight; },
     get safeAreaInset() { return app.safeAreaInset; },

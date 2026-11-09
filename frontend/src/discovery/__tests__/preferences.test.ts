@@ -8,6 +8,7 @@ const telegramWindow = window as Window & { Telegram?: { WebApp: TelegramApp } }
 vi.mock('@/api/authApi', () => ({ isInTelegram: () => Boolean(telegramWindow.Telegram) }));
 let read: typeof import('../preferences').readDiscoveryPreference;
 let write: typeof import('../preferences').writeDiscoveryPreference;
+let cached: typeof import('../preferences').readCachedDiscoveryPreference;
 const place: PlaceSelection = { geo: { level: 'city', country: 'Example Country', state: 'Example State', city: 'Example City' }, geonameId: 123, center: [34, 12] };
 const preference = (updatedAt = 100): DiscoveryPreference => ({ version: 1, mode: 'manual', place, recent: [place], welcomeSeen: true, updatedAt });
 const local = () => JSON.parse(localStorage.getItem(key)!);
@@ -20,7 +21,7 @@ beforeEach(async () => {
   const values = new Map<string, string>();
   vi.stubGlobal('localStorage', { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value) });
   delete telegramWindow.Telegram;
-  ({ readDiscoveryPreference: read, writeDiscoveryPreference: write } = await import('../preferences'));
+  ({ readDiscoveryPreference: read, writeDiscoveryPreference: write, readCachedDiscoveryPreference: cached } = await import('../preferences'));
 });
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); vi.unstubAllGlobals(); delete telegramWindow.Telegram; });
 
@@ -177,4 +178,13 @@ describe('remembered coarse discovery places', () => {
     expect(await write(preference())).toEqual({ warning: true });
     expect(await read()).toEqual({ preference: preference(), warning: true });
   });
+});
+
+it('reads validated cache synchronously without waiting for native and keeps the newest mirror on local failure', async () => {
+  native({ getItem: () => undefined, setItem: (_key, _value, done) => done?.(null, true) });
+  localStorage.setItem(key, JSON.stringify(preference(100)));
+  expect(cached()).toEqual({ preference: preference(100), warning: false });
+  await write(preference(200));
+  vi.spyOn(localStorage, 'getItem').mockImplementation(() => { throw Error('unavailable'); });
+  expect(cached()).toEqual({ preference: preference(200), warning: true });
 });

@@ -11,6 +11,9 @@ import { AxiosHeaders } from 'axios';
 import type { LocationDetails } from '@/components/Map/MapFunctions/AddLocation';
 const originalAdapter = client.defaults.adapter;
 const form = vi.hoisted(() => ({ actual: false, actualTeam: false, actualOrg: false }));
+vi.mock('@/discovery/preferences', () => ({ readCachedDiscoveryPreference: () => ({ preference: null, warning: false }), readDiscoveryPreference: async () => ({ preference: null, warning: false }), writeDiscoveryPreference: async () => ({ warning: false }) }));
+vi.mock('@/discovery/deviceLocation', () => ({ getLocationPermission: async () => 'unknown', requestDeviceLocation: vi.fn() }));
+vi.mock('@/discovery/geoNames', () => ({ resolvePlaceCenter: async () => null, searchCityPlaces: async () => [] }));
 vi.mock('@/components/SelectLocation', () => ({ default: ({ setLocation }: { setLocation: (value: LocationDetails) => void }) => <button type="button" onClick={() => setLocation({ country: 'Example country', state: 'Example state', city: 'Example city', location_pk: 'venue-1', location_name: 'Example pitch', country_code: '', timezone: '', sunrise: '', sunset: '' })}>Choose example venue</button> }));
 vi.mock('@/discovery/api', () => ({ fetchCountries: vi.fn(), fetchResults: vi.fn() }));
 vi.mock('@/components/ActivitiesPage/NewActivityDrawer', async importOriginal => {

@@ -52,6 +52,11 @@ function nativeCall<T>(run: (finish: (error: string | null, value?: T) => void) 
   });
 }
 
+export function readCachedDiscoveryPreference(): ReadResult {
+  const local = readLocal();
+  return { preference: latest(mirror, local.preference), warning: local.warning };
+}
+
 export async function readDiscoveryPreference(signal?: AbortSignal): Promise<ReadResult> {
   const local = readLocal();
   let stored: DiscoveryPreference | null = null;

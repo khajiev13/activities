@@ -8,6 +8,9 @@ import client from '@/api/client';
 import { DiscoveryProvider } from '@/discovery/DiscoveryContext';
 import { Create } from '@/components/Drawer';
 const { reloadCalls } = vi.hoisted(() => ({ reloadCalls: vi.fn() }));
+vi.mock('@/discovery/preferences', () => ({ readCachedDiscoveryPreference: () => ({ preference: null, warning: false }), readDiscoveryPreference: async () => ({ preference: null, warning: false }), writeDiscoveryPreference: async () => ({ warning: false }) }));
+vi.mock('@/discovery/deviceLocation', () => ({ getLocationPermission: async () => 'unknown', requestDeviceLocation: vi.fn() }));
+vi.mock('@/discovery/geoNames', () => ({ resolvePlaceCenter: async () => null, searchCityPlaces: async () => [] }));
 vi.mock('@/discovery/DiscoveryContext', async importOriginal => {
   const actual = await importOriginal<typeof import('@/discovery/DiscoveryContext')>();
   return { ...actual, useDiscovery: () => { const value = actual.useDiscovery(); return { ...value, reload: () => { reloadCalls(); value.reload(); } }; }, useOptionalDiscovery: () => { const value = actual.useOptionalDiscovery(); return value && { ...value, reload: () => { reloadCalls(); value.reload(); } }; } };

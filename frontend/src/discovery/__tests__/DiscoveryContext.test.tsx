@@ -5,6 +5,9 @@ import { MemoryRouter, Link, useLocation } from 'react-router-dom';
 import { DiscoveryProvider, useDiscovery } from '../DiscoveryContext';
 import { fetchCountries, fetchResults } from '../api';
 import type { DiscoveryResults } from '../types';
+vi.mock('@/discovery/preferences', () => ({ readCachedDiscoveryPreference: () => ({ preference: null, warning: false }), readDiscoveryPreference: async () => ({ preference: null, warning: false }), writeDiscoveryPreference: async () => ({ warning: false }) }));
+vi.mock('@/discovery/deviceLocation', () => ({ getLocationPermission: async () => 'unknown', requestDeviceLocation: vi.fn() }));
+vi.mock('@/discovery/geoNames', () => ({ resolvePlaceCenter: async () => null, searchCityPlaces: async () => [] }));
 vi.mock('../api', () => ({ fetchCountries: vi.fn(), fetchResults: vi.fn() }));
 afterEach(() => { cleanup(); vi.resetAllMocks(); });
 function Probe() {

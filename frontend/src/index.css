@@ -100,6 +100,14 @@ body.dark .maplibregl-popup-content {
   --app-safe-top: max(env(safe-area-inset-top, 0px), var(--native-safe-top, 0px));
   --app-safe-right: max(env(safe-area-inset-right, 0px), var(--native-safe-right, 0px));
   --app-safe-bottom: max(env(safe-area-inset-bottom, 0px), var(--native-safe-bottom, 0px));
+  --discovery-dock-height: 58px;
+  --discovery-credit-height: 30px;
+  --discovery-actions-height: 48px;
+  --discovery-preview-height: 0px;
+  --discovery-dock-bottom: calc(var(--app-safe-bottom) + 12px);
+  --discovery-credit-bottom: calc(var(--discovery-dock-bottom) + var(--discovery-dock-height) + 8px);
+  --discovery-actions-bottom: calc(var(--discovery-credit-bottom) + var(--discovery-credit-height) + 10px);
+  --discovery-preview-bottom: calc(var(--discovery-actions-bottom) + var(--discovery-actions-height) + 10px);
   --app-safe-left: max(env(safe-area-inset-left, 0px), var(--native-safe-left, 0px));
 }
 html, body, #root { width: 100%; min-height: 100%; }
@@ -160,7 +168,7 @@ input, select, textarea { min-height: 44px; font-size: 16px !important; }
 .discovery-search input { width:100%; border:1px solid hsl(var(--border)); background:hsl(var(--card)); border-radius:14px; padding:10px 12px; font-size:16px; }
 .discovery-workspace { flex:1; min-height:0; position:relative; display:flex; flex-direction:column; }
 .discovery-map { position:absolute; inset:0; overflow:hidden; }
-.discovery-map-canvas { width:100%; height:100%; min-height:240px; }
+.discovery-map-canvas { width:100%; height:100%; min-height:0; }
 .discovery-map-status,.discovery-map-selection { position:absolute; top:12px; left:12px; padding:8px 12px; border-radius:12px; background:hsl(var(--card)); font-size:12px; }
 .discovery-map-selection { z-index:3; }
 .discovery-results { z-index:1; display:flex; flex-direction:column; min-height:0; flex:1; background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:24px 24px 0 0; margin-top:0; overflow:hidden; }
@@ -197,9 +205,6 @@ input, select, textarea { min-height: 44px; font-size: 16px !important; }
 .app-content.discovery-content { padding:0; overflow:hidden; }
 .discovery-city strong { display:flex; align-items:center; gap:8px; }
 .discovery-city strong svg { flex-shrink:0; }
-@media(max-width:1023px) {
- .discovery-map .maplibregl-ctrl-bottom-left,.discovery-map .maplibregl-ctrl-bottom-right { bottom:210px; }
-}
 .discovery-map { z-index:0; }
 
 @media(max-width:1023px) { .discovery-page.expanded-results .discovery-map { visibility:hidden; } }
@@ -220,3 +225,26 @@ input, select, textarea { min-height: 44px; font-size: 16px !important; }
 .discovery-map-selection .discovery-card { padding: 4px; }
 .discovery-location-success { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: hsl(var(--card)); font-size: 14px; }
 .discovery-location-success button { text-decoration: underline; }
+
+/* Shared discovery geometry: one root encloses map, dock and overlays. */
+[data-discovery-geometry], .discovery-page:not([data-discovery-geometry] .discovery-page) {
+  --discovery-dock-bottom: calc(var(--app-safe-bottom) + 12px);
+  --discovery-credit-bottom: calc(var(--discovery-dock-bottom) + var(--discovery-dock-height) + 8px);
+  --discovery-actions-bottom: calc(var(--discovery-credit-bottom) + var(--discovery-credit-height) + 10px);
+  --discovery-preview-bottom: calc(var(--discovery-actions-bottom) + var(--discovery-actions-height) + 10px);
+}
+.app-shell { position: relative; top: var(--app-offset-top, 0px); }
+.discovery-map .maplibregl-ctrl-bottom-left, .discovery-map .maplibregl-ctrl-bottom-right {
+  bottom: var(--discovery-credit-bottom); z-index: 3;
+}
+.discovery-map .maplibregl-ctrl-bottom-left { left: calc(var(--app-safe-left) + 16px); }
+.discovery-map .maplibregl-ctrl-bottom-right { right: calc(var(--app-safe-right) + 12px); max-width: calc(100% - 140px - var(--app-safe-left) - var(--app-safe-right)); }
+.discovery-map .maplibregl-ctrl-bottom-left > .maplibregl-ctrl, .discovery-map .maplibregl-ctrl-bottom-right > .maplibregl-ctrl { margin: 0; }
+/* Compensate the installed SDK logo’s -4px bottom margin without changing its anchor. */
+.discovery-map .maplibregl-ctrl-bottom-left > .maplibregl-ctrl { padding-bottom: 4px; }
+.discovery-map .maplibregl-ctrl-attrib { white-space: normal; overflow-wrap: anywhere; }
+.discovery-map-selection { top: auto; bottom: var(--discovery-preview-bottom); right: 12px; max-height: max(64px, calc(var(--app-height, 100dvh) - var(--discovery-preview-bottom) - var(--discovery-top-height, 80px) - 24px)); overflow: auto; }
+.discovery-map-recovery { position: absolute; top: calc(var(--app-safe-top) + var(--discovery-top-height, 0px) + 12px); left: 12px; right: 12px; z-index: 4; padding: 8px 12px; background: hsl(var(--card)); border-radius: 12px; font-size: 14px; }
+.discovery-map-recovery button { text-decoration: underline; }
+/* Portal sheets use the same visible viewport origin without translating the body. */
+.create-sheet, .join-sheet { bottom: max(0px, calc(100dvh - var(--app-offset-top, 0px) - var(--app-height, 100dvh))); }

@@ -10,7 +10,7 @@ export function useAppViewport(): void {
     const app = getTelegramApp();
     const root = document.documentElement;
     const viewport = window.visualViewport;
-    const properties = ['--app-height', '--native-safe-top', '--native-safe-right', '--native-safe-bottom', '--native-safe-left'];
+    const properties = ['--app-height', '--app-offset-top', '--native-safe-top', '--native-safe-right', '--native-safe-bottom', '--native-safe-left'];
     const previous = properties.map(name => root.style.getPropertyValue(name));
     const update = () => {
       const browserHeight = positive(viewport?.height) ?? positive(window.innerHeight) ?? 1;
@@ -18,6 +18,8 @@ export function useAppViewport(): void {
       // The visual viewport shrinks for keyboards even while native stable height stays fixed.
       const height = nativeHeight ? Math.min(nativeHeight, browserHeight) : browserHeight;
       root.style.setProperty('--app-height', `${height}px`);
+      const offset = viewport?.offsetTop;
+      root.style.setProperty('--app-offset-top', `${typeof offset === 'number' && Number.isFinite(offset) ? Math.max(0, offset) : 0}px`);
       for (const side of ['top', 'right', 'bottom', 'left'] as const) {
         const inset = Math.max(positive(app?.safeAreaInset?.[side]) ?? 0, positive(app?.contentSafeAreaInset?.[side]) ?? 0);
         root.style.setProperty(`--native-safe-${side}`, `${inset}px`);

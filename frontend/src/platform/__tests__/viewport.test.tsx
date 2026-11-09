@@ -47,7 +47,12 @@ describe('app viewport', () => {
     const remove = vi.spyOn(viewport, 'removeEventListener'); const scroll = vi.fn();
     const view = render(<Viewport />); const input = view.getByRole('textbox'); input.scrollIntoView = scroll;
     fireEvent.focusIn(input); act(() => viewport.dispatchEvent(new Event('resize')));
-    expect(value('--app-height')).toBe('420px'); expect(scroll).toHaveBeenCalled(); view.unmount();
+    expect(value('--app-height')).toBe('420px');
+    Object.assign(viewport, { height: 250, offsetTop: 95 }); act(() => viewport.dispatchEvent(new Event('scroll')));
+    expect(value('--app-height')).toBe('250px'); expect(value('--app-offset-top')).toBe('95px');
+    Object.assign(viewport, { offsetTop: -10 }); act(() => viewport.dispatchEvent(new Event('resize'))); expect(value('--app-offset-top')).toBe('0px');
+    expect(scroll).toHaveBeenCalled(); view.unmount();
+    expect(value('--app-offset-top')).toBe('');
     expect(remove).toHaveBeenCalledWith('resize', expect.any(Function)); expect(remove).toHaveBeenCalledWith('scroll', expect.any(Function));
     Object.defineProperty(window, 'visualViewport', { value: undefined, configurable: true });
   });

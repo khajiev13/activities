@@ -10,14 +10,19 @@ import { AppShell } from '@/components/layout/AppShell';
 import { ResultCard } from '../ResultCard';
 import { DiscoveryPage } from '../DiscoveryPage';
 import { readDiscoveryPreference, writeDiscoveryPreference } from '@/discovery/preferences';
-import type { DiscoveryResults } from '@/discovery/types';
+import type { DiscoveryResults, GeoSelection } from '@/discovery/types';
 vi.mock('@/discovery/preferences', () => ({ readCachedDiscoveryPreference: () => ({ preference: null, warning: false }), readDiscoveryPreference: vi.fn(async () => ({ preference: null, warning: false })), writeDiscoveryPreference: vi.fn(async () => ({ warning: false })) }));
 vi.mock('@/discovery/deviceLocation', () => ({ getLocationPermission: async () => 'unknown', requestDeviceLocation: vi.fn() }));
-vi.mock('@/discovery/geoNames', () => ({ resolvePlaceCenter: async () => null, searchCityPlaces: async () => [] }));
+vi.mock('@/discovery/geoNames', () => ({ resolvePlaceCenter: async (geo: GeoSelection) => ({ geo, center: geo.city === 'Edinburgh' ? [-3, 56] : [0, 52] }), searchCityPlaces: async () => [] }));
 vi.mock('@/discovery/api', () => ({ fetchCountries: vi.fn(), fetchResults: vi.fn() }));
 vi.mock('@/components/Drawer', () => ({ Create: ({ entity }: { entity: string }) => <button>Create {entity}</button> }));
-const sdk = vi.hoisted(() => ({ styleReady: true, sources: new Map<string, { data: { features: { properties: { pk?: string } }[] } }>(), fits: vi.fn(), jumps: vi.fn(), listeners: new Map<string, Set<() => void>>() }));
+const sdk = vi.hoisted(() => ({ styleReady: true, sources: new Map<string, { data: { features: { properties: { pk?: string } }[] } }>(), fits: vi.fn(), moves: vi.fn(), jumps: vi.fn(), listeners: new Map<string, Set<() => void>>() }));
 vi.mock('@maptiler/sdk', () => ({ config: {}, MapStyle: { BASIC: { DARK: 'dark', LIGHT: 'light' } }, Map: class {
+  container: HTMLElement;
+  constructor(options: { container: HTMLElement }) { this.container = options.container; }
+  getContainer() { return this.container; }
+  getCenter() { return { lng: 0, lat: 20 }; } getZoom() { return 2; } getBearing() { return 0; } getPitch() { return 0; }
+  project() { return { x: 100, y: 100 }; } stop() {} panBy() {} easeTo = sdk.moves;
   on(name: string, layer: string | (() => void), fn?: () => void) { name = typeof layer === 'string' ? name + ':' + layer : name; const cb = typeof layer === 'function' ? layer : fn!; if (!sdk.listeners.has(name)) sdk.listeners.set(name, new Set()); sdk.listeners.get(name)!.add(cb); }
   once(name: string, fn: () => void) { this.on(name, fn); }
   off(name: string, layer: string | (() => void), fn?: () => void) { sdk.listeners.get(typeof layer === 'string' ? name + ':' + layer : name)?.delete(typeof layer === 'function' ? layer : fn!); }
@@ -79,25 +84,26 @@ it('keeps invalid coordinates in list while excluding them from map', async () =
   vi.mocked(fetchResults).mockResolvedValue({ ...results, organizations: [{ ...organization, location: { ...organization.location, points: { latitude: 999, longitude: 0 } } }] });
   mount(); expect(await screen.findByText('Real Club')).toBeTruthy(); await waitFor(() => expect(sdk.sources.get('organizations')?.data.features).toEqual([]));
 });
-it.each(['empty', 'unmappable'] as const)('resets the camera after changing a populated city to an %s city', async kind => {
+it.each(['empty', 'unmappable'] as const)('centers the selected city independently of %s results', async kind => {
   vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }, { name: 'Scotland', cities: [{ name: 'Edinburgh' }] }] }]);
   const other = { ...organization, pk: 'org-other', name: 'Other Club', state: { name: 'Scotland' }, city: { name: 'Edinburgh' }, location: { ...organization.location, points: { latitude: 999, longitude: 0 } } };
   vi.mocked(fetchResults).mockImplementation(async state => state.geo?.city === 'Edinburgh'
     ? { activities: [], teams: [], organizations: kind === 'empty' ? [] : [other] } : results);
-  mount(); await screen.findByText('Real Club'); await waitFor(() => expect(sdk.fits).toHaveBeenCalled());
+  mount(); await screen.findByText('Real Club'); await waitFor(() => expect(sdk.moves).toHaveBeenCalled());
   fireEvent.click(screen.getByRole('button', { name: /Cambridge/ }));
   fireEvent.click(await screen.findByRole('button', { name: 'Edinburgh, Scotland, UK' }));
   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
   if (kind === 'empty') await screen.findByText(/No organizations found/); else await screen.findByText('Other Club');
   expect(await screen.findByText('No mapped locations are available for Edinburgh, Scotland, UK.')).toBeTruthy();
-  expect(sdk.jumps).toHaveBeenCalledWith({ center: [0, 20], zoom: 2, padding: { top: 0, right: 0, bottom: 0, left: 0 } });
-  const fits = sdk.fits.mock.calls.length; const jumps = sdk.jumps.mock.calls.length;
+  expect(sdk.moves).toHaveBeenLastCalledWith(expect.objectContaining({ center: [-3, 56], zoom: 12 }));
+  expect(sdk.fits).not.toHaveBeenCalled(); expect(sdk.jumps).not.toHaveBeenCalled();
+  const moves = sdk.moves.mock.calls.length; const jumps = sdk.jumps.mock.calls.length;
   fireEvent.click(screen.getByRole('button', { name: 'List' })); fireEvent.click(screen.getByRole('button', { name: 'Map' }));
-  expect(sdk.fits).toHaveBeenCalledTimes(fits); expect(sdk.jumps).toHaveBeenCalledTimes(jumps);
+  expect(sdk.moves).toHaveBeenCalledTimes(moves); expect(sdk.jumps).toHaveBeenCalledTimes(jumps);
 });
 it('preserves intentional pan when search becomes empty within the same geography', async () => {
   vi.mocked(fetchResults).mockImplementation(async state => state.query === 'none' ? { activities: [], teams: [], organizations: [] } : results);
-  mount(); await screen.findByText('Real Club'); await waitFor(() => expect(sdk.fits).toHaveBeenCalled());
+  mount(); await screen.findByText('Real Club'); await waitFor(() => expect(sdk.moves).toHaveBeenCalled());
   const jumps = sdk.jumps.mock.calls.length;
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'none' } });
   await screen.findByText(/No organizations found/);

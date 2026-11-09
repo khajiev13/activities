@@ -46,3 +46,44 @@ export function requestDeviceLocation(signal?: AbortSignal): Promise<DevicePosit
     } catch { finish(undefined, new DOMException('Location unavailable', 'NotSupportedError')); }
   });
 }
+
+export type LocationPermission = 'granted' | 'prompt' | 'denied' | 'unavailable' | 'unknown';
+
+// Permission inspection never calls getLocation/getCurrentPosition. Both native
+// initialization and browser permission queries may hang on unsupported clients.
+export function getLocationPermission(signal?: AbortSignal): Promise<LocationPermission> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) { reject(new DOMException('Location cancelled', 'AbortError')); return; }
+    let finished = false;
+    const finish = (permission: LocationPermission, error?: DOMException) => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timeout);
+      signal?.removeEventListener('abort', abort);
+      if (error) reject(error); else resolve(permission);
+    };
+    const abort = () => finish('unknown', new DOMException('Location cancelled', 'AbortError'));
+    const timeout = setTimeout(() => finish('unknown'), 1500);
+    signal?.addEventListener('abort', abort, { once: true });
+    try {
+      const app = getTelegramApp();
+      const manager = app?.isVersionAtLeast?.('8.0') ? app.LocationManager : undefined;
+      if (manager) {
+        const inspect = () => {
+          if (finished) return;
+          if (manager.isLocationAvailable === false) finish('unavailable');
+          else if (manager.isLocationAvailable !== true) finish('unknown');
+          else if (manager.isAccessGranted === true) finish('granted');
+          else if (manager.isAccessRequested === true && manager.isAccessGranted === false) finish('denied');
+          else if (manager.isAccessRequested === false && manager.isAccessGranted === false) finish('prompt');
+          else finish('unknown');
+        };
+        if (manager.isInited) inspect(); else manager.init(inspect);
+      } else if (typeof navigator === 'undefined' || !navigator.geolocation) finish('unavailable');
+      else if (!navigator.permissions?.query) finish('unknown');
+      else navigator.permissions.query({ name: 'geolocation' }).then(permission => {
+        finish(['granted', 'prompt', 'denied'].includes(permission.state) ? permission.state : 'unknown');
+      }, () => finish('unknown'));
+    } catch { finish('unknown'); }
+  });
+}

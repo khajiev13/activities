@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { requestDeviceLocation } from '../deviceLocation';
+import { getLocationPermission, requestDeviceLocation } from '../deviceLocation';
 import type { TelegramApp } from '@/platform/telegram';
 const native = vi.hoisted(() => ({ app: undefined as TelegramApp | undefined }));
 vi.mock('@/platform/telegram', () => ({ getTelegramApp: () => native.app }));
@@ -49,5 +49,44 @@ describe('one-shot device location', () => {
   it('bounds native initialization and rejects pre-aborted requests before prompting', async () => {
     const init = vi.fn(); native.app = { isVersionAtLeast: () => true, LocationManager: { init, getLocation: vi.fn() } }; const result = requestDeviceLocation(); const rejection = expect(result).rejects.toHaveProperty('name', 'TimeoutError'); await vi.advanceTimersByTimeAsync(8000); await rejection;
     const controller = new AbortController(); controller.abort(); await expect(requestDeviceLocation(controller.signal)).rejects.toHaveProperty('name', 'AbortError'); expect(init).toHaveBeenCalledTimes(1);
+  });
+});
+
+
+describe('permission inspection without a location prompt', () => {
+  it.each(['granted', 'prompt', 'denied'] as const)('reads browser %s without requesting a fix', async state => {
+    const query = vi.fn(async () => ({ state })); Object.defineProperty(navigator, 'permissions', { configurable: true, value: { query } });
+    expect(await getLocationPermission()).toBe(state); expect(query).toHaveBeenCalledWith({ name: 'geolocation' }); expect(browser).not.toHaveBeenCalled();
+  });
+  it('reports unsupported browser inspection as unknown and missing geolocation as unavailable', async () => {
+    Object.defineProperty(navigator, 'permissions', { configurable: true, value: undefined }); expect(await getLocationPermission()).toBe('unknown');
+    Object.defineProperty(navigator, 'geolocation', { configurable: true, value: undefined }); expect(await getLocationPermission()).toBe('unavailable'); expect(browser).not.toHaveBeenCalled();
+  });
+  it('bounds a hanging browser permission query to 1500ms', async () => {
+    Object.defineProperty(navigator, 'permissions', { configurable: true, value: { query: () => new Promise(() => {}) } }); const result = getLocationPermission(); await vi.advanceTimersByTimeAsync(1500); expect(await result).toBe('unknown'); expect(browser).not.toHaveBeenCalled();
+  });
+  it('handles rejected permission inspection without prompting', async () => {
+    Object.defineProperty(navigator, 'permissions', { configurable: true, value: { query: () => Promise.reject(new Error('unsupported')) } }); expect(await getLocationPermission()).toBe('unknown'); expect(browser).not.toHaveBeenCalled();
+  });
+  it.each([
+    [true, true, true, 'granted'], [true, true, false, 'denied'], [true, false, false, 'prompt'], [false, true, true, 'unavailable'], [true, undefined, undefined, 'unknown'],
+  ] as const)('reads native availability/access flags %#', async (available, requested, granted, expected) => {
+    const getLocation = vi.fn(); native.app = { isVersionAtLeast: vi.fn(() => true), LocationManager: { isInited: true, isLocationAvailable: available, isAccessRequested: requested, isAccessGranted: granted, init: vi.fn(), getLocation } };
+    expect(await getLocationPermission()).toBe(expected); expect(getLocation).not.toHaveBeenCalled(); expect(browser).not.toHaveBeenCalled(); expect(native.app.isVersionAtLeast).toHaveBeenCalledWith('8.0');
+  });
+  it('waits for native init before reading permission flags', async () => {
+    let init!: () => void; const manager = { isLocationAvailable: false, isAccessRequested: false, isAccessGranted: false, init: vi.fn((cb?: () => void) => { init = cb!; }), getLocation: vi.fn() }; native.app = { isVersionAtLeast: () => true, LocationManager: manager };
+    const result = getLocationPermission(); manager.isLocationAvailable = true; manager.isAccessRequested = true; manager.isAccessGranted = true; init(); expect(await result).toBe('granted'); expect(manager.getLocation).not.toHaveBeenCalled();
+  });
+  it('bounds native initialization, ignores late callbacks and never prompts', async () => {
+    let init!: () => void; const manager = { isLocationAvailable: true, isAccessRequested: true, isAccessGranted: true, init: (cb?: () => void) => { init = cb!; }, getLocation: vi.fn() }; native.app = { isVersionAtLeast: () => true, LocationManager: manager };
+    const result = getLocationPermission(); await vi.advanceTimersByTimeAsync(1500); expect(await result).toBe('unknown'); init(); expect(manager.getLocation).not.toHaveBeenCalled(); expect(browser).not.toHaveBeenCalled();
+  });
+  it('uses browser permission inspection on older native versions', async () => {
+    const init = vi.fn(); native.app = { isVersionAtLeast: () => false, LocationManager: { init, getLocation: vi.fn() } }; Object.defineProperty(navigator, 'permissions', { configurable: true, value: { query: async () => ({ state: 'denied' }) } }); expect(await getLocationPermission()).toBe('denied'); expect(init).not.toHaveBeenCalled();
+  });
+  it('cancels pending inspection and never initializes an already aborted request', async () => {
+    const init = vi.fn(); native.app = { isVersionAtLeast: () => true, LocationManager: { init, getLocation: vi.fn() } }; const controller = new AbortController(); const pending = getLocationPermission(controller.signal); controller.abort(); await expect(pending).rejects.toHaveProperty('name', 'AbortError');
+    await expect(getLocationPermission(controller.signal)).rejects.toHaveProperty('name', 'AbortError'); expect(init).toHaveBeenCalledTimes(1); expect(browser).not.toHaveBeenCalled();
   });
 });

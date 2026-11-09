@@ -1,6 +1,7 @@
 import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Plus } from 'lucide-react';
+import { useDiscoveryBack } from '@/components/Discovery/DiscoverySurface';
 import type { DiscoveryEntity } from '@/discovery/types';
 import { useOptionalDiscovery } from '@/discovery/DiscoveryContext';
 import { Button } from '@/components/ui/button';
@@ -24,10 +25,13 @@ class CreateFormBoundary extends Component<{ children: ReactNode }, { failed: bo
   }
 }
 
-export function Create({ entity, onCreated }: { entity?: DiscoveryEntity; onCreated?: () => void }) {
+export function Create({ entity, onCreated, open: controlledOpen, onOpenChange }: { entity?: DiscoveryEntity; onCreated?: () => void; open?: boolean; onOpenChange?: (open: boolean) => void }) {
   const location = useLocation(); const discovery = useOptionalDiscovery();
   const current = entity ?? (location.pathname.replace(/\/$/, '').slice(1) as DiscoveryEntity);
-  const [open, setOpen] = useState(false); const [dirty, setDirty] = useState(false); const [confirm, setConfirm] = useState(false);
+  const [localOpen, setLocalOpen] = useState(false);
+  const open = controlledOpen ?? localOpen;
+  const setOpen = (next: boolean) => { setLocalOpen(next); onOpenChange?.(next); };
+  const [dirty, setDirty] = useState(false); const [confirm, setConfirm] = useState(false);
   const [progressBar, setProgressBar] = useState(0);
   const [sheet, setSheet] = useState<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -60,11 +64,12 @@ export function Create({ entity, onCreated }: { entity?: DiscoveryEntity; onCrea
   const label = current === 'teams' ? 'team' : current === 'organizations' ? 'organization' : 'activity';
   function close() { setOpen(false); setDirty(false); setProgressBar(0); }
   function requestOpen(next: boolean) { if (!next && dirty) setConfirm(true); else if (!next) close(); else setOpen(true); }
+  useDiscoveryBack(open, () => requestOpen(false));
   function complete() { close(); onCreated?.(); }
   return <>
     <Drawer open={open} onOpenChange={requestOpen} shouldScaleBackground dismissible={false}>
-      <DrawerTrigger asChild><Button variant="outline" aria-label="Create" className="min-h-11 min-w-11"><Plus className="h-6 w-6" /></Button></DrawerTrigger>
-      <DrawerContent ref={setSheet} className="create-sheet overflow-hidden">
+      <DrawerTrigger asChild><Button variant="outline" aria-label="Create" className="min-h-11 min-w-11"><Plus className="h-5 w-5" /><span>Create</span></Button></DrawerTrigger>
+      <DrawerContent ref={setSheet} className="create-sheet overflow-hidden" onEscapeKeyDown={event => { event.preventDefault(); if (!confirm) requestOpen(false); }}>
         <div className="mx-auto w-full max-w-xl min-h-0 flex flex-1 flex-col">
           <DrawerHeader className="shrink-0"><DrawerTitle>Create a new {label}</DrawerTitle><DrawerDescription>Fill in the labeled sections, then create your {label}.</DrawerDescription></DrawerHeader>
           <div className="create-form-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain" onChangeCapture={() => setDirty(true)} onClickCapture={event => { if ((event.target as Element).closest('button, [role="switch"], [role="tab"], canvas')) setDirty(true); }}>

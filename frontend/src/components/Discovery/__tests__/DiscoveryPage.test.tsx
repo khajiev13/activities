@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import type { TelegramApp } from '@/platform/telegram';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { cleanupVaul } from '@/test/cleanupVaul';
 import { MemoryRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
@@ -11,6 +12,8 @@ import { ResultCard } from '../ResultCard';
 import { DiscoveryPage } from '../DiscoveryPage';
 import { readDiscoveryPreference, writeDiscoveryPreference } from '@/discovery/preferences';
 import type { DiscoveryResults, GeoSelection } from '@/discovery/types';
+const native = vi.hoisted(() => ({ app: undefined as TelegramApp | undefined }));
+vi.mock('@/platform/telegram', () => ({ getTelegramApp: () => native.app }));
 vi.mock('@/discovery/preferences', () => ({ readCachedDiscoveryPreference: () => ({ preference: null, warning: false }), readDiscoveryPreference: vi.fn(async () => ({ preference: null, warning: false })), writeDiscoveryPreference: vi.fn(async () => ({ warning: false })) }));
 vi.mock('@/discovery/deviceLocation', () => ({ getLocationPermission: async () => 'unknown', requestDeviceLocation: vi.fn() }));
 vi.mock('@/discovery/geoNames', () => ({ resolvePlaceCenter: async (geo: GeoSelection) => ({ geo, center: geo.city === 'Edinburgh' ? [-3, 56] : [0, 52] }), searchCityPlaces: async () => [] }));
@@ -36,7 +39,10 @@ const organization = { pk: 'org-1', name: 'Real Club', created_at: new Date('202
 const results: DiscoveryResults = { activities: [], teams: [], organizations: [organization] };
 const url = '/map?level=city&country=UK&state=England&city=Cambridge&entity=organizations&view=map&q=sport';
 function mount(path = url) { return render(<MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><Routes><Route path="/map" element={<DiscoveryPage />} /><Route path="/organizations" element={<DiscoveryPage entity="organizations" />} /><Route path="/login" element={<Link to={url}>Return</Link>} /></Routes></DiscoveryProvider></MemoryRouter>); }
-beforeEach(() => { vi.mocked(readDiscoveryPreference).mockResolvedValue({ preference: null, warning: false }); sdk.styleReady = true; vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} }); vi.useFakeTimers({ shouldAdvanceTime: true }); window.scrollTo = vi.fn(); vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }] }]); vi.mocked(fetchResults).mockResolvedValue(results); });
+const showResults = () => fireEvent.click(screen.getByRole('button', { name: /^Results:/ }));
+const showSearch = () => fireEvent.click(screen.getByRole('button', { name: /^Search / }));
+const close = () => fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+beforeEach(() => { native.app = undefined; vi.mocked(readDiscoveryPreference).mockResolvedValue({ preference: null, warning: false }); sdk.styleReady = true; vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} }); vi.useFakeTimers({ shouldAdvanceTime: true }); window.scrollTo = vi.fn(); vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }] }]); vi.mocked(fetchResults).mockResolvedValue(results); });
 afterEach(async () => { await cleanupVaul(); vi.useRealTimers(); vi.unstubAllGlobals(); vi.clearAllMocks(); sdk.sources.clear(); sdk.listeners.clear(); });
 it('offers manual city and explicit location action on first visit without assuming a city', async () => {
   mount('/map'); expect(await screen.findByRole('dialog')).toBeTruthy(); expect(screen.getByRole('button', { name: 'Use current location' })).toBeTruthy();
@@ -44,22 +50,22 @@ it('offers manual city and explicit location action on first visit without assum
   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull()); expect(screen.getByRole('button', { name: /Cambridge/ })).toBeTruthy();
 });
 it('restores URL, plots matching result IDs, keeps map across list toggle, and does not refit for panel changes', async () => {
-  mount(); expect(screen.getByRole('searchbox', { name: 'Search organizations' }).getAttribute('value')).toBe('sport');
+  mount(); showSearch(); expect(screen.getByRole('searchbox', { name: 'Search organizations' }).getAttribute('value')).toBe('sport'); close(); showResults();
   expect(await screen.findByText('Real Club')).toBeTruthy();
   await waitFor(() => expect(sdk.sources.get('organizations')?.data.features[0].properties.pk).toBe('org-1'));
-  const fits = sdk.fits.mock.calls.length; fireEvent.click(screen.getByRole('button', { name: 'List' }));
+  const fits = sdk.fits.mock.calls.length;
   expect(screen.getByText('Real Club').closest('[data-result-id]')?.getAttribute('data-result-id')).toBe('org-1');
   expect(sdk.fits).toHaveBeenCalledTimes(fits);
 });
 it('shows real tile loading while a new viewport loads and clears it on idle', async () => {
-  mount(); await screen.findByText('Real Club');
+  mount(); showResults(); await screen.findByText('Real Club');
   act(() => { for (const fn of sdk.listeners.get('dataloading') ?? []) fn(); });
   expect(screen.getByText('Loading map tiles…')).toBeTruthy();
   act(() => { for (const fn of sdk.listeners.get('idle') ?? []) fn(); });
   expect(screen.queryByText('Loading map tiles…')).toBeNull();
 });
 it('restores result layers when style.load arrives before the replacement style is ready', async () => {
-  const rendered = mount(); await screen.findByText('Real Club');
+  const rendered = mount(); showResults(); await screen.findByText('Real Club');
   await waitFor(() => expect(sdk.sources.has('organizations')).toBe(true));
   const fits = sdk.fits.mock.calls.length;
   act(() => {
@@ -82,44 +88,44 @@ it('restores result layers when style.load arrives before the replacement style 
 });
 it('keeps invalid coordinates in list while excluding them from map', async () => {
   vi.mocked(fetchResults).mockResolvedValue({ ...results, organizations: [{ ...organization, location: { ...organization.location, points: { latitude: 999, longitude: 0 } } }] });
-  mount(); expect(await screen.findByText('Real Club')).toBeTruthy(); await waitFor(() => expect(sdk.sources.get('organizations')?.data.features).toEqual([]));
+  mount(); showResults(); expect(await screen.findByText('Real Club')).toBeTruthy(); await waitFor(() => expect(sdk.sources.get('organizations')?.data.features).toEqual([]));
 });
 it.each(['empty', 'unmappable'] as const)('centers the selected city independently of %s results', async kind => {
   vi.mocked(fetchCountries).mockResolvedValue([{ name: 'UK', states: [{ name: 'England', cities: [{ name: 'Cambridge' }] }, { name: 'Scotland', cities: [{ name: 'Edinburgh' }] }] }]);
   const other = { ...organization, pk: 'org-other', name: 'Other Club', state: { name: 'Scotland' }, city: { name: 'Edinburgh' }, location: { ...organization.location, points: { latitude: 999, longitude: 0 } } };
   vi.mocked(fetchResults).mockImplementation(async state => state.geo?.city === 'Edinburgh'
     ? { activities: [], teams: [], organizations: kind === 'empty' ? [] : [other] } : results);
-  mount(); await screen.findByText('Real Club'); await waitFor(() => expect(sdk.moves).toHaveBeenCalled());
+  mount(); showResults(); await screen.findByText('Real Club'); close(); await waitFor(() => expect(sdk.moves).toHaveBeenCalled());
   fireEvent.click(screen.getByRole('button', { name: /Cambridge/ }));
   fireEvent.click(await screen.findByRole('button', { name: 'Edinburgh, Scotland, UK' }));
   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
-  if (kind === 'empty') await screen.findByText(/No organizations found/); else await screen.findByText('Other Club');
+  showResults(); if (kind === 'empty') await screen.findByText(/No organizations found/); else await screen.findByText('Other Club');
   expect(await screen.findByText('No mapped locations are available for Edinburgh, Scotland, UK.')).toBeTruthy();
   expect(sdk.moves).toHaveBeenLastCalledWith(expect.objectContaining({ center: [-3, 56], zoom: 12 }));
   expect(sdk.fits).not.toHaveBeenCalled(); expect(sdk.jumps).not.toHaveBeenCalled();
   const moves = sdk.moves.mock.calls.length; const jumps = sdk.jumps.mock.calls.length;
-  fireEvent.click(screen.getByRole('button', { name: 'List' })); fireEvent.click(screen.getByRole('button', { name: 'Map' }));
+  close(); showResults(); close();
   expect(sdk.moves).toHaveBeenCalledTimes(moves); expect(sdk.jumps).toHaveBeenCalledTimes(jumps);
 });
 it('preserves intentional pan when search becomes empty within the same geography', async () => {
   vi.mocked(fetchResults).mockImplementation(async state => state.query === 'none' ? { activities: [], teams: [], organizations: [] } : results);
-  mount(); await screen.findByText('Real Club'); await waitFor(() => expect(sdk.moves).toHaveBeenCalled());
+  mount(); showResults(); await screen.findByText('Real Club'); close(); await waitFor(() => expect(sdk.moves).toHaveBeenCalled());
   const jumps = sdk.jumps.mock.calls.length;
-  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'none' } });
+  showSearch(); fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'none' } }); close(); showResults();
   await screen.findByText(/No organizations found/);
   expect(sdk.jumps).toHaveBeenCalledTimes(jumps);
   expect(screen.queryByText(/This map view does not show the selected region/)).toBeNull();
 });
 it('shows usable list after a map failure and an informational organization preview without invented detail or join action', async () => {
-  mount(); await screen.findByText('Real Club'); act(() => { for (const fn of sdk.listeners.get('error') ?? []) fn(); });
+  mount(); showResults(); await screen.findByText('Real Club'); act(() => { for (const fn of sdk.listeners.get('error') ?? []) fn(); });
   expect(await screen.findByText(/Map unavailable/)).toBeTruthy(); fireEvent.click(screen.getByRole('button', { name: 'About Real Club' }));
   expect(screen.getByRole('region', { name: 'Organization preview' }).textContent).toContain('2 teams'); expect(screen.queryByRole('link', { name: /join|details/i })).toBeNull();
-  fireEvent.click(screen.getByRole('button', { name: 'Teams' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Close preview' })); fireEvent.click(screen.getByRole('button', { name: 'Teams' }));
   expect(screen.queryByRole('region', { name: 'Organization preview' })).toBeNull();
 });
 it('distinguishes loading, failure/retry and empty state', async () => {
   let reject: (error: Error) => void = () => {}; vi.mocked(fetchResults).mockImplementationOnce(() => new Promise((_resolve, no) => { reject = no; }));
-  mount(); expect(screen.getByText('Loading organizations…')).toBeTruthy();
+  mount(); showResults(); expect(screen.getByText('Loading organizations…')).toBeTruthy();
   await act(async () => reject(new Error('offline'))); expect(screen.getByRole('button', { name: 'Retry results' })).toBeTruthy();
   vi.mocked(fetchResults).mockResolvedValue({ activities: [], teams: [], organizations: [] }); fireEvent.click(screen.getByRole('button', { name: 'Retry results' }));
   expect(await screen.findByText(/No organizations found/)).toBeTruthy();
@@ -149,11 +155,11 @@ it('restores query and list position through real detail and login return links'
   const card = screen.getByRole('link', { name: 'Real Team' }); expect(card.getAttribute('href')).toContain('q=sport');
   fireEvent.click(card); expect(screen.getByText('Real team detail route')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-  expect((await screen.findByText('Real Team')).closest('.discovery-results-scroll')?.scrollTop).toBe(180);
-  fireEvent.click(screen.getByRole('button', { name: 'Account' }));
+  expect((await within(screen.getByRole('region', { name: 'Discovery results' })).findByText('Real Team')).closest('.discovery-results-scroll')?.scrollTop).toBe(180);
+  close(); fireEvent.click(screen.getByRole('button', { name: 'Profile' }));
   fireEvent.click(screen.getByRole('link', { name: 'Log in' }));
   expect(screen.getByText('Login route')).toBeTruthy(); fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-  expect((await screen.findByText('Real Team')).closest('.discovery-results-scroll')?.scrollTop).toBe(180);
+  expect((await within(screen.getByRole('region', { name: 'Discovery results' })).findByText('Real Team')).closest('.discovery-results-scroll')?.scrollTop).toBe(180);
   view.unmount();
 });
 it('shows an icon fallback after a team image fails', () => {
@@ -172,11 +178,11 @@ it.each(['teams', 'activities'] as const)('opens an encoded %s pin preview and r
   act(() => { for (const fn of sdk.listeners.get(entity === 'teams' ? 'click:teams' : 'click:unclustered-point') ?? []) (fn as (event: unknown) => void)({ point: {} }); });
   const preview = screen.queryByRole('region', { name: 'Selected result' }); expect(preview).not.toBeNull();
   const link = preview!.querySelector('a')!; expect(link.getAttribute('href')).toContain(entity === 'teams' ? '/teams/Real%20Team?' : '/activities/activity%2Fone?'); expect(link.getAttribute('href')).toContain('q=sport');
-  fireEvent.click(screen.getByRole('button', { name: 'List' })); fireEvent.click(screen.getByRole('button', { name: 'Map' }));
+  expect(screen.queryByRole('button', { name: /^Results:/ })).toBeNull();
   fireEvent.click(screen.getByRole('region', { name: 'Selected result' }).querySelector('a')!);
   fireEvent.click(screen.getByRole('button', { name: 'Return to results' }));
   await waitFor(() => expect(screen.queryByRole('region', { name: 'Selected result' })).not.toBeNull());
-  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'changed' } });
+  showSearch(); fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'changed' } });
   expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'sport' } });
   expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
@@ -186,9 +192,55 @@ it('keeps a dismissed welcome closed when geography remains empty', async () => 
   const view = mount('/map'); await screen.findByRole('dialog');
   fireEvent.click(screen.getByRole('button', { name: 'Close' }));
   expect(screen.queryByRole('dialog')).toBeNull();
-  fireEvent.click(screen.getByRole('button', { name: 'List' }));
+  showResults(); close();
   expect(screen.queryByRole('dialog')).toBeNull();
   const saved = vi.mocked(writeDiscoveryPreference).mock.calls.at(-1)![0]; expect(saved.welcomeSeen).toBe(true);
   view.unmount(); vi.mocked(readDiscoveryPreference).mockResolvedValue({ preference: saved, warning: false });
   mount('/map'); await act(async () => {}); expect(screen.queryByRole('dialog')).toBeNull();
+});
+
+it('rests on a full map with named icon categories, floating search and a two-destination dock', async () => {
+  const view = mount(); await waitFor(() => expect(sdk.sources.has('organizations')).toBe(true));
+  expect(view.container.querySelector('[data-discovery-geometry] .discovery-map')).toBeTruthy();
+  expect(screen.queryByRole('searchbox')).toBeNull(); expect(screen.queryByRole('region', { name: 'Discovery results' })).toBeNull();
+  for (const name of ['Activities', 'Teams', 'Organizations']) {
+    const button = screen.getByRole('button', { name }); expect(button.textContent).toBe(''); expect(button.getAttribute('title')).toBe(name);
+    expect(button.getAttribute('aria-pressed')).toBe(String(name === 'Organizations'));
+  }
+  const nav = screen.getByRole('navigation', { name: 'Main navigation' });
+  expect(within(nav).getAllByRole('button').map(button => button.textContent)).toEqual(['Map', 'Profile']);
+  expect(screen.getByRole('button', { name: /Results:.*organizations/i })).toBeTruthy();
+  const writes = vi.mocked(writeDiscoveryPreference).mock.calls.length; const moves = sdk.moves.mock.calls.length; fireEvent.click(screen.getByRole('button', { name: 'Center map' }));
+  await waitFor(() => expect(sdk.moves.mock.calls.length).toBeGreaterThan(moves));
+  expect(writeDiscoveryPreference).toHaveBeenCalledTimes(writes);
+});
+it('makes surfaces exclusive, hides background controls and returns keyboard focus after Escape', async () => {
+  mount(); const search = screen.getByRole('button', { name: 'Search organizations' }); search.focus(); fireEvent.click(search);
+  expect(screen.getAllByRole('dialog')).toHaveLength(1); expect(screen.queryByRole('navigation')).toBeNull();
+  expect(document.querySelector('[data-discovery-background]')?.hasAttribute('inert')).toBe(true);
+  expect(document.activeElement).toBe(screen.getByRole('searchbox'));
+  fireEvent.keyDown(document.activeElement!, { key: 'Escape' }); await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+  await waitFor(() => expect(document.activeElement).toBe(search));
+  const profile = screen.getByRole('button', { name: 'Profile' }); profile.focus(); fireEvent.click(profile);
+  fireEvent.click(screen.getByRole('button', { name: 'Choose a city' })); expect(screen.getAllByRole('dialog')).toHaveLength(1);
+  fireEvent.click(await screen.findByRole('button', { name: 'Cambridge, England, UK' }));
+  expect(screen.getByRole('dialog').getAttribute('aria-labelledby')).toBeTruthy(); expect(screen.getByRole('heading', { name: 'Profile' })).toBeTruthy();
+  close(); expect(screen.queryByRole('dialog')).toBeNull(); await waitFor(() => expect(document.activeElement).toBe(profile));
+});
+
+it('owns native Back only while a discovery surface is open', async () => {
+  const handlers = new Set<() => void>(); native.app = { BackButton: { show: vi.fn(), hide: vi.fn(), onClick: callback => handlers.add(callback), offClick: callback => { handlers.delete(callback); } } };
+  const view = mount(); await waitFor(() => expect(sdk.sources.has('organizations')).toBe(true)); expect(handlers.size).toBe(0);
+  fireEvent.click(screen.getByRole('button', { name: 'Profile' })); expect(handlers.size).toBe(1);
+  act(() => [...handlers][0]()); expect(screen.queryByRole('dialog')).toBeNull(); expect(handlers.size).toBe(0);
+  fireEvent.click(screen.getByRole('button', { name: /Cambridge/ })); expect(handlers.size).toBe(1); view.unmount(); expect(handlers.size).toBe(0);
+});
+
+it('restores Results/Create when a selected record disappears during detail return', async () => {
+  vi.mocked(fetchResults).mockResolvedValue({ ...results, teams: [team] });
+  function Detail() { const navigate = useNavigate(); return <button onClick={() => navigate(-1)}>Return to map</button>; }
+  render(<MemoryRouter initialEntries={[url.replace('entity=organizations', 'entity=teams')]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DiscoveryProvider><Routes><Route path="/map" element={<DiscoveryPage />} /><Route path="/teams/:id" element={<Detail />} /></Routes></DiscoveryProvider></MemoryRouter>);
+  await waitFor(() => expect(sdk.sources.has('teams')).toBe(true)); act(() => { for (const fn of sdk.listeners.get('click:teams') ?? []) (fn as (event: unknown) => void)({ point: {} }); });
+  fireEvent.click(screen.getByRole('region', { name: 'Selected result' }).querySelector('a')!); vi.mocked(fetchResults).mockResolvedValue({ activities: [], teams: [], organizations: [] });
+  fireEvent.click(screen.getByRole('button', { name: 'Return to map' })); expect(await screen.findByRole('button', { name: 'Results: 0 teams' })).toBeTruthy(); expect(screen.queryByRole('region', { name: 'Selected result' })).toBeNull();
 });

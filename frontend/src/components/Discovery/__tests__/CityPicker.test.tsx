@@ -117,3 +117,8 @@ it('explicit GPS is not canceled by a previously scheduled search debounce', asy
   await act(async () => vi.advanceTimersByTime(300)); await act(async () => finish({ latitude: 12, longitude: 34 }));
   expect(screen.queryByRole('dialog')).toBeNull(); expect(screen.getByLabelText('Mode').textContent).toBe('auto'); expect(screen.getByLabelText('Place').textContent).toContain('New City');
 });
+
+it('does not describe a catalogue outage as a completed empty search', async () => {
+  vi.mocked(fetchCountries).mockRejectedValue(new Error('offline')); await mount();
+  expect(screen.getByRole('button', { name: 'Retry cities' })).toBeTruthy(); expect(screen.queryByText(/No matching cities/)).toBeNull();
+});

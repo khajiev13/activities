@@ -274,3 +274,23 @@ it('recenter keeps native reconciliation alive so a newer saved manual choice st
   expect(d.location.place).toEqual(second); expect(d.location.mode).toBe('manual'); expect(d.location.recent).toEqual([second]);
   expect(url).toContain('city=Second'); expect(requestDeviceLocation).not.toHaveBeenCalled();
 });
+it.each(['results', 'profile', 'create'] as const)('stages a newer native preference while %s covers the map and reconciles on accepted close', async surface => {
+  store.preference = pref(); const native = delayed<{ preference: DiscoveryPreference; warning: boolean }>(); store.read.mockReturnValue(native.promise);
+  await mount(); await action(() => d.openSurface(surface)); const before = { place: d.location.place, sequence: d.location.cameraRequest.sequence, url };
+  await action(() => native.resolve({ preference: { ...pref('manual'), place: second, recent: [second], updatedAt: 500 }, warning: true }));
+  expect(d.location.place).toEqual(before.place); expect(d.location.cameraRequest.sequence).toBe(before.sequence); expect(url).toBe(before.url); expect(d.surface).toBe(surface);
+  await action(() => d.closeSurface()); expect(d.location.place).toEqual(second); expect(d.location.mode).toBe('manual'); expect(d.location.recent).toEqual([second]); expect(d.location.persistenceWarning).toBe(true); expect(url).toContain('city=Second'); expect(requestDeviceLocation).not.toHaveBeenCalled();
+});
+it.each(['manual', 'forget', 'navigation'] as const)('invalidates staged native reconciliation after newer %s intent', async intent => {
+  store.preference = pref(); const native = delayed<{ preference: DiscoveryPreference; warning: boolean }>(); store.read.mockReturnValue(native.promise);
+  await mount(); await action(() => d.openSurface('profile')); await action(() => native.resolve({ preference: { ...pref('manual'), place: second, updatedAt: 500 }, warning: false }));
+  await action(() => intent === 'manual' ? d.location.selectPlace(first) : intent === 'forget' ? d.location.forgetPlaces() : navigate(link));
+  await action(() => d.closeSurface()); expect(d.location.place?.geo ?? null).toEqual(intent === 'forget' ? null : first.geo); expect(url).not.toContain('city=Second');
+});
+it('allows explicit Profile following but keeps automatic lookup paused and retains city on denial', async () => {
+  store.preference = pref('manual'); await mount(); await action(() => d.openSurface('profile'));
+  await foreground(); expect(requestDeviceLocation).not.toHaveBeenCalled();
+  vi.mocked(requestDeviceLocation).mockRejectedValueOnce(new DOMException('Denied', 'NotAllowedError')); let accepted: boolean | undefined;
+  await act(async () => { accepted = await d.location.useCurrentLocation(); }); expect(accepted).toBe(false); expect(d.location.place).toEqual(first); expect(d.location.status).toBe('denied'); expect(d.surface).toBe('profile');
+  await act(async () => { accepted = await d.location.useCurrentLocation(); }); expect(accepted).toBe(true); expect(d.location.mode).toBe('auto'); expect(url).toContain('loc=auto'); expect(d.surface).toBe('profile');
+});

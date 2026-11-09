@@ -1,18 +1,14 @@
-import { ChevronDown } from 'lucide-react';
+import { Building2, CalendarDays, ChevronDown, MapPin, Search, Users } from 'lucide-react';
 import { useDiscovery } from '@/discovery/DiscoveryContext';
-import type { DiscoveryEntity } from '@/discovery/types';
-import { Create } from '@/components/Drawer';
-import { RequireAuth } from '@/auth/RequireAuth';
-export function DiscoveryHeader({ dedicated, onChooseCity }: { dedicated: boolean; onChooseCity: () => void }) {
-  const { state, setState } = useDiscovery();
+const categories = [{ entity: 'activities', name: 'Activities', icon: CalendarDays }, { entity: 'teams', name: 'Teams', icon: Users }, { entity: 'organizations', name: 'Organizations', icon: Building2 }] as const;
+export function DiscoveryHeader() {
+  const { state, setState, location, openSurface, setSelected } = useDiscovery();
   const region = state.geo?.city ?? state.geo?.state ?? state.geo?.country ?? 'Choose a city';
-  return <div className="discovery-header">
-    <div className="discovery-header-top"><button className="discovery-city" onClick={onChooseCity}><strong>{region}<ChevronDown size={18} aria-hidden="true" /></strong><span>{state.geo ? [state.geo.level === 'city' ? state.geo.state : null, state.geo.level !== 'country' ? state.geo.country : null].filter(Boolean).join(', ') : 'Find your next activity'}</span></button>
-      {!dedicated && <RequireAuth action="Create"><Create entity={state.entity} /></RequireAuth>}
+  return <div className="discovery-floating-top" data-discovery-top>
+    <div className="discovery-floating-row"><button data-discovery-focus className="discovery-city" onClick={() => openSurface('city')}><MapPin size={19} aria-hidden="true" /><span className="discovery-city-copy"><strong>{region}</strong><small>{location.mode === 'auto' ? 'Following your city' : state.geo ? 'Chosen city' : 'Find your next activity'}</small></span><ChevronDown size={16} aria-hidden="true" /></button>
+      <button className={`discovery-search-button${state.query ? ' filtered' : ''}`} title={`Search ${state.entity}`} aria-label={`Search ${state.entity}`} onClick={() => openSurface('search')}><Search size={21} aria-hidden="true" /></button>
     </div>
-    {!dedicated && <div className="discovery-entities" aria-label="Result type">{(['activities', 'teams', 'organizations'] as DiscoveryEntity[]).map(entity => <button key={entity} aria-pressed={state.entity === entity} onClick={() => setState(s => ({ ...s, entity }))}>{entity[0].toUpperCase() + entity.slice(1)}</button>)}</div>}
-    <div className="discovery-search-row"><label className="discovery-search"><span className="sr-only">Search {state.entity}</span><input type="search" placeholder={`Search ${state.entity}`} value={state.query} onChange={event => setState(s => ({ ...s, query: event.target.value }))} /></label>
-      {!dedicated && <div className="discovery-view" aria-label="Result view">{(['map', 'list'] as const).map(view => <button key={view} aria-pressed={state.view === view} onClick={() => setState(s => ({ ...s, view }))}>{view === 'map' ? 'Map' : 'List'}</button>)}</div>}
-    </div>
+    <div className="discovery-entities" aria-label="Result type">{categories.map(({ entity, name, icon: Icon }) => <button key={entity} title={name} aria-label={name} aria-pressed={state.entity === entity} onClick={() => { setSelected(null); setState(s => ({ ...s, entity })); }}><Icon size={21} aria-hidden="true" /></button>)}</div>
+    {state.query && <button className="discovery-query" onClick={() => openSurface('search')}>Search: {state.query}</button>}
   </div>;
 }

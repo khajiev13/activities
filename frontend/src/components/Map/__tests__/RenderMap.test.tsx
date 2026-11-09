@@ -147,3 +147,7 @@ it('preserves a remembered pan on detail return with the same selected result', 
   const preview = screen.getByRole('region', { name: 'Selected result' }); preview.getBoundingClientRect = () => ({ height: 120, top: 390 } as DOMRect);
   act(() => resize()); act(() => frame?.(0)); expect(map.panBy).not.toHaveBeenCalled(); expect(map.easeTo).not.toHaveBeenCalled();
 });
+it('does not reserve the absent Results/Create row below a replacing preview', () => {
+  const view = render(<App />); const root = view.container.querySelector('[data-discovery-geometry]') as HTMLElement;
+  root.querySelector('[data-discovery-actions]')!.remove(); act(() => resize()); expect(root.style.getPropertyValue('--discovery-actions-height')).toBe('0px');
+});

@@ -44,6 +44,7 @@ export function useDiscoveryLocation(inputs: Inputs) {
     let restored = false;
     let lastAttempt = -Infinity;
     let deferredCenter: PlaceSelection | null = null;
+    let deferredRestore: { preference: DiscoveryPreference | null; warning: boolean } | null = null;
     let pausedVisit = Boolean(inputs.state.geo && !inputs.state.follow);
     let urlPlace: PlaceSelection | null = inputs.state.geo ? { geo: inputs.state.geo } : null;
     let urlFollow = inputs.state.follow;
@@ -51,7 +52,7 @@ export function useDiscoveryLocation(inputs: Inputs) {
     let previous = { path: inputs.path, state: inputs.state, surface: inputs.surface, enabled: inputs.enabled };
     const update = (patch: Partial<LocationState>) => { value.current = { ...value.current, ...patch }; if (mounted) setModel(value.current); };
     const cancelPending = () => {
-      generation++; pending?.controller.abort(); pending = null;
+      generation++; pending?.controller.abort(); pending = null; deferredRestore = null;
       if (value.current.status === 'locating' || value.current.status === 'resolving') update({ status: 'idle' });
     };
     const begin = (kind: string) => {
@@ -105,7 +106,7 @@ export function useDiscoveryLocation(inputs: Inputs) {
       }
     };
     const locate = async (explicit: boolean): Promise<boolean> => {
-      if (!current.current.enabled || !foreground() || (current.current.surface !== 'none' && !(explicit && current.current.surface === 'city'))) return false;
+      if (!current.current.enabled || !foreground() || (current.current.surface !== 'none' && !(explicit && (current.current.surface === 'city' || current.current.surface === 'profile')))) return false;
       const job = begin('location');
       try {
         if (!explicit) {
@@ -142,6 +143,12 @@ export function useDiscoveryLocation(inputs: Inputs) {
     };
     const resume = () => {
       if (!restored || !eligible() || pending) return;
+      if (deferredRestore) {
+        const result = deferredRestore; deferredRestore = null;
+        preference = result.preference;
+        restorePlace(); update({ persistenceWarning: value.current.persistenceWarning || result.warning });
+        if (value.current.place && !value.current.place.center && (pausedVisit || value.current.mode !== 'auto')) void centerPlace(value.current.place, false, false);
+      }
       if (deferredCenter) { void centerPlace(deferredCenter, false, false); return; }
       if (pausedVisit || (preference && value.current.mode !== 'auto') || Date.now() - lastAttempt < 300000) return;
       void locate(false);
@@ -160,6 +167,9 @@ export function useDiscoveryLocation(inputs: Inputs) {
       const result = await readDiscoveryPreference(job.controller.signal);
       if (!valid(job)) return;
       pending = null; restored = true;
+      // A bounded storage read may finish behind a sheet. Reconcile its value
+      // only when Map is eligible; explicit intents still invalidate this stage.
+      if (!eligible()) { deferredRestore = result; return; }
       preference = result.preference;
       restorePlace(); update({ persistenceWarning: value.current.persistenceWarning || result.warning });
       if (pausedVisit || (preference && value.current.mode !== 'auto')) {
@@ -176,7 +186,8 @@ export function useDiscoveryLocation(inputs: Inputs) {
       // A picker closes immediately after accepting a manual place. Its new
       // center may finish; old search/device work still belongs to the surface.
       const acceptedClose = surfaceChanged && previous.surface === 'city' && (next.surface === 'none' || next.surface === 'profile') && pending?.kind === 'accepted-center';
-      if (externalRoute || (surfaceChanged && !acceptedClose)) cancelPending();
+      const restoring = pending?.kind === 'restore' || Boolean(deferredRestore);
+      if (externalRoute || (surfaceChanged && !acceptedClose && !restoring)) cancelPending();
       if (ownUrl) expectedUrl = null;
       if (externalRoute && next.enabled && (intentKey(previous.state) !== intentKey(next.state) || !previous.enabled)) {
         pausedVisit = Boolean(next.state.geo && !next.state.follow);
@@ -185,13 +196,13 @@ export function useDiscoveryLocation(inputs: Inputs) {
         restorePlace();
         if (value.current.place && !value.current.place.center && pausedVisit) void centerPlace(value.current.place, false, false);
       }
-      if (externalRoute || surfaceChanged) restored = true;
+      if (externalRoute || (surfaceChanged && !restoring)) restored = true;
       previous = { path: next.path, state: next.state, surface: next.surface, enabled: next.enabled };
       resume();
     };
     return {
       bootstrap, contextChanged,
-      foregroundChanged: () => { if (!foreground()) { if (pending?.kind === 'restore') restored = true; cancelPending(); } else resume(); },
+      foregroundChanged: () => { if (!foreground()) { if (pending?.kind === 'restore') restored = true; if (!deferredRestore) cancelPending(); } else resume(); },
       dispose: () => { mounted = false; cancelPending(); },
       actions: {
         cancelPending,

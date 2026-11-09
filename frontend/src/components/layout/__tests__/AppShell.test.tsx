@@ -37,29 +37,20 @@ beforeEach(() => {
 });
 afterEach(() => { cleanup(); vi.clearAllMocks(); });
 describe('responsive shell', () => {
-  it('has four labeled destinations and follows the active route while preserving query context', () => {
-    shell('/activities?city=Tashkent&q=tennis');
-    for (const name of ['Explore', 'Activities', 'Teams', 'Organizations']) expect(screen.getByRole('link', { name })).toBeTruthy();
-    expect(screen.getByRole('link', { name: 'Activities' }).getAttribute('aria-current')).toBe('page');
-    fireEvent.click(screen.getByRole('link', { name: 'Teams' }));
-    expect(screen.getByRole('link', { name: 'Teams' }).getAttribute('aria-current')).toBe('page');
-    expect(screen.getByText('/teams?city=Tashkent&q=tennis')).toBeTruthy();
-    expect(screen.getByText('Page content')).toBeTruthy();
-  });
-  it('labels root Explore as the active destination', () => {
-    shell('/'); expect(screen.getByRole('link', { name: 'Explore' }).getAttribute('aria-current')).toBe('page');
+  it.each(['/map', '/', '/activities', '/teams', '/organizations'])('leaves discovery %s full-screen without a permanent header or directory navigation', path => {
+    const view = shell(path); expect(view.container.querySelector('.app-page-header')).toBeNull(); expect(screen.queryByRole('navigation')).toBeNull(); expect(screen.queryByRole('button', { name: 'Account' })).toBeNull(); expect(screen.getByText('Page content')).toBeTruthy();
   });
   it('offers a login that remembers the route and only supported account actions', () => {
-    shell('/teams?city=Tashkent'); fireEvent.click(screen.getByRole('button', { name: 'Account' }));
+    shell('/teams/sample?city=Tashkent'); fireEvent.click(screen.getByRole('button', { name: 'Account' }));
     expect(screen.queryByText(/payments|saved activities|edit profile/i)).toBeNull();
     fireEvent.change(screen.getByLabelText('Appearance'), { target: { value: 'dark' } });
     expect(document.documentElement.classList.contains('dark')).toBe(true);
     fireEvent.click(screen.getByRole('link', { name: 'Log in' }));
     expect(screen.getByText('/login')).toBeTruthy();
-    expect(screen.getByLabelText('Return route').textContent).toBe('/teams?city=Tashkent');
+    expect(screen.getByLabelText('Return route').textContent).toBe('/teams/sample?city=Tashkent');
   });
   it('uses the real account identity and logout action', () => {
-    shell('/teams', true); fireEvent.click(screen.getByRole('button', { name: 'Account' }));
+    shell('/teams/sample', true); fireEvent.click(screen.getByRole('button', { name: 'Account' }));
     expect(screen.getByText('Ada Lovelace')).toBeTruthy();
     expect(screen.getByAltText('Ada Lovelace').getAttribute('src')).toBe('/avatar.png');
     fireEvent.click(screen.getByRole('button', { name: 'Log out' })); expect(logout).toHaveBeenCalledOnce();
@@ -116,7 +107,7 @@ it('keeps rejected logout feedback visible after auth becomes anonymous and offe
       logout: async () => { setAuthenticated(false); attempts++; if (attempts === 1) throw new Error('offline'); },
     }}><ThemeProvider><AppShell><p>Page</p></AppShell></ThemeProvider></AuthContext.Provider>;
   }
-  render(<MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><Session /></MemoryRouter>);
+  render(<MemoryRouter initialEntries={['/settings']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><Session /></MemoryRouter>);
   fireEvent.click(screen.getByRole('button', { name: 'Account' }));
   await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Log out' })));
   expect(screen.getByRole('alert').textContent).toContain('Unable to finish logging out');

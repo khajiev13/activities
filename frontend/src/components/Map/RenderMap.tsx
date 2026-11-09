@@ -51,7 +51,7 @@ export default function RenderMap({ onOrganization, onError }: { onOrganization:
       const height = (element: HTMLElement | null) => element?.getBoundingClientRect().height ?? 0;
       // The SDK logo has a negative margin: include the actual anchor, not only its parent.
       const creditHeight = Math.max(30, ...credits.flatMap(element => [height(element), ...[...element.querySelectorAll<HTMLElement>('a')].map(height)]));
-      const values = [height(dock) || 58, creditHeight, height(top), height(actions) || 48, Math.max(0, ...previews.map(height))];
+      const values = [height(dock) || 58, creditHeight, height(top), actions ? height(actions) || (actions.hidden ? 0 : 48) : root.hasAttribute('data-discovery-geometry') ? 0 : 48, Math.max(0, ...previews.map(height))];
       properties.forEach((name, index) => { const value = `${Math.ceil(values[index])}px`; if (root.style.getPropertyValue(name) !== value) root.style.setProperty(name, value); });
       const rect = canvas.getBoundingClientRect();
       const lower = [dock, actions, ...previews, ...credits].filter((item): item is HTMLElement => Boolean(item && height(item) > 0));

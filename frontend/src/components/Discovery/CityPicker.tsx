@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Content as DialogContent } from '@radix-ui/react-dialog';
-import { Dialog, DialogClose, DialogOverlay, DialogPortal, DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { DiscoverySurface } from './DiscoverySurface';
 import { useDiscovery } from '@/discovery/DiscoveryContext';
 import { flattenCities } from '@/discovery/query';
 import { normalizePlaceName, placeKey } from '@/discovery/place';
@@ -18,7 +17,6 @@ export function CityPicker() {
   const [retry, setRetry] = useState(0);
   const [searchPaused, setSearchPaused] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
-  const opener = useRef<HTMLElement | null>(null);
   const input = useRef<HTMLInputElement | null>(null);
   const queryKey = normalizePlaceName(query);
   const cities = useMemo(() => flattenCities(countries), [countries]);
@@ -62,10 +60,7 @@ export function CityPicker() {
   };
   const current = state.geo ? { geo: state.geo } : location.place;
   return <>{!open && acknowledged && location.mode === 'auto' && location.place && <div className="discovery-location-success"><p role="status">City selected from your location: {label(location.place)}.</p><button onClick={() => openSurface('city')}>Change</button></div>}
-    <Dialog open={open} onOpenChange={next => { if (!next) close(); }}>
-      <DialogPortal><DialogOverlay /><DialogContent className="app-account-dialog fixed left-1/2 top-1/2 z-50 grid max-h-[calc(100dvh-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto border p-6 shadow-lg" onOpenAutoFocus={event => { opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null; event.preventDefault(); input.current?.focus(); }} onCloseAutoFocus={event => { event.preventDefault(); opener.current?.focus(); }}>
-        <div className="flex items-center justify-between gap-4"><DialogTitle>Choose a city</DialogTitle><DialogClose asChild><button className="app-account-action">Close</button></DialogClose></div>
-        <DialogDescription>Search cities worldwide or browse a country or state.</DialogDescription>
+    <DiscoverySurface open={open} title="Choose a city" description="Search cities worldwide or browse a country or state." onClose={close} initialFocus={input}>
         {current && <p className="text-sm">Current: {label(current)}</p>}
         <label className="grid gap-2 text-sm">Search cities<input ref={input} className="rounded-xl border bg-background px-3 text-base" value={query} onChange={event => { if (normalizePlaceName(event.target.value) !== queryKey) cancelPending(); setSearchPaused(false); setQuery(event.target.value); }} /></label>
         <div className="grid gap-2">
@@ -82,12 +77,11 @@ export function CityPicker() {
         {searchStatus === 'error' && <div role="alert" className="grid gap-2 text-sm"><p>City search is unavailable. Recent places and available cities still work.</p><button className="app-account-action" onClick={() => { setSearchPaused(false); setRetry(value => value + 1); }}>Retry search</button></div>}
         <div className="grid gap-2" aria-label="Available cities">
           {choices.map(place => <button className="app-account-action justify-start text-left" key={placeKey(place)} onClick={() => choose(place)}>{label(place)}</button>)}
-          {!countriesLoading && searchStatus === 'idle' && !recent.length && !choices.length && <p className="text-sm">No matching cities. Browse a country or state below.</p>}
+          {!countriesLoading && !countriesError && searchStatus === 'idle' && !recent.length && !choices.length && <p className="text-sm">No matching cities. Browse a country or state below.</p>}
         </div>
         <details><summary className="min-h-12 cursor-pointer py-3 text-sm font-semibold">Browse regions</summary><div className="grid gap-2">{countries.map(country => <div className="grid gap-2" key={country.name}>
           <button className="app-account-action justify-start text-left" onClick={() => choose({ geo: { level: 'country', country: country.name } })}>Browse {country.name}</button>
           {country.states.map(state => <button className="app-account-action justify-start text-left" key={state.name} onClick={() => choose({ geo: { level: 'state', country: country.name, state: state.name } })}>Browse {state.name}, {country.name}</button>)}
         </div>)}</div></details>
-      </DialogContent></DialogPortal>
-    </Dialog></>;
+    </DiscoverySurface></>;
 }

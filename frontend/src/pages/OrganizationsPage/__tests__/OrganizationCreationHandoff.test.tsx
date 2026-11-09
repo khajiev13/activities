@@ -19,7 +19,8 @@ import NewOrganizationDrawer from '@/components/OrganizationsPage/NewOrganizatio
 import Organizations from '../Organizations';
 import type { LocationDetails } from '@/components/Map/MapFunctions/AddLocation';
 
-vi.mock('@maptiler/sdk', () => ({}));
+// This suite exercises real creation/handoff/API behavior; map SDK behavior has its own integration suite.
+vi.mock('@/components/Map/BaseMap', () => ({ default: () => null }));
 vi.mock('sonner', () => ({ toast: vi.fn() }));
 vi.mock('@/components/SelectLocation', () => ({ default: ({ setLocation }: { setLocation: (value: LocationDetails) => void }) => <button type="button" onClick={() => setLocation({ country: 'UK', state: 'Scotland', city: 'Edinburgh', location_pk: 'pitch', location_name: 'New pitch', country_code: 'GB', timezone: 'Europe/London', sunrise: '', sunset: '' })}>Choose stored Edinburgh location</button> }));
 const originalAdapter = client.defaults.adapter;
@@ -62,7 +63,7 @@ it.each([['England', 'Cambridge', 'old-search', 'legacy'], ['Scotland', 'Edinbur
   fireEvent.click(screen.getByRole('button', { name: 'Create' }));
   await waitFor(() => expect(close).toHaveBeenCalledOnce());
   expect(await screen.findByRole('button', { name: 'About New Edinburgh Club' })).toBeTruthy();
-  expect(screen.queryByRole('dialog')).toBeNull(); expect(refreshed).toBe(true); expect(posts).toBe(1); expect(reloadCalls).toHaveBeenCalledOnce(); expect(screen.getByLabelText('Handoff pending').textContent).toBe('false');
+  expect(screen.getAllByRole('dialog')).toHaveLength(1); expect(screen.getByRole('heading', { name: 'Results' })).toBeTruthy(); expect(screen.queryByRole('heading', { name: 'Create a new organization' })).toBeNull(); expect(refreshed).toBe(true); expect(posts).toBe(1); expect(reloadCalls).toHaveBeenCalledOnce(); expect(screen.getByLabelText('Handoff pending').textContent).toBe('false');
   const route = screen.getByLabelText('Current route').textContent!;
   expect(route).toContain('/organizations?'); expect(new URL(route, 'https://example.invalid').searchParams.get('city')).toBe('Edinburgh');
   expect(new URL(route, 'https://example.invalid').searchParams.get('q')).toBe('');

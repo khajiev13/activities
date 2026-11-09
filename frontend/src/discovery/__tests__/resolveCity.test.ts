@@ -8,6 +8,15 @@ const district = { ...paris, name: 'Quartier', fcode: 'PPL', geonameId: 123 };
 const adm = { ...paris, fcl: 'A', fcode: 'ADM3', geonameId: 456 };
 const response = (geonames: unknown[], totalResultsCount = geonames.length) => new Response(JSON.stringify({ geonames, totalResultsCount }));
 const expected = { ...city, geonameId: 2988507, center: [2.3488, 48.8534] };
+// GeoNames public responses captured 2026-11-09: findNearbyPlaceNameJSON at
+// Aktepa's public center, hierarchyJSON?geonameId=1514635, and the complete
+// searchJSON?name_equals=Tashkent&country=UZ&adminCode1=13&featureClass=P.
+// Freeze relevant fields only; these are public feature centers, not device GPS.
+const aktepa = { name: 'Aktepa', countryName: 'Uzbekistan', countryCode: 'UZ', adminName1: 'Tashkent', adminCode1: '13', geonameId: 1514635, fcl: 'P', fcode: 'PPLX', lng: '69.20778', lat: '41.305' };
+const tashkent = { name: 'Tashkent', countryName: 'Uzbekistan', countryCode: 'UZ', adminName1: 'Tashkent', adminCode1: '13', geonameId: 1512569, fcl: 'P', fcode: 'PPLC', lng: '69.21627', lat: '41.26465' };
+const tashkentRegion = { name: 'Tashkent', countryName: 'Uzbekistan', countryCode: 'UZ', adminName1: 'Tashkent', adminCode1: '13', geonameId: 1484839, fcl: 'A', fcode: 'ADM1', lng: '69.25', lat: '41.33333' };
+const tashkentCity = { country: 'Uzbekistan', state: 'Tashkent', city: 'Tashkent' };
+const publicPosition = { latitude: 41.305, longitude: 69.20778 };
 function provider(reverse: unknown[], hierarchy: unknown[], searches: unknown[] = []) {
   const fetcher = vi.fn(async (input: string) => {
     const path = new URL(input).pathname;
@@ -32,6 +41,58 @@ describe('conservative current-city resolution', () => {
     const tashkent = { ...paris, name: 'Tashkent', countryName: 'Uzbekistan', countryCode: 'UZ', adminName1: 'Tashkent', adminCode1: '13', geonameId: 1512569, lng: '69.2163', lat: '41.26465' };
     provider([{ ...tashkent, name: 'Chilonzor', fcode: 'PPL', geonameId: 99 }], [tashkent], [tashkent]);
     expect(await resolveCurrentCity(position, [])).toEqual({ country: 'Uzbekistan', state: 'Tashkent', city: 'Tashkent', geonameId: 1512569, center: [69.2163, 41.26465] });
+  });
+  it('resolves public Aktepa PPLX through its Tashkent city hierarchy and complete scoped search', async () => {
+    // Reverse and hierarchy responses omit totalResultsCount in the public API.
+    const fetcher = vi.fn().mockResolvedValueOnce(new Response(JSON.stringify({ geonames: [aktepa] })))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ geonames: [
+        { fcl: 'L', fcode: 'AREA' }, { fcl: 'L', fcode: 'CONT' }, { fcl: 'A', fcode: 'PCLI' }, tashkentRegion, tashkent, aktepa,
+      ] })))
+      .mockResolvedValueOnce(response([tashkent], 1));
+    vi.stubGlobal('fetch', fetcher);
+    expect(await resolveCurrentCity(publicPosition, [])).toEqual({ country: 'Uzbekistan', state: 'Tashkent', city: 'Tashkent', geonameId: 1512569, center: [69.21627, 41.26465] });
+    const requests = fetcher.mock.calls.map(([url]) => new URL(url));
+    expect(requests.map(url => url.pathname)).toEqual(['/findNearbyPlaceNameJSON', '/hierarchyJSON', '/searchJSON']);
+    expect(requests[1].searchParams.get('geonameId')).toBe('1514635');
+    expect(Object.fromEntries(requests[2].searchParams)).toMatchObject({ name_equals: 'Tashkent', country: 'UZ', adminCode1: '13', featureClass: 'P', maxRows: '20' });
+    for (const [url, options] of fetcher.mock.calls as [string, RequestInit][]) { expect(new URL(url).origin).toBe('https://secure.geonames.org'); expect(options.credentials).toBe('omit'); expect(options.headers).toBeUndefined(); }
+  });
+  it('preserves the unique normalized full catalogue tuple for public Aktepa to Tashkent', async () => {
+    const stored = { country: ' Uzbekistan ', state: 'TASHKENT', city: ' tashkent ' };
+    provider([aktepa], [tashkentRegion, tashkent, aktepa], [tashkent]);
+    expect(await resolveCurrentCity(publicPosition, [stored])).toEqual({ country: ' Uzbekistan ', state: 'TASHKENT', city: ' tashkent ', geonameId: 1512569, center: [69.21627, 41.26465] });
+  });
+  it('resolves the public Tashkent city center directly', async () => {
+    provider([tashkent], [tashkentRegion, tashkent], [tashkent]);
+    expect(await resolveCurrentCity({ latitude: 41.26465, longitude: 69.21627 }, [])).toEqual({ country: 'Uzbekistan', state: 'Tashkent', city: 'Tashkent', geonameId: 1512569, center: [69.21627, 41.26465] });
+  });
+  it('does not promote a PPLX neighborhood or its ADM1 parent without strong city evidence', async () => {
+    const fetcher = provider([aktepa], [tashkentRegion, aktepa], [tashkent]);
+    expect(await resolveCurrentCity(publicPosition, [])).toBeNull(); expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+  it('rejects PPLX hierarchy city evidence with conflicting administrative parents', async () => {
+    provider([aktepa], [{ ...tashkent, adminCode1: '14' }], [tashkent]);
+    expect(await resolveCurrentCity(publicPosition, [])).toBeNull();
+  });
+  it('rejects multiple strong city identities after a PPLX reverse result', async () => {
+    provider([aktepa], [tashkent], [tashkent, { ...tashkent, geonameId: 99 }]);
+    expect(await resolveCurrentCity(publicPosition, [])).toBeNull();
+  });
+  it('rejects a truncated exact search after a PPLX reverse result', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(response([aktepa])).mockResolvedValueOnce(response([tashkent])).mockResolvedValueOnce(response([tashkent], 2)));
+    expect(await resolveCurrentCity(publicPosition, [])).toBeNull();
+  });
+  it.each([false, true])('preserves a distinct stored Aktepa district instead of silently selecting Tashkent (stored city: %s)', async hasCity => {
+    provider([aktepa], [tashkent], [tashkent]);
+    expect(await resolveCurrentCity(publicPosition, [{ ...tashkentCity, city: 'Aktepa' }, ...(hasCity ? [tashkentCity] : [])])).toBeNull();
+  });
+  it('rejects incomplete PPLX reverse parent metadata before hierarchy lookup', async () => {
+    const fetcher = provider([{ ...aktepa, adminCode1: undefined }], [tashkent], [tashkent]);
+    expect(await resolveCurrentCity(publicPosition, [])).toBeNull(); expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+  it('rejects a PPLX reverse row and PPLC hierarchy row claiming the same provider identity', async () => {
+    provider([{ ...paris, fcode: 'PPLX' }], [paris], [paris]);
+    expect(await resolveCurrentCity(position, [city])).toBeNull();
   });
   it.each(['ADM2', 'ADM3', 'ADM4', 'ADM5'])('resolves Paris %s only after exact scoped populated-city evidence', async fcode => {
     const fetcher = provider([district], [{ ...adm, fcode }], [paris]); expect(await resolveCurrentCity(position, [city])).toEqual(expected);

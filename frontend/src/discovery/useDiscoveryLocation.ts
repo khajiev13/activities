@@ -79,7 +79,7 @@ export function useDiscoveryLocation(inputs: Inputs) {
     const save = (patch: Partial<DiscoveryPreference>) => {
       const next = { ...(preference ?? emptyPreference()), ...patch, updatedAt: Math.max(Date.now(), (preference?.updatedAt ?? 0) + 1) };
       preference = next;
-      void writeDiscoveryPreference(next).then(result => { if (mounted && preference === next) update({ persistenceWarning: value.current.persistenceWarning || result.warning }); });
+      void writeDiscoveryPreference(next).then(result => { if (mounted && preference === next) update({ persistenceWarning: result.warning }); });
     };
     const moveCamera = (place: PlaceSelection | null) => update({ cameraRequest: { sequence: value.current.cameraRequest.sequence + 1, place } });
     const showPlace = (place: PlaceSelection | null, mode: LocationMode, explicit = false, source = current.current.state) => {

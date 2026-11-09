@@ -10,11 +10,11 @@ import { resolvePlaceCenter, searchCityPlaces } from '../geoNames';
 import type { CityPlace, DiscoveryPreference, PlaceSelection } from '../place';
 import type { TelegramApp } from '@/platform/telegram';
 
-const store = vi.hoisted(() => ({ preference: null as DiscoveryPreference | null, read: vi.fn(), warning: false }));
+const store = vi.hoisted(() => ({ preference: null as DiscoveryPreference | null, read: vi.fn(), write: vi.fn(), warning: false }));
 vi.mock('../preferences', () => ({
   readCachedDiscoveryPreference: () => ({ preference: store.preference, warning: store.warning }),
   readDiscoveryPreference: (...args: unknown[]) => store.read(...args),
-  writeDiscoveryPreference: async (value: DiscoveryPreference) => { store.preference = value; return { warning: store.warning }; },
+  writeDiscoveryPreference: (value: DiscoveryPreference) => { store.preference = value; return store.write(value); },
 }));
 vi.mock('../api', () => ({ fetchCountries: async () => [], fetchResults: async () => ({ activities: [], teams: [], organizations: [] }) }));
 vi.mock('../deviceLocation', () => ({ getLocationPermission: vi.fn(), requestDeviceLocation: vi.fn() }));
@@ -43,6 +43,7 @@ beforeEach(() => {
   vi.useFakeTimers(); vi.setSystemTime(1_000_000); vi.resetAllMocks();
   store.preference = null; store.warning = false;
   store.read.mockImplementation(async () => ({ preference: store.preference, warning: store.warning }));
+  store.write.mockImplementation(async () => ({ warning: store.warning }));
   vi.mocked(getLocationPermission).mockResolvedValue('unknown');
   vi.mocked(requestDeviceLocation).mockResolvedValue({ latitude: 1, longitude: 2 });
   vi.mocked(resolveCurrentCity).mockResolvedValue(city);
@@ -180,6 +181,31 @@ it('storage failure is nonblocking and Profile → city → close restores Profi
   store.warning = true; await mount(); await action(() => d.openSurface('profile')); await action(() => d.openSurface('city', 'profile')); await action(() => d.location.selectPlace(second));
   const memory = d.cameraMemory; memory.current = { center: [10, 20], zoom: 7, bearing: 0, pitch: 0, appliedSequence: 1 };
   await action(() => d.closeSurface()); expect(d.surface).toBe('profile'); expect(d.cameraMemory).toBe(memory); expect(d.location.place).toEqual(second); expect(d.location.persistenceWarning).toBe(true);
+});
+it('clears an earlier restore warning after successfully writing the current forgotten preference', async () => {
+  store.preference = pref('manual'); store.read.mockResolvedValue({ preference: store.preference, warning: true }); await mount();
+  expect(d.location.persistenceWarning).toBe(true);
+  await action(() => d.location.forgetPlaces());
+  expect(d.location.persistenceWarning).toBe(false); expect(d.location.mode).toBe('off'); expect(saved().place).toBeNull();
+});
+it('clears a failed write warning after the current manual preference is saved successfully', async () => {
+  store.preference = pref('manual'); await mount();
+  store.write.mockResolvedValueOnce({ warning: true }).mockResolvedValueOnce({ warning: false });
+  await action(() => d.location.selectPlace(second)); expect(d.location.persistenceWarning).toBe(true);
+  await action(() => d.location.selectPlace(first)); expect(d.location.persistenceWarning).toBe(false); expect(saved().place).toEqual(first);
+});
+it.each([false, true])('ignores an older opposite write result after the latest write reports warning=%s', async latestWarning => {
+  store.preference = pref('manual'); store.warning = true; await mount();
+  const older = delayed<{ warning: boolean }>(); const newer = delayed<{ warning: boolean }>();
+  store.write.mockReturnValueOnce(older.promise).mockReturnValueOnce(newer.promise);
+  await action(() => d.location.selectPlace(second)); await action(() => d.location.selectPlace(first));
+  await action(() => newer.resolve({ warning: latestWarning })); expect(d.location.persistenceWarning).toBe(latestWarning);
+  await action(() => older.resolve({ warning: !latestWarning })); expect(d.location.persistenceWarning).toBe(latestWarning); expect(d.location.place).toEqual(first);
+});
+it('warns when the current preference write reports failure while retaining the selected city', async () => {
+  store.preference = pref('manual'); await mount(); expect(d.location.persistenceWarning).toBe(false);
+  store.write.mockResolvedValueOnce({ warning: true }); await action(() => d.location.selectPlace(second));
+  expect(d.location.persistenceWarning).toBe(true); expect(d.location.place).toEqual(second); expect(d.location.mode).toBe('manual');
 });
 it('closing the picker preserves only the newly accepted manual city center', async () => {
   store.preference = pref('manual'); await mount(); await action(() => d.openSurface('city'));

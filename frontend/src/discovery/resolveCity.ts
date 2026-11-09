@@ -10,7 +10,8 @@ export async function resolveCurrentCity(position: DevicePosition, cities: CityO
   const nearby = await lookup('findNearbyPlaceNameJSON', { lat: String(position.latitude), lng: String(position.longitude), maxRows: '1', localCountry: 'true' });
   if (!completeEvidence(nearby) || nearby.rows.length !== 1) return null;
   const direct = parseGeoNamesPlace(nearby.rows[0]);
-  if (!direct || !isManualPlace(direct)) return null;
+  // A neighborhood can seed hierarchy lookup, but cannot itself prove a city.
+  if (!direct || !(isManualPlace(direct) || (direct.fcl === 'P' && direct.fcode === 'PPLX'))) return null;
   const hierarchy = await lookup('hierarchyJSON', { geonameId: String(direct.geonameId) });
   if (!completeEvidence(hierarchy) || hierarchy.rows.length === 0) return null;
   const ancestors: GeoNamesPlace[] = [];
@@ -41,7 +42,7 @@ export async function resolveCurrentCity(position: DevicePosition, cities: CityO
     }
   }
   const selected = uniquePlaceIdentity(strong);
-  if (!selected) return null;
+  if (!selected || evidence.some(place => place.geonameId === selected.geonameId && !uniquePlaceIdentity([selected, place]))) return null;
   // A stored district is still a distinct browsing tuple. Gathering both direct
   // and parent matches prevents silently changing which catalogue is queried.
   const stored = uniqueStoredCities(cities.filter(city => evidence.some(place => matchesCity(place, city)) || matchesCity(selected, city)));
